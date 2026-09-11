@@ -32,5 +32,5 @@ git push
 
 ## Pages 설정
 
-Settings → Pages → Source: **Deploy from a branch**, Branch: **`sub` / `(root)`**.
+Settings → Pages → Source: **Deploy from a branch**, Branch: **`main` / `(root)`**.
 Actions 워크플로는 두지 않는다.
