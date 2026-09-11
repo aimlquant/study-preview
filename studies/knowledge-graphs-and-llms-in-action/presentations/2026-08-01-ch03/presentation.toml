@@ -1,0 +1,14 @@
+study_id = "kg-llm-in-action-2026"
+session_id = "2026-08-01-ch03"
+title = "온톨로지로 첫 번째 지식 그래프 만들기"
+date = "2026-08-01"
+presenters = ["태영"]
+chapters = ["Chapter 3"]
+template = "study-deck-v1"
+report_template = "study-report-v1"
+workflow = "raw-report-deck-v1"
+report_source = "report.html"
+artifacts = ["report", "slides"]
+revision_date = "2026-08-05"
+source_fidelity = "source-structure-v1"
+source_material = "materials/aiml/active/knowledge-graphs-and-llms-in-action/chapter_03_create_your_first_knowledge_graph_from_ontologies/03_create_your_first_knowledge_graph_from_ontologies_ko_explained.md"

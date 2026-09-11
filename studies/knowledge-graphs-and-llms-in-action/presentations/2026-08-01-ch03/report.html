@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="ko" class="theme-light" data-report-template="study-report-v1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="HPO 온톨로지와 질병–표현형 주석으로 추적 가능한 지식 그래프를 구축하고 질의·추론하는 상세 리포트">
+  <title>온톨로지로 첫 번째 지식 그래프 만들기 · 상세 리포트</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/report.css">
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+</head>
+<body>
+  <a class="skip-link" href="#summary">리포트 본문으로 건너뛰기</a>
+  <button id="tocToggle" class="report-nav-toggle" type="button" aria-label="목차 열기" aria-controls="tocDrawer" aria-expanded="false" title="목차"><span aria-hidden="true">☰</span></button>
+  <div class="report-settings" aria-label="설정">
+    <button id="settingsToggle" class="report-settings-toggle" type="button" aria-label="설정 열기" aria-controls="settingsPanel" aria-expanded="false" title="설정">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M9.67 4.14a2.34 2.34 0 0 1 4.66 0 2.34 2.34 0 0 0 3.32 1.91 2.34 2.34 0 0 1 2.33 4.04 2.34 2.34 0 0 0 0 3.82 2.34 2.34 0 0 1-2.33 4.04 2.34 2.34 0 0 0-3.32 1.91 2.34 2.34 0 0 1-4.66 0 2.34 2.34 0 0 0-3.32-1.91 2.34 2.34 0 0 1-2.33-4.04 2.34 2.34 0 0 0 0-3.82 2.34 2.34 0 0 1 2.33-4.04 2.34 2.34 0 0 0 3.32-1.91"/></svg>
+    </button>
+    <div id="settingsPanel" class="report-settings-panel" aria-hidden="true">
+      <div class="report-settings-panel__group"><span class="report-settings-panel__label">화면</span><button id="themeToggle" type="button" onclick="cycleTheme()" aria-label="나이트 모드 전환" title="나이트 모드 전환">☀</button></div>
+      <div class="report-settings-panel__group"><span class="report-settings-panel__label">출력</span><button class="report-settings-action" type="button" onclick="window.print()" aria-label="PDF 또는 인쇄" title="PDF 또는 인쇄">Print / PDF</button></div>
+      <div class="report-settings-panel__group"><span class="report-settings-panel__label">이동</span><nav class="report-quick-links" aria-label="회차 링크"><a href="../../" title="회차 목록">Index</a><a href="report.html" title="상세 리포트">Report</a><a href="./" title="발표자료">Slides</a></nav></div>
+    </div>
+  </div>
+  <div id="tocBackdrop" class="report-toc-backdrop" hidden></div>
+  <nav id="tocDrawer" class="report-toc-drawer" aria-label="문서 목차" aria-hidden="true">
+    <div class="report-toc-drawer__head"><span>목차</span><button id="tocClose" type="button" aria-label="목차 닫기">×</button></div>
+    <ol id="tocDrawerList" class="report-toc-drawer__list"></ol>
+  </nav>
+
+  <article class="report continuous-mode">
+    <section class="report-cover">
+      <div class="report-cover__wordmark"><span class="report-cover__wordmark-name">AIML Quant</span><span class="report-cover__wordmark-sub">Knowledge Graphs &amp; LLMs</span></div>
+      <span class="report-cover__kicker">Study Report · Chapter 03</span>
+      <h1 class="report-cover__title">온톨로지로 첫 번째<br>지식 그래프 만들기</h1>
+      <p class="report-cover__subtitle">HPO 온톨로지와 주석으로 연결하는 구축·질의·추론</p>
+      <dl class="report-cover__meta">
+        <div><dt>발표자</dt><dd>태영</dd></div>
+        <div><dt>범위</dt><dd>Chapter 3 · pp. 37–64</dd></div>
+        <div><dt>발행</dt><dd>2026-08-01</dd></div>
+        <div><dt>개정</dt><dd>2026-08-05 · 원문 구조 대조</dd></div>
+      </dl>
+    </section>
+
+    <section class="report-section s0 page-break" id="summary">
+      <div class="report-section__kicker">이 장의 길잡이</div>
+      <h1>0. 이 장의 질문과 전체 흐름</h1>
+      <div class="callout--hero"><span class="callout__kicker">한 문장으로</span><span class="callout__body"><strong>희귀질환 지원 지식 그래프는 임상 질문을 먼저 고정하고, HPO의 표준 의미와 질병–표현형 근거를 결합해, 직접 질의와 계층 추론으로 후보를 검토하게 한다.</strong></span></div>
+      <p>3장은 온톨로지를 설명하는 데서 끝나지 않고 실제 지식 그래프를 만든다. 임상의가 관찰한 표현형 특징으로 희귀질환 후보를 찾는 사용 사례를 정하고, HPO의 OWL 온톨로지와 HPOA 주석 파일을 이해한 뒤, RDF와 LPG 중 목적에 맞는 표현 방식을 고른다. 이어 Neo4j와 Neosemantics로 온톨로지를 적재하고 주석을 관계 속성으로 통합하며, 마지막에는 직접 연결 질의와 계층 추론을 실행한다.</p>
+      <p>완성된 그래프는 네 질문에 답할 수 있어야 한다. 같은 이름이 어느 식별자 문맥에 속하는가, 질병–표현형 연결은 어떤 근거에서 왔는가, 서로 다른 파일이 같은 개체를 가리키는가, 그리고 결과가 직접 주석인지 계층에서 도출된 것인지 설명할 수 있어야 한다.</p>
+      <table class="cmp-table" id="table-overview">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 1</span><span class="asset-caption__title">HPO 지식 그래프의 네 설계 계약</span></div></caption>
+        <thead><tr><th>설계 영역</th><th>핵심 질문</th><th>보존해야 할 정보</th></tr></thead>
+        <tbody>
+          <tr><td>식별자</td><td>같은 이름이 같은 개체인가?</td><td>질병·표현형 namespace와 문맥별 ID</td></tr>
+          <tr><td>관계 근거</td><td>연결을 왜 믿을 수 있는가?</td><td>출처·증거·빈도·큐레이터·작성일</td></tr>
+          <tr><td>적재 계약</td><td>OWL과 TSV가 같은 개체를 가리키는가?</td><td>정규화한 HPO ID·유일성·명명 규칙</td></tr>
+          <tr><td>질의·추론</td><td>저장된 사실과 도출된 사실을 구분하는가?</td><td>원 주석·계층 경로·릴리스·탐색 깊이</td></tr>
+        </tbody>
+      </table>
+
+      <figure class="report-figure" id="source-figure-3-1" data-deck-use="required" data-source-kind="figure" data-source-ref="3.1">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 1</span><span class="asset-caption__title">그림 3.1 · 지식 그래프 구축 과정을 CRISP-DM 모델의 구체화(specification)로 나타낸 멘탈 모델. 비즈니스 목표를 이해하는 것에서 시작해, 임상의의 활동을 지원하는 KG 질의를 정의하는 데까지 이른다.</span></figcaption>
+        <img src="assets/figs/build-pipeline.svg" alt="임상 질문, 데이터 이해, 기술 선택, 온톨로지와 주석 적재, 정리, 질의로 이어지는 지식 그래프 구축 과정">
+        <small class="asset-note">왼쪽 위의 임상 질문에서 시작해 데이터·모델·적재·질의로 이동하며 읽는다. 각 단계의 산출물이 다음 단계의 입력 계약이 되므로, 실패 지점을 단계별로 추적할 수 있다.</small>
+      </figure>
+
+      <figure class="report-figure" id="source-figure-3-2" data-source-kind="figure" data-source-ref="3.2">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 2</span><span class="asset-caption__title">그림 3.2 · 지식 그래프에 맞게 조정한 CRISP-DM 모델. 비즈니스 이해(business understanding), 데이터 이해(data understanding), 데이터 준비(data preparation), KG 모델 생성/갱신(KG model creation/update)을 포함한 일부 구성 요소가 이 장에서 다루는 핵심 단계다.</span></figcaption>
+        <img src="assets/figs/crisp-dm-cycle.svg" alt="비즈니스 이해, 데이터 이해, 데이터 준비, 지식 그래프 모델 생성과 갱신, 평가, 배포가 피드백을 통해 순환하는 CRISP-DM 흐름">
+        <small class="asset-note">위쪽의 비즈니스 이해에서 시작해 데이터 이해·준비를 거친 뒤 아래쪽의 모델 생성·평가·배포로 돌아오는 순환으로 읽는다. 평가 결과는 다음 반복의 비즈니스 질문과 데이터 준비에 다시 반영된다.</small>
+      </figure>
+    </section>
+
+    <section class="report-section s1 page-break" id="source-section-3-1" data-source-kind="section" data-source-ref="3.1">
+      <div class="report-section__kicker">교재 §3.1 · Warmup</div>
+      <h1>3.1 지식 그래프 짓기: 준비 운동 — 문제와 도메인 파악하기</h1>
+      <div class="section-summary"><div class="section-summary__kicker">섹션 요약</div><div class="section-summary__body"><ul><li>코드보다 먼저 임상의의 의사결정 질문을 정한다.</li><li>온톨로지와 주석 파일은 서로 다른 종류의 지식을 제공한다.</li><li>같은 표현도 문맥에 따라 질병과 표현형이라는 다른 ID를 가질 수 있다.</li></ul></div></div>
+      <p>지식 그래프 구축의 시작점은 데이터 파일이 아니라 사용자와 문제다. 이 사례의 사용자는 희귀질환을 진단하는 임상의이며, 필요한 기능은 환자에게서 관찰한 표현형 특징을 질병 후보와 연결하고 그 연결의 근거를 추적하는 것이다.</p>
+
+      <h3 id="source-section-3-1-1" data-source-kind="section" data-source-ref="3.1.1">3.1.1 비즈니스와 도메인 이해 — 임상의는 무엇을 필요로 하는가</h3>
+      <p>표현형은 개인에게 나타나는 모든 관찰 가능한 특징의 총합이다. 질병은 원인, 시간 경과, 표현형 특징의 묶음, 치료 반응으로 구분되는 임상 개체다. 임상의는 표현형을 단순 문자열로 검색하는 것이 아니라, 같은 장기나 계통의 특징들이 어떻게 연결되는지와 질병–표현형 관계가 어느 연구·큐레이터·시점에서 왔는지를 함께 봐야 한다.</p>
+
+      <figure class="report-figure" id="source-figure-3-3" data-source-kind="figure" data-source-ref="3.3">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 3</span><span class="asset-caption__title">그림 3.3 · 임상의 활동을 지원하는 KG를 만들기 위해 비즈니스 도메인을 이해하는 단계. 이 단계는 기술적 측면과 엄밀히 연관되지는 않지만, 다음 단계들을 위한 근본적인 토대가 된다.</span></figcaption>
+        <img src="assets/figs/domain-understanding.svg" alt="임상의의 희귀질환 검토 업무에서 계층적 문맥, 질병 표현형 연결, 추적 가능한 근거라는 세 지식 그래프 요구사항을 도출하는 과정">
+        <small class="asset-note">왼쪽의 사용자를 출발점으로 삼아 가운데 의사결정 질문을 거쳐 오른쪽의 세 요구사항을 읽는다. 계층 문맥, 질병–표현형 연결, 추적 가능한 근거가 이후 데이터와 모델 선택의 평가 기준이 된다.</small>
+      </figure>
+
+      <p>제1형 당뇨병은 이 문맥 의존성을 보여준다. 독립된 질병으로 다룰 때는 OMIM 질병 ID를 쓰지만, 다른 증후군에서 관찰되는 표현형 특징으로 다룰 때는 HPO ID를 쓴다. 이름이 같다고 두 개념을 하나로 합치면 질의의 의미가 무너진다.</p>
+
+      <figure class="report-figure" id="source-figure-3-4" data-source-kind="figure" data-source-ref="3.4">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 4</span><span class="asset-caption__title">그림 3.4 · 제1형 당뇨병(Type 1 diabetes mellitus)은 질병으로 볼 수도, 표현형적 특징으로 볼 수도 있다. 맥락에 따라 서로 다른 두 개의 ID를 채택할 수 있다.</span></figcaption>
+        <img src="assets/figs/diabetes-dual-role.svg" alt="제1형 당뇨병이라는 같은 명칭을 독립 질병 문맥의 OMIM 222100과 표현형 특징 문맥의 HP 0100651로 나누는 구조">
+        <small class="asset-note">위의 같은 명칭에서 두 문맥으로 갈라지는 분기를 따라 읽는다. 질병 ID와 표현형 ID는 서로 다른 개체를 가리키므로 이름이 같다는 이유로 병합해서는 안 된다.</small>
+      </figure>
+
+      <h3 id="source-section-3-1-2" data-source-kind="section" data-source-ref="3.1.2">3.1.2 데이터 이해 — HPO가 제공하는 두 갈래 정보</h3>
+      <p>첫 번째 원천인 <code>hp.owl</code>은 표현형 개념의 표준 ID, 이름, 동의어, 설명, 상위·하위 관계를 RDF/XML로 제공한다. 두 번째 원천인 <code>phenotype.hpoa</code>는 질병과 표현형의 관찰된 연관, 출처, 증거 코드, 빈도, 발병 시점, 큐레이터를 TSV로 제공한다. 전자는 의미와 계층, 후자는 관찰과 근거를 담당한다.</p>
+
+      <figure class="report-figure" id="source-figure-3-5" data-deck-use="required" data-source-kind="figure" data-source-ref="3.5">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 5</span><span class="asset-caption__title">그림 3.5 · 임상의 활동을 지원하기 위해 데이터를 이해하는 단계. 이 탐색적(explorative) 단계에서 지식 그래프를 구성하는 데 필요한 핵심 정보를 얻는다.</span></figcaption>
+        <img src="assets/figs/two-sources-one-graph.svg" alt="hp.owl의 표현형 계층과 phenotype.hpoa의 질병 연관 및 근거가 하나의 그래프에서 결합되는 구조">
+        <small class="asset-note">OWL은 표현형의 정의와 계층을 제공하고 HPOA는 질병–표현형 관계와 근거를 제공한다. 두 입력은 표준 식별자를 접점으로 하나의 질의 그래프에서 결합된다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-1" data-source-kind="listing" data-source-ref="3.1">
+        <h4>Listing 3.1 hpo.owl에 들어 있는 제1형 당뇨병 상세 정보</h4>
+        <p><code>HP_0100651</code>은 OWL 클래스이고, 이름·정의·동의어·외부 ID와 함께 <code>HP_0000819</code>의 하위 클래스라는 관계를 가진다.</p>
+        <pre><code class="language-turtle">obo:HP_0100651 a owl:Class ;
+    rdfs:label "Type I diabetes mellitus"^^xsd:string ;
+    obo:IAO_0000115 "A chronic condition in which the pancreas produces little or no insulin…"^^xsd:string ;
+    oboInOwl:hasDbXref "MSH:D003922", "SNOMEDCT_US:46635009", "UMLS:C0011854" ;
+    oboInOwl:hasExactSynonym "Type 1 diabetes", "Type I diabetes" ;
+    oboInOwl:id "HP:0100651" ;
+    rdfs:subClassOf obo:HP_0000819 .</code></pre>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-2" data-source-kind="listing" data-source-ref="3.2">
+        <h4>Listing 3.2 rdflib 파이썬 라이브러리로 OWL 파일 처리하기</h4>
+        <p><code>rdflib</code>는 OWL 파일을 트리플 집합으로 파싱하고 특정 URI를 주어로 가진 문장만 골라 확인하게 한다.</p>
+        <pre><code class="language-python">from rdflib import Graph, URIRef
+g = Graph()
+g.parse("hp.owl", format="xml")
+g.bind("obo", "http://purl.obolibrary.org/obo/")
+subject_uri = URIRef("http://purl.obolibrary.org/obo/HP_0100651")
+for subject, predicate, obj in g.triples((subject_uri, None, None)):
+    print(subject, predicate, obj)</code></pre>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-3" data-source-kind="listing" data-source-ref="3.3">
+        <h4>Listing 3.3 OWL 파일을 트리플 집합으로 나타낸 예시</h4>
+        <p>각 줄은 주어–술어–목적어 한 문장이다. 클래스 타입, 상위 개념, 정의, 동의어, 사람이 읽을 이름표가 서로 독립된 트리플로 표현된다.</p>
+        <pre><code>(obo:HP_0410050, rdf:type, owl:Class)
+(obo:HP_0410050, rdfs:subClassOf, obo:HP_0011013)
+(obo:HP_0410050, obo:IAO_0000115, A decrease in the level of…)
+(obo:HP_0410050, oboInOwl:hasExactSynonym, Decreased level of 1,5-AG…)
+(obo:HP_0410050, rdfs:label, Decreased level of 1,5 anhydroglucitol in serum)</code></pre>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-4" data-source-kind="listing" data-source-ref="3.4">
+        <h4>Listing 3.4 phenotype.hpoa 파일의 예시</h4>
+        <p>한 행은 질병 ID와 표현형 ID뿐 아니라 논문·증거·빈도·큐레이션 정보를 함께 가진다. 이 부가 열들이 나중에 관계 속성이 된다.</p>
+        <pre><code>database_id  disease_name  hpo_id     reference                   evidence frequency aspect biocuration
+OMIM:222100 Diabetes...   HP:0410050 PMID:9357814;PMID:17659063 PCS      30/30     P      HPO:NicoleVasilevsky[2018-02-23]
+OMIM:222100 Diabetes...   HP:0000103 OMIM:222100                 IEA                P      HPO:iea[2009-02-17]</code></pre>
+      </article>
+    </section>
+
+    <section class="report-section s2 page-break" id="source-section-3-2" data-source-kind="section" data-source-ref="3.2">
+      <div class="report-section__kicker">교재 §3.2 · Technology Choice</div>
+      <h1>3.2 지식 그래프 기술 이해하기 — RDF와 LPG, 두 갈래 길</h1>
+      <div class="section-summary"><div class="section-summary__kicker">섹션 요약</div><div class="section-summary__body"><ul><li>RDF는 표준 의미 표현과 온톨로지에 강하다.</li><li>LPG는 개별 관계에 키–값 속성을 두고 경로를 탐색하기 쉽다.</li><li>이 사례의 선택 기준은 관계별 출처·작성자·날짜를 얼마나 직접 다룰 수 있는가이다.</li></ul></div></div>
+      <p>RDF는 주어–술어–목적어 트리플로 웹에서 지식을 표현·교환하는 W3C 표준이다. LPG는 노드와 관계 각각에 속성을 저장하고 경로를 빠르게 순회하는 모델이다. 어느 쪽이 절대적으로 우월한 것이 아니라, 이 장에서는 질병–표현형 관계마다 서로 다른 근거를 붙이고 조회해야 한다는 목표로 선택한다.</p>
+
+      <h3 id="source-section-3-2-1" data-source-kind="section" data-source-ref="3.2.1">3.2.1 RDF냐 LPG냐? 목표 중심의 논의 — 어느 쪽이 우리에게 맞나</h3>
+      <p>HPO 온톨로지는 RDF/OWL로 제공되므로 표준 개념과 계층을 표현하기에 적합하다. 반면 임상의의 화면에서는 같은 질병–표현형 쌍에도 논문, 큐레이터, 생성일이 다른 여러 주석을 비교해야 한다. 이 메타데이터를 개별 관계 안에서 바로 다루는 것이 애플리케이션 목표에 가깝기 때문에 책은 LPG를 선택한다.</p>
+
+      <figure class="report-figure" id="source-figure-3-6" data-deck-use="required" data-source-kind="figure" data-source-ref="3.6">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 6</span><span class="asset-caption__title">그림 3.6 · 표의 한 행에서 KG 간선으로의 데이터 변환. 표 안의 정보가 KG 노드와 간선의 속성을 정의하는 데 맞게 조정된다.</span></figcaption>
+        <img src="assets/figs/row-to-edge.svg" alt="HPOA 표 한 행의 질병 ID와 표현형 ID가 두 노드가 되고 작성자, 생성일, 출처가 두 노드를 잇는 관계 속성이 되는 변환">
+        <small class="asset-note">위 표 셀의 색과 NODE·REL PROPERTY 라벨을 아래 그래프의 질병 노드, 표현형 노드, 관계 속성과 대응해 읽는다. 여러 행을 적재할 때도 행마다 가진 근거 단위를 합쳐 버리지 않는 것이 경계다.</small>
+      </figure>
+
+      <aside class="source-exercise" id="source-exercise-3-2-1-1" data-source-kind="exercise" data-source-ref="3.2.1-1">
+        <h4>Exercise(연습문제) — 가장 알맞은 기술을 직접 골라보기</h4>
+        <p>질병 후보를 찾고, 같은 표현형–질병 연결의 출처와 날짜를 비교해야 한다는 요구에서 출발해 RDF와 LPG 중 어느 모델이 더 직접적인지 설명해 보자. 정답의 기술 이름보다 요구사항과 선택 근거가 중요하다.</p>
+      </aside>
+
+      <h3 id="source-section-3-2-2" data-source-kind="section" data-source-ref="3.2.2">3.2.2 RDF와 LPG로 간선 속성을 표현하기 — 네 가지 방식 비교</h3>
+      <p>네 방식은 모두 같은 질문, 즉 “OMIM:222100과 HP:0410050의 연결은 어디에서 왔고 누가 언제 만들었는가?”에 답한다. 차이는 연결 자체를 다시 설명하기 위해 어떤 구조를 추가하고 어떤 질의 언어로 꺼내는가이다.</p>
+
+      <article class="source-listing" id="source-listing-3-5" data-source-kind="listing" data-source-ref="3.5">
+        <h4>Listing 3.5 N항 관계의 예시</h4>
+        <p>익명 주석 노드를 새로 만들고 질병, 표현형, 출처, 작성자, 날짜를 그 노드에 연결한다.</p>
+        <pre><code class="language-turtle">_:Annotation rdf:type :PhenotypicAnnotation ;
+    :forDisease OMIM:222100 ;
+    :phenotypicFeature HP:0410050 ;
+    :source PMID:9357814 ;
+    :createdBy "Nicole Vasilevsky" ;
+    :creationDate "2018-02-23"^^xsd:date .</code></pre>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-6" data-source-kind="listing" data-source-ref="3.6">
+        <h4>Listing 3.6 N항 관계 맥락의 SPARQL 질의</h4>
+        <pre><code class="language-sparql">SELECT ?source ?author ?date WHERE {
+  ?annotation a :PhenotypicAnnotation ;
+    :forDisease OMIM:222100 ;
+    :phenotypicFeature HP:0410050 ;
+    :source ?source ; :createdBy ?author ; :creationDate ?date .
+}</code></pre>
+        <p>주석 노드를 매개로 조회하므로 구조는 명시적이지만, 온톨로지가 커질수록 중간 개념과 스키마 유지 비용도 커진다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-7" data-source-kind="listing" data-source-ref="3.7">
+        <h4>Listing 3.7 명명된 그래프의 예시</h4>
+        <pre><code class="language-trig">:Graph1 { OMIM:222100 :hasPhenotypicFeature HP:0410050 . }
+:Graph1 :source PMID:9357814 ;
+    :createdBy "Nicole Vasilevsky" ;
+    :creationDate "2018-02-23"^^xsd:date .</code></pre>
+        <p>트리플 묶음에 이름을 붙이고 그 이름에 메타데이터를 연결한다. 문맥과 provenance를 분리해 표현할 수 있지만 명명된 그래프 수와 갱신 단위가 늘어난다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-8" data-source-kind="listing" data-source-ref="3.8">
+        <h4>Listing 3.8 명명된 그래프 맥락에서의 SPARQL 질의</h4>
+        <pre><code class="language-sparql">SELECT ?source ?author ?date WHERE {
+  GRAPH :Graph1 { OMIM:222100 :hasPhenotypicFeature HP:0410050 . }
+  :Graph1 :source ?source ; :createdBy ?author ; :creationDate ?date .
+}</code></pre>
+        <p><code>GRAPH</code> 블록에서 원래 트리플을 찾고 기본 그래프에서 <code>:Graph1</code>의 메타데이터를 읽는다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-9" data-source-kind="listing" data-source-ref="3.9">
+        <h4>Listing 3.9 RDF-star의 예시</h4>
+        <pre><code class="language-turtle">&lt;&lt;OMIM:222100 :hasPhenotypicFeature HP:0410050&gt;&gt;
+    :source PMID:9357814 ;
+    :createdBy "Nicole Vasilevsky" ;
+    :creationDate "2018-02-23"^^xsd:date .</code></pre>
+        <p>트리플 자체를 다시 주어로 삼아 메타데이터를 붙인다. 표현은 간결하지만 실제 사용 가능성은 엔진과 명세 버전에 좌우된다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-10" data-source-kind="listing" data-source-ref="3.10">
+        <h4>Listing 3.10 RDF-star 맥락에서의 SPARQL-star 질의</h4>
+        <pre><code class="language-sparql">SELECT ?source ?author ?date {
+  &lt;&lt;OMIM:222100 :hasPhenotypicFeature HP:0410050&gt;&gt;
+    :source ?source ; :createdBy ?author ; :creationDate ?date .
+}</code></pre>
+        <p>조회 패턴도 원래 관계를 그대로 감싸므로 N항 관계보다 짧다. 다만 책의 시점에서 구현체 지원과 성능이 선택 경계였다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-11" data-source-kind="listing" data-source-ref="3.11">
+        <h4>Listing 3.11 LPG 표현의 예시</h4>
+        <pre><code class="language-cypher">(d {id: "OMIM:222100"})
+-[:HAS_PHENOTYPIC_FEATURE {
+  source: "PMID:9357814",
+  createdBy: "Nicole Vasilevsky",
+  creationDate: "2018-02-23"
+}]-&gt;(p {id: "HP:0410050"})</code></pre>
+        <p>관계 하나가 주석 한 건을 나타내고 키–값 속성을 직접 가진다. 이 조각은 패턴 표현이므로 실제 생성에는 <code>CREATE</code>나 <code>MERGE</code>가 필요하다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-12" data-source-kind="listing" data-source-ref="3.12">
+        <h4>Listing 3.12 Cypher 질의 예시</h4>
+        <pre><code class="language-cypher">MATCH (d)-[r:HAS_PHENOTYPIC_FEATURE]-&gt;(p)
+WHERE d.id = "OMIM:222100" AND p.id = "HP:0410050"
+RETURN r.source, r.createdBy, r.creationDate</code></pre>
+        <p>관계를 <code>r</code>에 바인딩하고 속성을 바로 반환한다. 이 직접성이 이 사례에서 LPG를 선택한 핵심 이유다.</p>
+      </article>
+    </section>
+
+    <section class="report-section s3 page-break" id="source-section-3-3" data-source-kind="section" data-source-ref="3.3">
+      <div class="report-section__kicker">교재 §3.3 · Build</div>
+      <h1>3.3 지식 그래프 짓기 — 온톨로지 적재와 주석 수집, 두 단계</h1>
+      <div class="section-summary"><div class="section-summary__kicker">섹션 요약</div><div class="section-summary__body"><ul><li>먼저 OWL 온톨로지를 Neo4j에 가져와 표현형 계층을 만든다.</li><li>다음으로 HPOA 행을 질병 노드와 근거가 풍부한 관계로 바꾼다.</li><li>제약·인덱스·정리 단계는 질의 전에 그래프의 계약을 고정한다.</li></ul></div></div>
+      <p>교재의 실행 환경은 Neo4j 5.20 Enterprise, APOC 5.20, Neosemantics 5.20이며 결과는 2025년 2월 HPO 스냅샷을 기준으로 한다. 명령의 의미와 순서는 그대로 학습하되, 현재 재실행 결과와 책의 숫자는 구분해야 한다.</p>
+
+      <h3 id="source-section-3-3-1" data-source-kind="section" data-source-ref="3.3.1">3.3.1 Neosemantics로 온톨로지 수집·처리하기 — 데이터베이스 준비부터 어휘 적재까지</h3>
+
+      <article class="source-listing" id="source-listing-3-13" data-source-kind="listing" data-source-ref="3.13">
+        <h4>Listing 3.13 Neo4j에 HPO 데이터베이스 만들기</h4>
+        <pre><code class="language-cypher">CREATE DATABASE hpo IF NOT EXISTS</code></pre>
+        <p>작업 대상 데이터베이스를 먼저 분리한다. Community Edition에서는 다중 데이터베이스 지원 범위가 다를 수 있으므로 실행 환경을 확인해야 한다.</p>
+      </article>
+
+      <figure class="report-figure" id="source-figure-3-7" data-source-kind="figure" data-source-ref="3.7">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 7</span><span class="asset-caption__title">그림 3.7 · 온톨로지 수집 및 처리(Ontology ingestion and processing)</span></figcaption>
+        <img src="assets/figs/ontology-ingestion.svg" alt="HPO 데이터베이스 생성, 제약과 인덱스 설정, Neosemantics 초기화, hp.owl 적재, 레이블과 HPO ID 보강으로 이어지는 처리 단계">
+        <small class="asset-note">왼쪽에서 오른쪽으로 데이터베이스 계약을 먼저 만든 뒤 OWL을 적재하고 식별자를 정렬하는 순서로 읽는다. 제약·명명 규칙·식별자 보강이 완료돼야 뒤의 Cypher 질의가 같은 이름을 안정적으로 사용할 수 있다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-14" data-source-kind="listing" data-source-ref="3.14">
+        <h4>Listing 3.14 제약조건과 인덱스 만들기</h4>
+        <pre><code class="language-cypher">CREATE CONSTRAINT n10s_unique_uri IF NOT EXISTS
+FOR (r:Resource) REQUIRE r.uri IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS
+FOR (n:Resource) REQUIRE n.id IS UNIQUE;
+CREATE INDEX disease_id IF NOT EXISTS FOR (n:HpoDisease) ON (n.id);
+CREATE INDEX phenotype_id IF NOT EXISTS FOR (n:HpoPhenotype) ON (n.id);</code></pre>
+        <p>URI와 ID 중복을 막고 질병·표현형 ID 조회를 빠르게 한다. 적재 후에 중복을 발견하는 것보다 적재 전에 실패 조건을 선언하는 편이 안전하다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-15" data-source-kind="listing" data-source-ref="3.15">
+        <h4>Listing 3.15 Neosemantics 플러그인 설정하기</h4>
+        <pre><code class="language-cypher">CALL n10s.graphconfig.init();
+CALL n10s.graphconfig.set({handleVocabUris: "IGNORE"});
+CALL n10s.graphconfig.set({applyNeo4jNaming: true});</code></pre>
+        <p>네임스페이스를 제거하고 Neo4j 관용 표기에 맞춰 관계 타입을 대문자로 바꾼다. 이 선택 때문에 이후 질의는 OWL의 <code>subClassOf</code>를 <code>SUBCLASSOF</code>로 찾는다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-16" data-source-kind="listing" data-source-ref="3.16">
+        <h4>Listing 3.16 HPO 어휘를 Neo4j에 적재하기</h4>
+        <pre><code class="language-cypher">CALL n10s.rdf.import.fetch(
+  "http://purl.obolibrary.org/obo/hp.owl",
+  "RDF/XML"
+);</code></pre>
+        <p>책의 실행 스냅샷에서는 899,558개 문장이 적재됐다. 이 값은 데이터 릴리스에 따라 달라지므로 성공 여부를 고정 숫자 하나로만 판단하면 안 된다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-17" data-source-kind="listing" data-source-ref="3.17">
+        <h4>Listing 3.17 노드 보강하기</h4>
+        <pre><code class="language-cypher">MATCH (n:Resource)
+WHERE n.uri STARTS WITH "http://purl.obolibrary.org/obo/HP"
+SET n:HpoPhenotype,
+    n.id = coalesce(
+      n.id,
+      replace(apoc.text.replace(n.uri, '(.*)obo/', ''), '_', ':')
+    )</code></pre>
+        <p>HPO URI를 가진 자원에 <code>HpoPhenotype</code> 레이블과 <code>HP:...</code> 형식 ID를 부여한다. 이후 질의가 긴 URI 대신 도메인 ID를 사용하게 된다.</p>
+      </article>
+
+      <figure class="report-figure" id="source-figure-3-8" data-source-kind="figure" data-source-ref="3.8">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 8</span><span class="asset-caption__title">그림 3.8 · LPG를 저장 모델로 삼아 그래프 데이터베이스에 적재된 HPO 온톨로지의 일부. 두 종류의 정보를 구별할 수 있다. 온톨로지 정보(왼쪽)와, 표현형 특징과 관련된 도메인 특화 정보(오른쪽)다.</span></figcaption>
+        <img src="assets/figs/ontology-subgraph.svg" alt="제1형 당뇨병 표현형을 중심으로 왼쪽에 정의와 동의어와 외부 참조가, 오른쪽에 당뇨병과 내분비계 이상으로 이어지는 계층이 연결된 LPG 구조">
+        <small class="asset-note">가운데 표현형에서 왼쪽으로는 개념을 설명하는 온톨로지 메타데이터를, 오른쪽으로는 질의 가능한 상하위 관계를 따라간다. 설명 속성과 계층 관계를 구분해야 텍스트 검색과 그래프 추론의 역할이 섞이지 않는다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-18" data-source-kind="listing" data-source-ref="3.18">
+        <h4>Listing 3.18 현재 단계의 KG 일부 보여주기</h4>
+        <pre><code class="language-cypher">MATCH path1=(n:HpoPhenotype)&lt;-[:SUBCLASSOF]-(m:HpoPhenotype)
+WHERE n.label = "Diabetes mellitus"
+WITH path1
+MATCH path2=(i:HpoPhenotype)&lt;-[:ANNOTATEDSOURCE]-(j)
+WHERE i.label IN ["Diabetes mellitus", "Type I diabetes mellitus"]
+WITH path1, path2, j
+MATCH path3=(j)-[:ANNOTATEDPROPERTY|HASSYNONYMTYPE]-()
+RETURN path1, path2, path3</code></pre>
+        <p>이 질의는 온톨로지 적재 직후의 중간 상태를 확인한다. 마지막 정리 단계 뒤에는 일부 보조 노드가 삭제되므로 같은 질의가 실패할 수 있다는 실행 순서 경계가 있다.</p>
+      </article>
+
+      <h3 id="source-section-3-3-2" data-source-kind="section" data-source-ref="3.3.2">3.3.2 주석 수집과 처리 — TSV 파일로 그래프 완성하기</h3>
+      <p>HPOA 파일의 각 행은 질병과 표현형 사이의 한 주장을 나타낸다. 질병 노드를 만들고, 표현형 노드와 관계를 연결하고, 출처·증거·빈도·큐레이션 속성을 관계에 붙인 뒤, 읽기 쉬운 설명과 URL을 보강하고 불필요한 노드를 정리한다.</p>
+
+      <figure class="report-figure" id="source-figure-3-9" data-deck-use="required" data-source-kind="figure" data-source-ref="3.9">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 9</span><span class="asset-caption__title">그림 3.9 · 지식 그래프 구축을 마무리하기 위해 주석 데이터셋을 수집·처리하는 단계</span></figcaption>
+        <img src="assets/figs/annotation-lifecycle.svg" alt="HPOA 행이 질병 노드와 표현형 관계로 변환되고 근거 속성으로 보강된 뒤 검증되는 생애주기">
+        <small class="asset-note">한 행이 하나의 감사 가능한 관계가 되는 과정을 왼쪽에서 오른쪽으로 읽는다. 식별자 매칭, 관계 생성, 근거 보강, 검증을 분리하면 실패한 주석을 단계별로 격리할 수 있다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-19" data-source-kind="listing" data-source-ref="3.19">
+        <h4>Listing 3.19 HpoDisease 노드 만들기</h4>
+        <pre><code class="language-cypher">LOAD CSV FROM 'https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/phenotype.hpoa' AS row
+FIELDTERMINATOR '\t'
+WITH row SKIP 5
+MERGE (dis:Resource:HpoDisease {id: row[0]})
+ON CREATE SET dis.label = row[1]</code></pre>
+        <p><code>MERGE</code>는 같은 질병 ID가 여러 행에 나타나도 노드 하나만 유지한다. <code>latest</code> URL은 재현 시점이 고정되지 않는다는 점을 별도로 기록해야 한다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-20" data-source-kind="listing" data-source-ref="3.20">
+        <h4>Listing 3.20 HpoDisease와 HpoPhenotype 노드 사이 관계 만들기</h4>
+        <pre><code class="language-cypher">LOAD CSV FROM 'https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/phenotype.hpoa' AS row
+FIELDTERMINATOR '\t'
+WITH row SKIP 5
+MATCH (dis:HpoDisease) WHERE dis.id = row[0]
+MATCH (phe:HpoPhenotype) WHERE phe.id = row[3]
+MERGE (dis)-[:HAS_PHENOTYPIC_FEATURE]-&gt;(phe)</code></pre>
+        <p>두 파일의 공통 ID가 결합 키다. 일치하는 표현형 노드가 없으면 그 행은 관계로 만들어지지 않으므로 입력 행 수와 생성 관계 수를 비교해야 한다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-21" data-source-kind="listing" data-source-ref="3.21">
+        <h4>Listing 3.21 연관 찾기</h4>
+        <pre><code class="language-cypher">MATCH (dis:HpoDisease)-[:HAS_PHENOTYPIC_FEATURE]-&gt;(phe:HpoPhenotype)
+RETURN dis.label AS disease, collect(phe.label) AS features
+LIMIT 3</code></pre>
+        <p>교재 인쇄본의 첫 키워드는 <code>MERGE</code>지만 조회 의도에는 <code>MATCH</code>가 맞다. 바인딩되지 않은 <code>MERGE</code>는 그래프를 변경할 수 있어 검증 노트북의 교정본을 사용한다.</p>
+      </article>
+
+      <table class="cmp-table" id="source-table-3-1" data-source-kind="table" data-source-ref="3.1">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 2</span><span class="asset-caption__title">교재 표 3.1 · HpoDisease 노드와 HpoPhenotype 노드 사이의 연관 표본</span></div></caption>
+        <thead><tr><th>HpoDisease 항목</th><th>연관된 HpoPhenotype 항목들</th></tr></thead>
+        <tbody>
+          <tr><td>Developmental and epileptic encephalopathy 96</td><td>Hydrops fetalis, Epileptic spasm, Primary microcephaly, Neonatal respiratory distress 등</td></tr>
+          <tr><td>Pseudohyperkalemia, familial, 2</td><td>Generalized muscle weakness, Hyperkalemia, Periodic paralysis, Hemolytic anemia 등</td></tr>
+          <tr><td>Immunoglobulin kappa light chain deficiency</td><td>Chronic diarrhea, Recurrent infections, Absent circulating immunoglobulin kappa chain 등</td></tr>
+        </tbody>
+      </table>
+
+      <article class="source-listing" id="source-listing-3-22" data-source-kind="listing" data-source-ref="3.22">
+        <h4>Listing 3.22 HAS_PHENOTYPIC_FEATURE 관계에 속성 추가하기</h4>
+        <pre><code class="language-cypher">LOAD CSV FROM 'https://mng.bz/qRyr' AS row
+FIELDTERMINATOR '\t'
+WITH row SKIP 5
+MATCH (dis:HpoDisease)-[rel:HAS_PHENOTYPIC_FEATURE]-&gt;(phe:HpoPhenotype)
+WHERE phe.id = row[3] AND dis.id = row[0]
+FOREACH (_ IN CASE WHEN row[4] IS NOT NULL THEN [1] ELSE [] END |
+  SET rel.source = row[4])
+FOREACH (_ IN CASE WHEN row[5] IS NOT NULL THEN [1] ELSE [] END |
+  SET rel.evidence = row[5])
+FOREACH (_ IN CASE WHEN row[7] IS NOT NULL THEN [1] ELSE [] END |
+  SET rel.frequency = row[7])</code></pre>
+        <p>원본 질의는 onset, sex, modifier, aspect, biocuration까지 같은 패턴으로 설정한다. 값이 있을 때만 갱신해 결측이 기존 속성을 덮어쓰지 않게 한다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-23" data-source-kind="listing" data-source-ref="3.23">
+        <h4>Listing 3.23 HAS_PHENOTYPIC_FEATURE에 속성을 더 추가해 풍부하게 하기</h4>
+        <pre><code class="language-cypher">CALL apoc.periodic.iterate(
+  "MATCH (dis:HpoDisease)-[rel:HAS_PHENOTYPIC_FEATURE]-&gt;(phe:HpoPhenotype)
+   RETURN rel",
+  "SET rel.createdBy = apoc.text.regexGroups(rel.biocuration, 'HPO:(\\w+)\\[')[0][1],
+       rel.creationDate = apoc.text.regexGroups(rel.biocuration, '\\[(\\d{4}-\\d{2}-\\d{2})\\]')[0][1],
+       rel.evidenceName = CASE rel.evidence
+         WHEN 'IEA' THEN 'Inferred from electronic annotation'
+         WHEN 'PCS' THEN 'Published clinical study'
+         WHEN 'TAS' THEN 'Traceable author statement' END,
+       rel.url = CASE
+         WHEN rel.source STARTS WITH 'PMID:' THEN
+           'https://pubmed.ncbi.nlm.nih.gov/' + apoc.text.replace(rel.source, '(.*)PMID:', '')
+         WHEN rel.source STARTS WITH 'OMIM:' THEN
+           'https://omim.org/entry/' + apoc.text.replace(rel.source, '(.*)OMIM:', '')
+         END",
+  {batchSize: 1000}
+)</code></pre>
+        <p>이 발췌는 관계를 유형이 있는 노드 사이에서 바인딩한 뒤, 큐레이터·날짜·증거명과 출처 URL을 파생하는 부분까지 보인다. 원본의 aspect·evidence 상세 설명 분기는 지면상 생략했으며, 파생 속성은 원본 필드와 함께 보존해야 감사가 가능하다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-24" data-source-kind="listing" data-source-ref="3.24">
+        <h4>Listing 3.24 불필요한 노드와 관계를 제거해 KG 정리하기</h4>
+        <pre><code class="language-cypher">CALL apoc.periodic.iterate(
+  "MATCH (n:Resource) RETURN id(n) AS id",
+  "MATCH (n) WHERE id(n) = id
+   AND NOT 'HpoPhenotype' IN labels(n)
+   AND NOT 'HpoDisease' IN labels(n)
+   DETACH DELETE n",
+  {batchSize: 10000}
+)</code></pre>
+        <p>질의 목적에 필요하지 않은 보조 자원을 삭제해 그래프를 단순화한다. 이 단계는 되돌리기 어렵고 Listing 3.18 같은 중간 점검 질의의 전제를 없애므로, 삭제 전 건수와 백업을 남겨야 한다.</p>
+      </article>
+    </section>
+
+    <section class="report-section s4 page-break" id="source-section-3-4" data-source-kind="section" data-source-ref="3.4">
+      <div class="report-section__kicker">교재 §3.4 · Query</div>
+      <h1>3.4 데이터 질의하기 — 임상의가 실제로 그래프에 물어보기</h1>
+      <div class="section-summary"><div class="section-summary__kicker">섹션 요약</div><div class="section-summary__body"><ul><li>먼저 알려진 질병에서 연관 표현형을 확인한다.</li><li>새로 관찰한 표현형 조합을 공유하는 질병을 찾아 일치 수로 정렬한다.</li><li>후보 순위는 진단이 아니라 추가 검토의 출발점이다.</li></ul></div></div>
+      <p>사례의 환자는 제1형 당뇨병과 함께 성장 지연, 큰 무릎, 감각신경성 청력 손상, 가려움증을 보인다. 그래프는 이 다섯 특징을 공유하는 질병을 찾아 후보를 좁힌다.</p>
+
+      <figure class="report-figure" id="source-figure-3-10" data-deck-use="required" data-source-kind="figure" data-source-ref="3.10">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 10</span><span class="asset-caption__title">그림 3.10 · 임상의 활동을 지원하기 위해 생성된 KG에 질의하기(Querying the generated KG)</span></figcaption>
+        <img src="assets/figs/query-workflow.svg" alt="환자 전자 건강 기록의 관찰을 HPO와 OMIM 식별자로 정규화하고 생성된 지식 그래프에서 연결과 근거를 조회해 임상의에게 후보와 근거를 제공하는 과정">
+        <small class="asset-note">환자 관찰에서 시작해 문맥별 식별자, 그래프 질의, 임상의 검토로 이동한다. 출력은 자동 진단이 아니라 연결 근거를 확인할 수 있는 후보와 검토 순서다.</small>
+      </figure>
+
+      <figure class="report-figure" id="source-figure-3-11" data-source-kind="figure" data-source-ref="3.11">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 11</span><span class="asset-caption__title">그림 3.11 · 제1형 당뇨병과 관련된 모든 표현형 특징을 가져오는 질의의 결과</span></figcaption>
+        <img src="assets/figs/diabetes-phenotype-star.svg" alt="가운데 제1형 인슐린 의존성 당뇨병 OMIM 222100 노드에서 당뇨병, 다뇨증, 자가면역, 다음증, 다갈증, 혈청 1,5-AG 감소, 케톤산증, 고혈당 표현형으로 직접 관계가 뻗는 결과">
+        <small class="asset-note">가운데 질병 노드에서 바깥 표현형으로 향하는 직접 관계만 따라 읽는다. 상위·하위 계층을 통해 암시되는 특징은 직접 주석과 구분해 별도의 추론 질의로 확인한다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-25" data-source-kind="listing" data-source-ref="3.25">
+        <h4>Listing 3.25 제1형 당뇨병과 연관된 표현형 특징 질의하기</h4>
+        <pre><code class="language-cypher">MATCH path=(dis:HpoDisease)-[:HAS_PHENOTYPIC_FEATURE]-&gt;(phe:HpoPhenotype)
+WHERE dis.id = "OMIM:222100"
+RETURN path</code></pre>
+        <p>알려진 질병에서 직접 연결된 표현형을 확인한다. 이 결과에 없는 새 관찰이 다음 후보 검색의 입력이 된다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-26" data-source-kind="listing" data-source-ref="3.26">
+        <h4>Listing 3.26 특정 표현형 특징과 연관된 질병 찾기</h4>
+        <pre><code class="language-cypher">MATCH (phe:HpoPhenotype)
+WHERE phe.label IN ["Growth delay", "Large knee",
+  "Sensorineural hearing impairment", "Pruritus",
+  "Type I diabetes mellitus"]
+WITH phe
+MATCH (dis:HpoDisease)-[:HAS_PHENOTYPIC_FEATURE]-&gt;(phe)
+RETURN dis.id AS disease_id, dis.label AS disease_name,
+       collect(phe.label) AS features, count(*) AS num_of_features
+ORDER BY num_of_features DESC, disease_name
+LIMIT 5</code></pre>
+        <p><strong>실행 보정:</strong> 교재 원문은 <code>MATCH path=...</code> 뒤에 <code>UNWIND dis AS nodes</code>와 <code>count(nodes)</code>를 쓰지만, <code>dis</code>는 단일 노드이므로 이 발췌는 불필요한 <code>UNWIND</code>를 제거하고 같은 그룹의 행 수를 <code>count(*)</code>로 센다. 일치 특징 수는 단순하고 설명 가능하지만 특징의 희소성, 부정 소견, 증거 질을 가중하지 않으므로 최종 진단 점수로 해석하면 안 된다.</p>
+      </article>
+
+      <table class="cmp-table" id="source-table-3-2" data-source-kind="table" data-source-ref="3.2">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 3</span><span class="asset-caption__title">교재 표 3.2 · 임상의가 식별한 표현형 특징에 매칭되는 상위 질병들</span></div></caption>
+        <thead><tr><th>질병 ID</th><th>질병명</th><th>일치 특징</th><th>개수</th></tr></thead>
+        <tbody>
+          <tr><td>OMIM:619269</td><td>Ondontochondrodysplasia 2 with hearing loss and diabetes</td><td>Growth delay, hearing impairment, pruritus, large knee, Type I diabetes</td><td>5</td></tr>
+          <tr><td>OMIM:618500</td><td>Holoprosencephaly 12 with or without pancreatic agenesis</td><td>Hearing impairment, growth delay, Type I diabetes</td><td>3</td></tr>
+          <tr><td>OMIM:614700</td><td>3-methylglutaconic aciduria, type VIII</td><td>Growth delay, hearing impairment</td><td>2</td></tr>
+          <tr><td>OMIM:616192</td><td>Alobar holoprosencephaly</td><td>Growth delay, hearing impairment</td><td>2</td></tr>
+          <tr><td>OMIM:602782</td><td>Alpha-thalassemia/mental retardation syndrome, X-linked</td><td>Growth delay, hearing impairment</td><td>2</td></tr>
+        </tbody>
+      </table>
+
+      <aside class="source-exercise" id="source-exercise-3-4-1" data-source-kind="exercise" data-source-ref="3.4-1">
+        <h4>Exercise(연습문제) — 관계 속성까지 함께 조회하기</h4>
+        <p>Listing 3.26을 확장해 <code>evidenceName</code>, <code>evidenceDescription</code>, <code>source</code>, <code>url</code>을 함께 반환해 보자. 같은 일치 수라도 어떤 근거에서 왔는지 비교할 수 있어야 한다.</p>
+      </aside>
+    </section>
+
+    <section class="report-section s5 page-break" id="source-section-3-5" data-source-kind="section" data-source-ref="3.5">
+      <div class="report-section__kicker">교재 §3.5 · Reasoning</div>
+      <h1>3.5 KG 위에서 추론하기 — 명시되지 않은 사실을 논리로 끌어내기</h1>
+      <div class="section-summary"><div class="section-summary__kicker">섹션 요약</div><div class="section-summary__body"><ul><li>직접 연결만 보면 더 구체적인 하위 표현형을 놓친다.</li><li><code>SUBCLASSOF</code> 계층을 따라 상위 범주에 속하는 하위 개념을 찾는다.</li><li>추론 결과는 온톨로지 버전과 탐색 깊이에 의존한다.</li></ul></div></div>
+      <p>“내분비계 이상과 관련된 질병”을 찾을 때, 어떤 질병이 갑상선이나 혈당과 관련된 더 구체적인 표현형에만 연결되어 있다면 직접 연결 질의로는 빠질 수 있다. HPO 계층은 이 하위 개념들을 상위 범주에 포함시켜 암묵적 연결을 찾게 한다.</p>
+
+      <figure class="report-figure" id="fig-hierarchical-inference" data-deck-use="required">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 12</span><span class="asset-caption__title">직접 주석에서 HPO 계층 추론으로 범위를 넓히는 과정</span></figcaption>
+        <img src="assets/figs/hierarchical-inference.svg" alt="하위 표현형에서 내분비계 이상 상위 범주로 향하는 SUBCLASSOF 경로와 질병 주석의 추론 포함 구조">
+        <small class="asset-note">왼쪽의 질병–표현형 직접 주석에서 시작해 <code>SUBCLASSOF</code> 경로를 위로 따라가면 상위 범주 질의가 하위 표현형에 연결된 질병을 포함한다. 이 포함은 새 임상 사실을 저장했다는 뜻이 아니며, 결과에는 원 주석과 전체 계층 경로, 탐색 깊이를 함께 제시해야 한다.</small>
+      </figure>
+
+      <article class="source-listing" id="source-listing-3-27" data-source-kind="listing" data-source-ref="3.27">
+        <h4>Listing 3.27 내분비계 이상의 하위 클래스 찾기</h4>
+        <pre><code class="language-cypher">MATCH (p:HpoPhenotype)&lt;-[:SUBCLASSOF*1..3]-(n:HpoPhenotype)
+WHERE p.id = "HP:0000818"
+RETURN p, n</code></pre>
+        <p><code>*1..3</code>은 하위 클래스 관계를 한 단계에서 세 단계까지 따라간다. 깊이를 제한하면 비용과 의미 범위를 통제할 수 있지만 더 깊은 관련 개념은 빠질 수 있다.</p>
+      </article>
+
+      <article class="source-listing" id="source-listing-3-28" data-source-kind="listing" data-source-ref="3.28">
+        <h4>Listing 3.28 하위 클래스 이상들과 관련된 표현형 특징 찾기</h4>
+        <pre><code class="language-cypher">MATCH (cat:HpoPhenotype {label: "Abnormality of the endocrine system"})
+CALL n10s.inference.nodesInCategory(cat, {
+  inCatRel: "HAS_PHENOTYPIC_FEATURE",
+  subCatRel: "SUBCLASSOF"
+}) YIELD node AS dis
+MATCH (dis)-[:HAS_PHENOTYPIC_FEATURE]-&gt;(phe:HpoPhenotype)
+RETURN dis.label AS disease, collect(DISTINCT phe.label) AS features
+ORDER BY size(features), disease</code></pre>
+        <p>질병이 상위 범주에 직접 연결되지 않아도 하위 표현형 연결을 통해 범주 안에 포함한다. 반환된 질병과 특징은 추론 경로를 함께 확인해야 설명 가능하다.</p>
+      </article>
+
+      <table class="cmp-table" id="source-table-3-3" data-source-kind="table" data-source-ref="3.3">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 4</span><span class="asset-caption__title">교재 표 3.3 · "내분비계 이상(Abnormality of the endocrine system)" 표현형 특징에 암묵적으로 연결된 주석 결과의 일부. 이 표현형 특징의 직접 또는 추론된 하위 클래스인 표현형 특징은 굵게 강조되어 있다.</span></div></caption>
+        <thead><tr><th>질병</th><th>표현형 특징</th></tr></thead>
+        <tbody>
+          <tr><td>Congenital atransferrinemia</td><td>Anemia, Abnormality of the pancreas, infections, arthritis, <strong>Hypothyroidism</strong></td></tr>
+          <tr><td>Deafness, autosomal recessive 4</td><td>Enlarged vestibular aqueduct, congenital onset, <strong>Goiter</strong>, hearing impairment</td></tr>
+          <tr><td>Diabetes mellitus, transient neonatal, 1</td><td><strong>Transient neonatal diabetes mellitus</strong>, dehydration, <strong>Hyperglycemia</strong>, growth retardation</td></tr>
+          <tr><td>Edema, familial idiopathic, prepubertal</td><td><strong>Diabetes mellitus</strong>, irritability, vomiting, edema</td></tr>
+          <tr><td>Familial dysalbuminemic hyperthyroxinemia</td><td><strong>Abnormal circulating free T4 concentration</strong>, <strong>Abnormal thyroid-stimulating hormone level</strong>, <strong>Euthyroid hyperthyroxinemia</strong></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout--insight"><span class="callout__kicker">해석 경계</span><div class="callout__body"><p>계층 추론은 저장된 지식의 범위를 넓히지만 정확도를 자동으로 보장하지 않는다. 온톨로지 릴리스, 탐색 깊이, 관계 방향, 직접 사실과 추론 사실의 구분을 결과와 함께 기록해야 한다.</p></div></div>
+    </section>
+
+    <section class="report-section s6 page-break" id="supplement">
+      <div class="report-section__kicker">AIML Quant 보충 · Reproduction &amp; Safety</div>
+      <h1>보충 A. 같은 코드라도 데이터와 환경이 달라지면 결과가 달라진다</h1>
+      <div class="section-summary"><div class="section-summary__kicker">재현성·안전 요약</div><div class="section-summary__body"><ul><li>교재 숫자는 2025년 2월 HPO와 Neo4j 5.20 환경의 스냅샷이다.</li><li>2026년 재실행에서는 적재 문장 수와 후보 순위, 계층 결과가 달라졌다.</li><li>임상 후보는 근거·버전·경로를 함께 보여주고 사람이 최종 검토해야 한다.</li></ul></div></div>
+      <p>학습 노트북 <a href="../../../../materials/?p=aiml/active/knowledge-graphs-and-llms-in-action/chapter_03_create_your_first_knowledge_graph_from_ontologies/src/ch03/03_chapter_guide.ipynb" rel="noreferrer" target="_blank"><code>03_chapter_guide.ipynb</code></a>을 Neo4j 5.26.28과 2026-06-23 HPOA 스냅샷에서 실행하면 적재 문장 수는 899,558이 아니라 926,450으로 나온다. Listing 3.26의 1위는 유지되지만 2위 이하는 바뀌고, 교재 표 3.3의 일부 계층 관계도 현재 온톨로지에서 달라진다.</p>
+
+      <figure class="report-figure" id="fig-validation-gates" data-deck-use="required">
+        <figcaption class="asset-caption asset-caption--figure"><span class="asset-caption__chip">그림 13</span><span class="asset-caption__title">HPO 기반 후보 생성의 네 검증 게이트</span></figcaption>
+        <img src="assets/figs/validation-gates.svg" alt="식별자와 입력, 적재 보존성, 질의 재현성, 임상 검토의 네 검증 게이트">
+        <small class="asset-note">후보 질병은 네 게이트를 통과한 뒤에도 진단이 아니라 검토 순서다. 식별자, 적재 보존성, 질의 재현성, 임상 검토 중 하나라도 실패하면 자동 확정으로 넘기지 않는다.</small>
+      </figure>
+
+      <table class="cmp-table" id="table-rerun">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 5</span><span class="asset-caption__title">교재 실행 스냅샷과 재실행 결과를 구분하는 항목</span></div></caption>
+        <thead><tr><th>항목</th><th>교재</th><th>재실행</th><th>학습 포인트</th></tr></thead>
+        <tbody>
+          <tr><td>OWL 적재 문장</td><td>899,558</td><td>926,450</td><td>릴리스와 체크섬을 고정한다.</td></tr>
+          <tr><td>질병 후보 순위</td><td>표 3.2</td><td>1위 유지, 하위 변동</td><td>결과에 데이터 기준일을 붙인다.</td></tr>
+          <tr><td>계층 추론</td><td>표 3.3</td><td>일부 하위 관계 변동</td><td>온톨로지 버전을 결과 계약에 포함한다.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="supplement-boundary">A.1 임상 의사결정 지원의 경계</h3>
+      <p>이 사례는 HPO 데이터에서 질의와 추론을 배우는 개념 증명이다. 실제 환자 EHR의 동의·권한·비식별화, 부정 표현형, 발현 시점, 환자군별 빈도, 규제와 책임 배분은 다루지 않는다. 따라서 결과는 “진단”이 아니라 <strong>근거를 확인할 후보 목록</strong>으로 표현해야 한다.</p>
+      <div class="callout--hero"><span class="callout__kicker">Safety Boundary</span><span class="callout__body">그래프가 반환한 질병명은 정답이 아니다. 원 주석, 추론 경로, 데이터와 온톨로지 버전을 함께 보여주고 최종 판단은 임상의와 검증 절차에 남긴다.</span></div>
+    </section>
+
+    <section class="report-appendix s-glossary page-break" id="glossary">
+      <div class="report-section__kicker">부록 A · 핵심 용어</div>
+      <h1>핵심 용어</h1>
+      <table class="cmp-table" id="table-glossary">
+        <caption class="cmp-table__caption asset-caption asset-caption--table"><div class="asset-caption__inner"><span class="asset-caption__chip">표 6</span><span class="asset-caption__title">Chapter 3 용어 사전</span></div></caption>
+        <thead><tr><th>용어</th><th>뜻</th></tr></thead>
+        <tbody>
+          <tr><td>온톨로지</td><td>도메인의 표준 개념·식별자·속성·범주·관계를 명시한 참조 어휘와 스키마.</td></tr>
+          <tr><td>HPO</td><td>인간 표현형 이상을 표준화하고 계층화하며 질병 연관 주석을 제공하는 Human Phenotype Ontology.</td></tr>
+          <tr><td>RDF</td><td>주어–술어–목적어 트리플로 지식을 표현·교환하는 W3C 표준 데이터 모델.</td></tr>
+          <tr><td>LPG</td><td>레이블이 있는 노드와 개별 관계에 키–값 속성을 둘 수 있는 그래프 모델.</td></tr>
+          <tr><td>주석</td><td>특정 질병–표현형 연관과 그 출처·증거·빈도·큐레이션 정보를 묶은 주장.</td></tr>
+          <tr><td>provenance</td><td>주장이 어느 출처·작성자·시점·처리 과정에서 왔는지를 추적하는 정보.</td></tr>
+          <tr><td>추론</td><td>저장된 사실과 온톨로지 규칙·계층에서 명시되지 않은 포함 관계를 도출하는 과정.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="report-appendix s-refs page-break" id="references">
+      <div class="report-section__kicker">부록 B · 참고 자료</div>
+      <h1>참고 자료와 적용 범위</h1>
+      <ol class="references" style="list-style:none;padding:0;">
+        <li style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border);"><span style="min-width:36px;font-weight:800;color:var(--brand-primary);">[1]</span><span>Alessandro Negro et al., <em>Knowledge Graphs and LLMs in Action</em>, Chapter 3 “Create Your First Knowledge Graph from Ontologies,” Manning, pp. 37–64. HPO 온톨로지와 주석 데이터로 첫 지식 그래프를 구축하고 질의하는 장.</span></li>
+        <li style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border);"><span style="min-width:36px;font-weight:800;color:var(--brand-primary);">[2]</span><span>참가자용 원자료: <a href="../../../../materials/?p=aiml/active/knowledge-graphs-and-llms-in-action/chapter_03_create_your_first_knowledge_graph_from_ontologies/03_create_your_first_knowledge_graph_from_ontologies_ko_explained.md" rel="noreferrer" target="_blank">한국어 해설판</a>, <a href="../../../../materials/?p=aiml/active/knowledge-graphs-and-llms-in-action/chapter_03_create_your_first_knowledge_graph_from_ontologies/03_create_your_first_knowledge_graph_from_ontologies.md" rel="noreferrer" target="_blank">원문 마크다운</a>.</span></li>
+        <li style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border);"><span style="min-width:36px;font-weight:800;color:var(--brand-primary);">[3]</span><span><a href="https://hpo.jax.org/" rel="noreferrer" target="_blank">Human Phenotype Ontology</a> 공식 포털, <a href="https://purl.obolibrary.org/obo/hp.owl" rel="noreferrer" target="_blank">hp.owl</a>, HPOA release data. <code>latest</code> 배포는 재현 시점을 고정하지 않으므로 실무에서는 릴리스와 체크섬을 기록한다.</span></li>
+        <li style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border);"><span style="min-width:36px;font-weight:800;color:var(--brand-primary);">[4]</span><span>재실행 근거: <a href="../../../../materials/?p=aiml/active/knowledge-graphs-and-llms-in-action/chapter_03_create_your_first_knowledge_graph_from_ontologies/src/ch03/03_chapter_guide.ipynb" rel="noreferrer" target="_blank"><code>03_chapter_guide.ipynb</code></a>. Neo4j 5.26.28, n10s·APOC·GDS, HPOA 2026-06-23 조건의 실행 기록이다.</span></li>
+        <li style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border);"><span style="min-width:36px;font-weight:800;color:var(--brand-primary);">[5]</span><span>그림 1–12는 원자료의 관계와 처리 순서를 설명하는 독립 SVG다. 그림 3.1–3.11은 각 좌표의 단계·상태·결과 차이를 보존하도록 서로 다른 도형으로 구성했다.</span></li>
+      </ol>
+      <div class="report-jump-links"><a href="./">발표자료</a><a href="../../">회차 목록</a><a href="#summary">문서 처음</a></div>
+    </section>
+  </article>
+  <script src="assets/report.js"></script>
+  <script defer src="assets/katex/katex.min.js"></script>
+  <script defer src="assets/katex/auto-render.min.js"></script>
+  <script defer src="assets/katex/katex-init.js"></script>
+</body>
+</html>

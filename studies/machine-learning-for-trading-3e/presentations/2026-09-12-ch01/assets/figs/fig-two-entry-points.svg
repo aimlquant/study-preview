@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 530" role="img" aria-labelledby="t d">
+  <style>
+    .t{font-family:'Noto Sans CJK KR','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',NanumGothic,Inter,system-ui,sans-serif}
+    .an-s{text-anchor:start} .an-m{text-anchor:middle} .an-e{text-anchor:end}
+    .h{font-size:16px;font-weight:900;fill:#0F0F10}
+    .b{font-size:14px;font-weight:800;fill:#0F0F10}
+    .s{font-size:13px;font-weight:700;fill:#0F0F10}
+    .xs{font-size:12px;font-weight:700;fill:#475569}
+    .num{font-size:15px;font-weight:900;fill:#0F2C59}
+    .numw{font-size:15px;font-weight:900;fill:#FFFFFF}
+    .numd{font-size:15px;font-weight:900;fill:#0F0F10}
+    .inv{fill:#FFFFFF}
+    .box{fill:#FFFFFF;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxa{fill:#E8EDF5;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxd{fill:#0F2C59;stroke:#0F2C59;stroke-width:2;rx:10}
+    .chip{fill:#0F2C59;stroke:none;rx:9}
+    .band{fill:#F1F5F9;stroke:#CBD5E1;stroke-width:1.5;rx:14}
+    .conn{fill:none;stroke:#0F2C59;stroke-width:2.2}
+    .dash{fill:none;stroke:#64748B;stroke-width:2;stroke-dasharray:7 5}
+    .axis{fill:none;stroke:#94A3B8;stroke-width:1.5}
+    .grid{fill:none;stroke:#E2E8F0;stroke-width:1}
+    .bar1{fill:#0F2C59}
+    .bar2{fill:#9AB0CC}
+  </style>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0F2C59"/></marker><marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker></defs>
+  <title id="t">연구 루프의 두 출발점과 공유 안전장치 다섯 가지</title>
+  <desc id="d">왼쪽 예측 우선 경로는 예측 대상과 폭넓은 특성에서 고용량 모델과 경제성 평가를 거쳐 예측에서 거래로 향하고, 오른쪽 메커니즘 우선 경로는 경제적 근거에서 탐색 공간 제한과 모니터링 트리거를 거쳐 구조에서 검정으로 향한다. 두 경로는 의사결정 시점 정확성, 시간 인식 검증, 다중 검정 통제, 현실적인 백테스트, 드리프트 모니터링이라는 다섯 안전장치를 공유하고, 통과 뒤 거래 전략과 측정 산출물로 갈라진다.</desc>
+  <rect x="0" y="0" width="960" height="530" fill="#FAFAF9"/>
+  <rect class="boxd" x="54" y="40" width="380" height="46"/>
+  <text class="t b an-m inv" x="244.0" y="68">예측 우선 — 복잡성 허용</text>
+  <rect class="boxd" x="526" y="40" width="380" height="46"/>
+  <text class="t b an-m inv" x="716.0" y="68">메커니즘 우선 — 구조 부여</text>
+  <rect class="boxa" x="54" y="104" width="380" height="48"/>
+  <text class="t b an-m" x="244.0" y="133">예측 대상 · 폭넓은 특성 집합</text>
+  <rect class="boxa" x="526" y="104" width="380" height="48"/>
+  <text class="t b an-m" x="716.0" y="133">경제적 근거로 출발</text>
+  <path class="conn" marker-end="url(#ar)" d="M244 152 V166"/>
+  <path class="conn" marker-end="url(#ar)" d="M716 152 V166"/>
+  <rect class="boxa" x="54" y="166" width="380" height="48"/>
+  <text class="t b an-m" x="244.0" y="195">고용량 모델 허용</text>
+  <rect class="boxa" x="526" y="166" width="380" height="48"/>
+  <text class="t b an-m" x="716.0" y="195">탐색 공간 제한</text>
+  <path class="conn" marker-end="url(#ar)" d="M244 214 V228"/>
+  <path class="conn" marker-end="url(#ar)" d="M716 214 V228"/>
+  <rect class="boxa" x="54" y="228" width="380" height="48"/>
+  <text class="t b an-m" x="244.0" y="257">경제적 가치로 평가</text>
+  <rect class="boxa" x="526" y="228" width="380" height="48"/>
+  <text class="t b an-m" x="716.0" y="257">모니터링 트리거 정의</text>
+  <rect class="box" x="54" y="292" width="380" height="40"/>
+  <text class="t b an-m" x="244.0" y="317">예측 → 거래</text>
+  <rect class="box" x="526" y="292" width="380" height="40"/>
+  <text class="t b an-m" x="716.0" y="317">구조 → 검정</text>
+  <path class="conn" marker-end="url(#ar)" d="M244 276 V292"/>
+  <path class="conn" marker-end="url(#ar)" d="M716 276 V292"/>
+  <path class="conn" marker-end="url(#ar)" d="M244 332 V352 H480 V370"/>
+  <path class="conn" marker-end="url(#ar)" d="M716 332 V352 H480 V370"/>
+  <rect class="band" x="54" y="370" width="852" height="70"/>
+  <rect class="box" x="66" y="384" width="157" height="42"/>
+  <text class="t s an-m" x="144.5" y="410">① 의사결정 시점 정확성</text>
+  <rect class="box" x="235" y="384" width="157" height="42"/>
+  <text class="t s an-m" x="313.5" y="410">② 시간 인식 검증</text>
+  <rect class="box" x="404" y="384" width="157" height="42"/>
+  <text class="t s an-m" x="482.5" y="410">③ 다중 검정 통제</text>
+  <rect class="box" x="573" y="384" width="157" height="42"/>
+  <text class="t s an-m" x="651.5" y="410">④ 현실적인 백테스트</text>
+  <rect class="box" x="742" y="384" width="157" height="42"/>
+  <text class="t s an-m" x="820.5" y="410">⑤ 드리프트 모니터링</text>
+  <path class="conn" marker-end="url(#ar)" d="M480 440 V462"/>
+  <rect class="boxa" x="180" y="462" width="260" height="44"/>
+  <text class="t b an-m" x="310.0" y="489">거래 전략 (실시간 신호)</text>
+  <rect class="boxa" x="520" y="462" width="260" height="44"/>
+  <text class="t b an-m" x="650.0" y="489">측정 산출물 (19장)</text>
+  <path class="conn" marker-end="url(#ar)" d="M480 452 H310 V462"/>
+  <path class="conn" marker-end="url(#ar)" d="M480 452 H650 V462"/>
+</svg>

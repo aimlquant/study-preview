@@ -1,0 +1,65 @@
+study_id = "kg-llm-in-action-2026"
+session_id = "2026-09-05-ch08"
+title = "Chapter 8. 오픈 LLM과 도메인 온톨로지를 활용한 개체명 명확화(NED)"
+date = "2026-09-05"
+presenters = ["태호"]
+chapters = ["Chapter 8"]
+template = "study-deck-v1"
+report_template = "study-report-v1"
+workflow = "raw-report-deck-v1"
+report_source = "report.html"
+artifacts = ["report", "slides"]
+# 해설판은 절 번호가 인쇄돼 있어 기본 outline 스타일을 쓴다.
+# (ordered-headings-v1은 말미 H2 '핵심 용어 해설'/'References'가 8.1/8.2 좌표를 덮어써 부적합)
+source_fidelity = "source-structure-v1"
+source_material = "materials/aiml/active/knowledge-graphs-and-llms-in-action/chapter_08_ned_with_open_llms_and_domain_ontologies/08_ned_with_open_llms_and_domain_ontologies_ko_explained.md"
+
+[[retained_alternate_html]]
+path = "index-from-update.html"
+reason = "리포트 A/B 비교 실험에서 통합 해설판 기반 리포트로 파생한 덱 실험본. 그 리포트가 2026-09-04 정식 report.html로 채택되어 참조를 report.html로 갱신함"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 검토용 대안 덱이다"
+
+[[retained_alternate_html]]
+path = "index_codex.html"
+reason = "정식 report.html의 모든 본문·학습 보조 예시·표·필수 시각 자료·코드와 기록된 출력을 주제별 147장으로 분할한 Codex 대안 덱"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 비교·검토용 대안 덱이다"
+
+[[retained_alternate_html]]
+path = "index - 복사본.html"
+reason = "사용자가 별도로 보존한 기존 대안 덱 스냅샷이며 정식 index.html과 내용이 다르다"
+canonical_entry = "정식 발표자료 진입점은 index.html이며 이 파일은 공개 링크에 노출하지 않는 보존 복사본이다"
+
+[[retained_alternate_html]]
+path = "report - 복사본.html"
+reason = "사용자가 별도로 보존한 report.html의 바이트 동일 스냅샷"
+canonical_entry = "정식 리포트 진입점은 report.html이며 이 파일은 공개 링크에 노출하지 않는 보존 복사본이다"
+
+[[retained_alternate_html]]
+path = "index_zip.html"
+reason = "덱 압축 규칙 실험본 — 좌표와 각 좌표의 핵심 주장은 전수 포함하되 코드 전문·상세 해설은 리포트에 맡기는 규칙을 시험 (2026-09-05)"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 검토용 실험 덱이다"
+
+[[retained_alternate_html]]
+path = "index_appendix.html"
+reason = "83장 덱과 동일한 구조·순서·번호를 유지하되 부연설명 성격의 슬라이드에 상단 배지를 표시한 검토본 (2026-09-05)"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 검토용 표시본이다"
+
+[[retained_alternate_html]]
+path = "script.html"
+reason = "발표자용 스크립트 — 장별 전달 내용과 슬라이드 간 관계, 슬라이드별 발표 스크립트를 담은 준비 도구 (2026-09-05)"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 발표자 준비용으로 링크에 노출하지 않는다"
+
+[[retained_alternate_html]]
+path = "index - 83장원본.html"
+reason = "부연 배지 적용 전 83장 덱 원본 백업 (사용자 보관본)"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 백업본이다"
+
+[[retained_alternate_html]]
+path = "index_20260911.html"
+reason = "2026-09-09 파이프라인 변경과 2026-09-10 덱 템플릿 복구가 실제로 반영되는지 확인하려고, 통합 해설판 08_..._ko_explained_update.md를 원자료로 삼아 복구된 study-deck-v1 포맷으로 새로 만든 검증용 덱 (39장, 2026-09-11)"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 지침 검증용 덱이다"
+
+[[retained_alternate_html]]
+path = "index_0911_test.html"
+reason = "복원된 2026-09-05 지침(내용 전수 포함, 압축 금지, 장수는 결과로 결정)을 따라 통합 해설판 08_..._ko_explained_update.md에서 다시 만든 검증용 덱 (107장, 2026-09-11). 앞서 만든 index_20260911.html이 압축 지시를 따라 39장으로 줄어든 것을 바로잡았고, 코드 슬라이드를 DESIGN.md 77·78·114행의 code-layout(코드+설명 패널) 계약에 맞춰 정식 index.html과 같은 회차 스타일 스냅샷을 함께 싣는다"
+canonical_entry = "정식 진입점은 index.html이며 이 파일은 링크로 노출하지 않는 지침 검증용 덱이다"

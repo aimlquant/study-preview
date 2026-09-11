@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">환자 여정 지도</title><desc id="desc">임상 사건은 시간, 경험, 표준 진료 경로 속에서 해석된다</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><path class="axis" d="M95 260 L860 260"/><circle class="soft" cx="95" cy="260" r="44"/><text class="t s" x="95" y="266" text-anchor="middle" fill="#64748b">Symptoms</text><path class="thin" d="M95 304 L95 382"/><circle class="soft" cx="270" cy="260" r="44"/><text class="t s" x="270" y="266" text-anchor="middle" fill="#64748b">Diagnosis</text><path class="thin" d="M270 304 L270 382"/><circle class="soft" cx="445" cy="260" r="44"/><text class="t s" x="445" y="266" text-anchor="middle" fill="#64748b">Treatment</text><path class="thin" d="M445 304 L445 382"/><circle class="soft" cx="620" cy="260" r="44"/><text class="t s" x="620" y="266" text-anchor="middle" fill="#64748b">Monitoring</text><path class="thin" d="M620 304 L620 382"/><circle class="soft" cx="795" cy="260" r="44"/><text class="t s" x="795" y="266" text-anchor="middle" fill="#64748b">Outcome</text><path class="thin" d="M795 304 L795 382"/><rect class="plain" x="60" y="385" width="250" height="78" rx="12"/><text class="t m" x="78" y="412" text-anchor="start" fill="#0f172a">EHR</text><text class="t xs" x="78" y="434" text-anchor="start" fill="#475569">임상의 기록 · 검사 · 치료 반응</text><rect class="warn" x="355" y="385" width="250" height="78" rx="12"/><text class="t m" x="373" y="412" text-anchor="start" fill="#0f172a">Privacy layer</text><text class="t xs" x="373" y="434" text-anchor="start" fill="#475569">원자료 대신 통계·익명화·동의</text><rect class="dark" x="650" y="385" width="250" height="78" rx="12"/><text class="t m" x="668" y="412" text-anchor="start" fill="#fff">Clinical KG</text><text class="t xs" x="668" y="434" text-anchor="start" fill="#e2e8f0">환자 맥락 + 오믹스 + 지식</text><path class="line" d="M310 424 L355 424" marker-end="url(#arrow)"/><path class="line" d="M605 424 L650 424" marker-end="url(#arrow)"/><text class="t m" x="480" y="95" text-anchor="middle" fill="#0f172a">임상 경로는 표준 진료, 환자 여정은 실제 경험의 시간 흐름을 본다</text></svg>

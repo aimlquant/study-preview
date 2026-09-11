@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" role="img" aria-labelledby="t d">
+  <style>
+    .t{font-family:'Noto Sans CJK KR','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',NanumGothic,Inter,system-ui,sans-serif}
+    .an-s{text-anchor:start} .an-m{text-anchor:middle} .an-e{text-anchor:end}
+    .h{font-size:16px;font-weight:900;fill:#0F0F10}
+    .b{font-size:14px;font-weight:800;fill:#0F0F10}
+    .s{font-size:13px;font-weight:700;fill:#0F0F10}
+    .xs{font-size:12px;font-weight:700;fill:#475569}
+    .num{font-size:15px;font-weight:900;fill:#0F2C59}
+    .numw{font-size:15px;font-weight:900;fill:#FFFFFF}
+    .numd{font-size:15px;font-weight:900;fill:#0F0F10}
+    .inv{fill:#FFFFFF}
+    .box{fill:#FFFFFF;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxa{fill:#E8EDF5;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxd{fill:#0F2C59;stroke:#0F2C59;stroke-width:2;rx:10}
+    .chip{fill:#0F2C59;stroke:none;rx:9}
+    .band{fill:#F1F5F9;stroke:#CBD5E1;stroke-width:1.5;rx:14}
+    .conn{fill:none;stroke:#0F2C59;stroke-width:2.2}
+    .dash{fill:none;stroke:#64748B;stroke-width:2;stroke-dasharray:7 5}
+    .axis{fill:none;stroke:#94A3B8;stroke-width:1.5}
+    .grid{fill:none;stroke:#E2E8F0;stroke-width:1}
+    .bar1{fill:#0F2C59}
+    .bar2{fill:#9AB0CC}
+  </style>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0F2C59"/></marker><marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker></defs>
+  <title id="t">CRISP-ML(Q) 여섯 단계와 단계 사이 QA 점검</title>
+  <desc id="d">비즈니스·데이터 이해에서 모니터링·유지관리까지 여섯 단계가 순환하고 각 단계 사이에 QA 점검이 놓인다. 모니터링 결과는 업데이트·재학습으로 모델링에, 더 근본적인 문제는 범위 재정의로 첫 단계에 되돌아간다.</desc>
+  <rect x="0" y="0" width="960" height="400" fill="#FAFAF9"/>
+  <rect class="boxa" x="50" y="78" width="250" height="86"/>
+  <text class="t b an-m" x="175.0" y="117">① 비즈니스·데이터 이해</text>
+  <text class="t b an-m" x="175.0" y="135">범위 · 성공 기준 · 구현 가능성</text>
+  <rect class="boxa" x="355" y="78" width="250" height="86"/>
+  <text class="t b an-m" x="480.0" y="117">② 데이터 준비</text>
+  <text class="t b an-m" x="480.0" y="135">수집 · 정제 · 검증 · 특성 생성</text>
+  <rect class="boxa" x="660" y="78" width="250" height="86"/>
+  <text class="t b an-m" x="785.0" y="117">③ 모델링</text>
+  <text class="t b an-m" x="785.0" y="135">학습 · 튜닝 · 재현성</text>
+  <rect class="box" x="50" y="268" width="250" height="86"/>
+  <text class="t b an-m" x="175.0" y="307">⑥ 모니터링·유지관리</text>
+  <text class="t b an-m" x="175.0" y="325">드리프트 탐지 · 업데이트</text>
+  <rect class="box" x="355" y="268" width="250" height="86"/>
+  <text class="t b an-m" x="480.0" y="307">⑤ 배포</text>
+  <text class="t b an-m" x="480.0" y="325">통합 · 출시 · 롤백 경로</text>
+  <rect class="box" x="660" y="268" width="250" height="86"/>
+  <text class="t b an-m" x="785.0" y="307">④ 평가</text>
+  <text class="t b an-m" x="785.0" y="325">검증 · 테스트 · 강건성</text>
+  <path class="conn" marker-end="url(#ar)" d="M300 121.0 H355"/>
+  <rect class="chip" x="308" y="108.0" width="40" height="26"/>
+  <text class="t xs an-m inv" x="328.0" y="125.0">QA</text>
+  <path class="conn" marker-end="url(#ar)" d="M605 121.0 H660"/>
+  <rect class="chip" x="613" y="108.0" width="40" height="26"/>
+  <text class="t xs an-m inv" x="633.0" y="125.0">QA</text>
+  <path class="conn" marker-end="url(#ar)" d="M660 311.0 H605"/>
+  <rect class="chip" x="612" y="298.0" width="40" height="26"/>
+  <text class="t xs an-m inv" x="632.0" y="315.0">QA</text>
+  <path class="conn" marker-end="url(#ar)" d="M355 311.0 H300"/>
+  <rect class="chip" x="307" y="298.0" width="40" height="26"/>
+  <text class="t xs an-m inv" x="327.0" y="315.0">QA</text>
+  <path class="conn" marker-end="url(#ar)" d="M785.0 164 V268"/>
+  <rect class="chip" x="765.0" y="172" width="40" height="26"/>
+  <text class="t xs an-m inv" x="785.0" y="189.0">QA</text>
+  <path class="dash" marker-end="url(#arg)" d="M175.0 268 V220 H620 V121.0 H660"/>
+  <rect class="band" x="340" y="204" width="200" height="32"/>
+  <text class="t s an-m" x="440.0" y="225">업데이트·재학습</text>
+  <path class="dash" marker-end="url(#arg)" d="M50 311.0 H22 V121.0 H50"/>
+  <rect class="band" x="28" y="24" width="180" height="32"/>
+  <text class="t s an-m" x="118.0" y="45">범위 재정의</text>
+</svg>

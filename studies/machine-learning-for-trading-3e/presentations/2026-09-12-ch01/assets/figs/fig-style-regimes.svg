@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="t d">
+  <style>
+    .t{font-family:'Noto Sans CJK KR','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',NanumGothic,Inter,system-ui,sans-serif}
+    .an-s{text-anchor:start} .an-m{text-anchor:middle} .an-e{text-anchor:end}
+    .h{font-size:16px;font-weight:900;fill:#0F0F10}
+    .b{font-size:14px;font-weight:800;fill:#0F0F10}
+    .s{font-size:13px;font-weight:700;fill:#0F0F10}
+    .xs{font-size:12px;font-weight:700;fill:#475569}
+    .num{font-size:15px;font-weight:900;fill:#0F2C59}
+    .numw{font-size:15px;font-weight:900;fill:#FFFFFF}
+    .numd{font-size:15px;font-weight:900;fill:#0F0F10}
+    .inv{fill:#FFFFFF}
+    .box{fill:#FFFFFF;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxa{fill:#E8EDF5;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxd{fill:#0F2C59;stroke:#0F2C59;stroke-width:2;rx:10}
+    .chip{fill:#0F2C59;stroke:none;rx:9}
+    .band{fill:#F1F5F9;stroke:#CBD5E1;stroke-width:1.5;rx:14}
+    .conn{fill:none;stroke:#0F2C59;stroke-width:2.2}
+    .dash{fill:none;stroke:#64748B;stroke-width:2;stroke-dasharray:7 5}
+    .axis{fill:none;stroke:#94A3B8;stroke-width:1.5}
+    .grid{fill:none;stroke:#E2E8F0;stroke-width:1}
+    .bar1{fill:#0F2C59}
+    .bar2{fill:#9AB0CC}
+  </style>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0F2C59"/></marker><marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker></defs>
+  <title id="t">국면별 주식시장 변동성과 위험 지표, 1927–2024</title>
+  <desc id="d">스타일 국면을 리스크 온과 리스크 오프 둘로 나눈 뒤 12개월 이동 변동성 9.8퍼센트 대 12.7퍼센트, 국면 집계 변동성 8.6퍼센트 대 19.1퍼센트, 주식시장 샤프 비율 1.11 대 0.12, 최대 낙폭 크기 23퍼센트 대 77퍼센트를 각각 막대로 비교한다. 네 지표의 집계 기준과 단위가 서로 다르므로 패널마다 따로 읽는다.</desc>
+  <rect x="0" y="0" width="960" height="360" fill="#FAFAF9"/>
+  <rect class="band" x="26" y="76" width="222" height="250"/>
+  <rect class="box" x="36" y="86" width="202" height="30"/>
+  <text class="t s an-m" x="137.0" y="106">12개월 이동 변동성</text>
+  <rect class="bar2" x="60" y="166" width="62" height="116" rx="4"/>
+  <text class="t numd an-m" x="91" y="190">9.8%</text>
+  <rect class="bar1" x="144" y="132" width="62" height="150" rx="4"/>
+  <text class="t numw an-m" x="175" y="156">12.7%</text>
+  <path class="axis" d="M46 282 H228"/>
+  <text class="t xs an-m" x="91" y="302">리스크 온</text>
+  <text class="t xs an-m" x="175" y="302">리스크 오프</text>
+  <rect class="band" x="256" y="76" width="222" height="250"/>
+  <rect class="box" x="266" y="86" width="202" height="30"/>
+  <text class="t s an-m" x="367.0" y="106">국면 집계 변동성</text>
+  <rect class="bar2" x="290" y="214" width="62" height="68" rx="4"/>
+  <text class="t numd an-m" x="321" y="238">8.6%</text>
+  <rect class="bar1" x="374" y="132" width="62" height="150" rx="4"/>
+  <text class="t numw an-m" x="405" y="156">19.1%</text>
+  <path class="axis" d="M276 282 H458"/>
+  <text class="t xs an-m" x="321" y="302">리스크 온</text>
+  <text class="t xs an-m" x="405" y="302">리스크 오프</text>
+  <rect class="band" x="486" y="76" width="222" height="250"/>
+  <rect class="box" x="496" y="86" width="202" height="30"/>
+  <text class="t s an-m" x="597.0" y="106">주식시장 샤프 비율</text>
+  <rect class="bar2" x="520" y="132" width="62" height="150" rx="4"/>
+  <text class="t numd an-m" x="551" y="156">1.11</text>
+  <rect class="bar1" x="604" y="266" width="62" height="16" rx="4"/>
+  <text class="t numd an-m" x="635" y="258">0.12</text>
+  <path class="axis" d="M506 282 H688"/>
+  <text class="t xs an-m" x="551" y="302">리스크 온</text>
+  <text class="t xs an-m" x="635" y="302">리스크 오프</text>
+  <rect class="band" x="716" y="76" width="222" height="250"/>
+  <rect class="box" x="726" y="86" width="202" height="30"/>
+  <text class="t s an-m" x="827.0" y="106">최대 낙폭 크기</text>
+  <rect class="bar2" x="750" y="237" width="62" height="45" rx="4"/>
+  <text class="t numd an-m" x="781" y="261">23%</text>
+  <rect class="bar1" x="834" y="132" width="62" height="150" rx="4"/>
+  <text class="t numw an-m" x="865" y="156">77%</text>
+  <path class="axis" d="M736 282 H918"/>
+  <text class="t xs an-m" x="781" y="302">리스크 온</text>
+  <text class="t xs an-m" x="865" y="302">리스크 오프</text>
+  <rect class="bar2" x="330" y="30" width="22" height="16" rx="3"/>
+  <text class="t s an-s" x="360" y="44">리스크 온</text>
+  <rect class="bar1" x="470" y="30" width="22" height="16" rx="3"/>
+  <text class="t s an-s" x="500" y="44">리스크 오프</text>
+</svg>

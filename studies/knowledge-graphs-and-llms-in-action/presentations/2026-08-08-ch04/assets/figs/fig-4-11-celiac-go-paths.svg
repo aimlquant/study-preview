@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">셀리악병 GO 경로</title><desc id="desc">집계 점수 뒤의 실제 질병-유전자-과정 경로를 확인한다</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><rect class="warn" x="55" y="215" width="165" height="95" rx="12"/><text class="t m" x="73" y="242" text-anchor="start" fill="#0f172a">Celiac disease</text><text class="t xs" x="73" y="264" text-anchor="start" fill="#475569">질병 조건</text><text class="t xs" x="73" y="281" text-anchor="start" fill="#475569">n0.name 고정</text><rect class="soft" x="290" y="95" width="170" height="90" rx="12"/><text class="t m" x="308" y="122" text-anchor="start" fill="#0f172a">IL2RA</text><text class="t xs" x="308" y="144" text-anchor="start" fill="#475569">GWAS gene</text><text class="t xs" x="308" y="161" text-anchor="start" fill="#475569">ASSOCIATES</text><rect class="soft" x="290" y="355" width="170" height="90" rx="12"/><text class="t m" x="308" y="382" text-anchor="start" fill="#0f172a">IRF1</text><text class="t xs" x="308" y="404" text-anchor="start" fill="#475569">GWAS gene</text><text class="t xs" x="308" y="421" text-anchor="start" fill="#475569">ASSOCIATES</text><rect class="plain" x="540" y="95" width="170" height="90" rx="12"/><text class="t m" x="558" y="122" text-anchor="start" fill="#0f172a">CXCR4</text><text class="t xs" x="558" y="144" text-anchor="start" fill="#475569">INTERACTS</text><text class="t xs" x="558" y="161" text-anchor="start" fill="#475569">UPREGULATED</text><rect class="plain" x="540" y="355" width="170" height="90" rx="12"/><text class="t m" x="558" y="382" text-anchor="start" fill="#0f172a">STAT1</text><text class="t xs" x="558" y="404" text-anchor="start" fill="#475569">INTERACTS</text><text class="t xs" x="558" y="421" text-anchor="start" fill="#475569">UPREGULATED</text><rect class="green" x="760" y="215" width="150" height="95" rx="12"/><text class="t m" x="778" y="242" text-anchor="start" fill="#0f172a">GO:0010560</text><text class="t xs" x="778" y="264" text-anchor="start" fill="#475569">glycoprotein</text><text class="t xs" x="778" y="281" text-anchor="start" fill="#475569">biosynthetic</text><path class="line" d="M220 245 L290 140" marker-end="url(#arrow)"/><path class="line" d="M220 280 L290 395" marker-end="url(#arrow)"/><path class="line" d="M460 140 L540 140" marker-end="url(#arrow)"/><path class="line" d="M460 395 L540 395" marker-end="url(#arrow)"/><path class="line" d="M710 140 L760 240" marker-end="url(#arrow)"/><path class="line" d="M710 395 L760 285" marker-end="url(#arrow)"/><text class="t m" x="480" y="505" text-anchor="middle" fill="#0f172a">Listing 4.19는 집계가 아니라 실제 path를 반환한다</text></svg>

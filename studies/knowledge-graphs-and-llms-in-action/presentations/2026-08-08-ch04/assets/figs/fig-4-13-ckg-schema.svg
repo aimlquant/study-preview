@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">임상 지식 그래프</title><desc id="desc">CKG는 환자 맥락과 생명의학 지식을 통합해 질의 가능한 스키마를 만든다</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><rect class="warn" x="55" y="75" width="240" height="112" rx="12"/><text class="t h" x="73" y="109" text-anchor="start" fill="#0f172a">Patient context</text><text class="t s" x="73" y="137" text-anchor="start" fill="#475569">EHR</text><text class="t s" x="73" y="157" text-anchor="start" fill="#475569">진단·치료</text><text class="t s" x="73" y="177" text-anchor="start" fill="#475569">환자 여정</text><rect class="soft" x="55" y="215" width="240" height="112" rx="12"/><text class="t h" x="73" y="249" text-anchor="start" fill="#0f172a">Omics</text><text class="t s" x="73" y="277" text-anchor="start" fill="#475569">proteome</text><text class="t s" x="73" y="297" text-anchor="start" fill="#475569">genome</text><text class="t s" x="73" y="317" text-anchor="start" fill="#475569">transcriptome</text><rect class="plain" x="55" y="355" width="240" height="112" rx="12"/><text class="t h" x="73" y="389" text-anchor="start" fill="#0f172a">Biomedical KG</text><text class="t s" x="73" y="417" text-anchor="start" fill="#475569">질병·유전자</text><text class="t s" x="73" y="437" text-anchor="start" fill="#475569">약물·문헌</text><text class="t s" x="73" y="457" text-anchor="start" fill="#475569">온톨로지</text><circle class="dark" cx="505" cy="270" r="92"/><text class="t badgeText" x="505" y="252" text-anchor="middle" fill="#fff">CKG</text><text class="t badgeText" x="505" y="276" text-anchor="middle" fill="#fff">33 labels</text><text class="t badgeText" x="505" y="300" text-anchor="middle" fill="#fff">51 relations</text><rect class="green" x="675" y="140" width="230" height="112" rx="12"/><text class="t h" x="693" y="174" text-anchor="start" fill="#0f172a">Query result</text><text class="t s" x="693" y="202" text-anchor="start" fill="#475569">ACTC1 - Disease</text><text class="t s" x="693" y="222" text-anchor="start" fill="#475569">score · source</text><text class="t s" x="693" y="242" text-anchor="start" fill="#475569">DOID hierarchy</text><rect class="soft" x="675" y="318" width="230" height="112" rx="12"/><text class="t h" x="693" y="352" text-anchor="start" fill="#0f172a">Decision support</text><text class="t s" x="693" y="380" text-anchor="start" fill="#475569">층화</text><text class="t s" x="693" y="400" text-anchor="start" fill="#475569">안전성</text><text class="t s" x="693" y="420" text-anchor="start" fill="#475569">전문가 승인</text><path class="line" d="M295 131 L420 230" marker-end="url(#arrow)"/><path class="line" d="M295 271 L410 270" marker-end="url(#arrow)"/><path class="line" d="M295 411 L420 310" marker-end="url(#arrow)"/><path class="line" d="M597 245 L675 198" marker-end="url(#arrow)"/><path class="line" d="M597 300 L675 374" marker-end="url(#arrow)"/></svg>

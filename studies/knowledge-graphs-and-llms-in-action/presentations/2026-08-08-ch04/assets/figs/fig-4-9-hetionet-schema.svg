@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">Hetionet 스키마</title><desc id="desc">이질적 노드와 관계가 약물 재활용 경로 질의를 가능하게 한다</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><circle class="dark" cx="480" cy="270" r="70"/><text class="t badgeText" x="480" y="266" text-anchor="middle" fill="#fff">Metapath</text><text class="t badgeText" x="480" y="288" text-anchor="middle" fill="#fff">query</text><ellipse class="soft" cx="170" cy="120" rx="92" ry="48"/><text class="t m" x="170" y="125" text-anchor="middle" fill="#0f172a">Compound</text><path class="line" d="M240 155 L422 228" marker-end="url(#arrow)"/><ellipse class="soft" cx="480" cy="90" rx="92" ry="48"/><text class="t m" x="480" y="95" text-anchor="middle" fill="#0f172a">Disease</text><path class="line" d="M480 125 L480 228" marker-end="url(#arrow)"/><ellipse class="soft" cx="790" cy="120" rx="92" ry="48"/><text class="t m" x="790" y="125" text-anchor="middle" fill="#0f172a">Gene</text><path class="line" d="M720 155 L538 228" marker-end="url(#arrow)"/><ellipse class="soft" cx="170" cy="420" rx="92" ry="48"/><text class="t m" x="170" y="425" text-anchor="middle" fill="#0f172a">Anatomy</text><path class="line" d="M240 385 L422 312" marker-end="url(#arrow)"/><ellipse class="soft" cx="790" cy="420" rx="92" ry="48"/><text class="t m" x="790" y="425" text-anchor="middle" fill="#0f172a">GO Process</text><path class="line" d="M720 385 L538 312" marker-end="url(#arrow)"/><text class="t m" x="480" y="505" text-anchor="middle" fill="#0f172a">11 node types · 24 relationship types · 2,250,197 edges</text></svg>

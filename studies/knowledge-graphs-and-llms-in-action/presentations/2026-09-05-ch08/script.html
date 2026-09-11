@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>발표자 스크립트 · Chapter 8. 오픈 LLM과 도메인 온톨로지를 활용한 개체명 명확화(NED)</title>
+  <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --font-sans-ko: 'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic',
+        'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, 'D2Coding', monospace;
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --surface-soft: #f2f4f7;
+      --text: #101114;
+      --muted: #686b73;
+      --border: #dfe2e7;
+      --primary: #0f2c59;
+      --primary-deep: #091f40;
+      --primary-soft: #e8eef8;
+      --supp-bg: #eef2f9;
+      --supp-line: #b8c4d8;
+      --supp-text: #33507d;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans-ko);
+      font-size: 15.5px;
+      line-height: 1.62;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    a { color: var(--primary); }
+
+    /* 헤더 */
+    .hdr {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 11px 22px;
+      background: var(--primary-deep);
+      color: #ffffff;
+    }
+    .hdr__brand {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #a8bee0;
+      white-space: nowrap;
+    }
+    .hdr__title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .hdr__title span {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #c3d3ea;
+      letter-spacing: 0;
+    }
+    .hdr__links { display: flex; gap: 8px; flex: 0 0 auto; }
+    .hdr__links a {
+      display: inline-block;
+      padding: 5px 13px;
+      border: 1px solid #45608c;
+      border-radius: 999px;
+      background: #12305e;
+      color: #e6eefb;
+      font-size: 13px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .hdr__links a:hover { background: #1c4a86; }
+
+    /* 3열 그리드 */
+    .grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(300px, 27%) minmax(240px, 19%) 1fr;
+    }
+    .col {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border-right: 1px solid var(--border);
+    }
+    .col:last-child { border-right: 0; }
+    .col--map { background: var(--surface-soft); padding: 20px 20px 60px; }
+    .col--list { background: var(--surface); padding: 0 0 60px; }
+    .col--script { background: var(--bg); padding: 24px 34px 80px; }
+
+    /* 왼쪽 흐름 지도 */
+    .map-kicker {
+      margin: 0 0 4px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      color: var(--primary);
+    }
+    .map-h {
+      margin: 24px 0 8px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+    .map-h:first-of-type { margin-top: 6px; border-top: 0; padding-top: 0; }
+    .col--map p { margin: 0 0 10px; font-size: 13.8px; line-height: 1.68; }
+    .col--map ul { margin: 0 0 10px; padding-left: 0; list-style: none; }
+    .col--map li { margin: 0 0 9px; font-size: 13.4px; line-height: 1.62; }
+    .flow-item {
+      padding: 9px 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+    }
+    .flow-item b { display: block; color: var(--primary); font-size: 13.6px; }
+    .flow-item em {
+      display: block;
+      margin: 1px 0 4px;
+      color: var(--muted);
+      font-style: normal;
+      font-size: 12.2px;
+      letter-spacing: 0.02em;
+      font-family: var(--font-mono);
+    }
+    .rel-item {
+      padding: 8px 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .rel-item b { color: var(--primary); }
+    .jump {
+      display: inline;
+      padding: 0 4px;
+      margin: 0 1px;
+      border: 1px solid var(--supp-line);
+      border-radius: 5px;
+      background: var(--supp-bg);
+      color: var(--supp-text);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .jump:hover { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+
+    /* 가운데 슬라이드 선택기 */
+    .list-head {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      padding: 11px 14px 9px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+    }
+    .list-head span { display: block; margin-top: 2px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+    .sec-head {
+      position: sticky;
+      top: var(--list-head-h, 62px);
+      z-index: 2;
+      padding: 6px 14px;
+      background: var(--primary-soft);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .sec-head em { font-style: normal; font-weight: 500; color: var(--muted); font-size: 11.5px; font-family: var(--font-mono); }
+    .s-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 7px 12px 7px 11px;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13.2px;
+      line-height: 1.44;
+      cursor: pointer;
+    }
+    .s-item:hover { background: var(--surface-soft); }
+    .s-item.is-active { background: var(--primary-soft); border-left-color: var(--primary); }
+    .s-item.is-active .s-item__title { color: var(--primary); font-weight: 700; }
+    .s-item__no {
+      display: inline-block;
+      min-width: 30px;
+      font-family: var(--font-mono);
+      font-size: 11.4px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .s-item.is-active .s-item__no { color: var(--primary); }
+    .s-item__meta {
+      display: block;
+      margin: 2px 0 0 30px;
+      font-size: 11.2px;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      font-family: var(--font-mono);
+    }
+    .badge-supp {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 0 6px;
+      border: 1px solid var(--supp-line);
+      border-radius: 999px;
+      background: var(--supp-bg);
+      color: var(--supp-text);
+      font-size: 10.2px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-family: var(--font-sans-ko);
+    }
+
+    /* 오른쪽 스크립트 */
+    .sc-head {
+      padding: 0 0 14px;
+      border-bottom: 2px solid var(--primary);
+      margin-bottom: 20px;
+    }
+    .sc-head__kicker {
+      margin: 0 0 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+    .sc-head h1 {
+      margin: 0 0 9px;
+      font-size: 24px;
+      line-height: 1.24;
+      letter-spacing: -0.03em;
+      color: var(--primary);
+    }
+    .sc-head__meta { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-block;
+      padding: 3px 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12.2px;
+    }
+    .chip--coord { color: var(--primary); border-color: var(--supp-line); background: var(--primary-soft); font-weight: 700; }
+    .chip--supp { color: var(--supp-text); border-color: var(--supp-line); background: var(--supp-bg); font-weight: 700; }
+
+    .sc-block { margin: 0 0 18px; }
+    .sc-block__h {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      margin: 0 0 8px;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .sc-block__h i {
+      font-style: normal;
+      font-family: var(--font-mono);
+      font-size: 11.2px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .sc-what {
+      margin: 0;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      font-size: 15.8px;
+      line-height: 1.8;
+    }
+    .sc-how { margin: 0; padding-left: 0; list-style: none; }
+    .sc-how li {
+      position: relative;
+      margin: 0 0 7px;
+      padding-left: 18px;
+      font-size: 14.6px;
+      line-height: 1.64;
+    }
+    .sc-how li::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: var(--primary);
+    }
+    .sc-why {
+      margin: 0;
+      padding: 14px 18px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14.6px;
+      line-height: 1.72;
+    }
+    .sc-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 26px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .sc-nav button {
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--primary);
+      font-family: inherit;
+      font-size: 13.4px;
+      cursor: pointer;
+      max-width: 46%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sc-nav button:hover { background: var(--primary-soft); }
+    .sc-nav button[disabled] { opacity: 0.35; cursor: default; }
+    .sc-hint { margin: 14px 0 0; color: var(--muted); font-size: 12.4px; }
+    kbd {
+      display: inline-block;
+      padding: 0 5px;
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      background: var(--surface);
+      font-family: var(--font-mono);
+      font-size: 11.4px;
+      color: var(--text);
+    }
+    code {
+      padding: 1px 5px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.87em;
+    }
+    .sc-what code, .sc-how code, .sc-why code { background: #ffffff; }
+
+    @media (max-width: 1240px) {
+      .grid { grid-template-columns: minmax(260px, 30%) minmax(200px, 22%) 1fr; }
+      .col--script { padding: 20px 22px 70px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hdr">
+    <div class="hdr__brand">AIML QUANT</div>
+    <div class="hdr__title">
+      2026-09-05 · Chapter 8 발표자 스크립트
+      <span>오픈 LLM과 도메인 온톨로지를 활용한 개체명 명확화(NED) · 83장</span>
+    </div>
+    <nav class="hdr__links" aria-label="관련 문서">
+      <a href="index.html">덱 열기</a>
+      <a href="report.html">리포트 열기</a>
+      <a href="../../">회차 목록</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+    <aside class="col col--map" aria-label="흐름 지도">
+      <p class="map-kicker">FLOW MAP</p>
+
+      <h2 class="map-h">7장에서 8장으로</h2>
+      <p>7장은 개체명 명확화(NED)를 다루면서 생물의학 전용 도구 scispaCy의 역할을 강조했고, UMLS 같은 표준 어휘집으로 문장 속 언급을 표준 개체에 연결하는 데까지 나아갔습니다. 8장은 정확히 그 다음 칸에서 시작합니다.</p>
+      <p>원서 저자들이 정리한 네 가지 한계 가운데 마지막 항목, 곧 개체 사이에 이미 존재하는 관계와 경로를 명확화에 쓰지 못한다는 결손이 이 장의 표적입니다. 재료는 7장과 같은 SNOMED 배포 파일 두 개지만, 이번에는 이름 대조에서 멈추지 않고 계층과 관계까지 그래프에 올려 판단 근거로 씁니다.</p>
+      <p>§8.5 결론이 정리하는 성과도 같은 자리에 있습니다. 도메인 온톨로지와 오픈 LLM을 통합해 전통적 도구의 한계 일부를 해소했고, 경로-텍스트 변환과 텍스트 경로 요약으로 관계 데이터를 LLM이 잘 다루는 자연어로 바꾸는 방법을 얻었으며, 풍부한 온톨로지가 있는 다른 도메인으로 옮길 토대를 만들었습니다.</p>
+
+      <h2 class="map-h">절별 흐름과 슬라이드 배치</h2>
+      <ul>
+        <li class="flow-item">
+          <b>도입 — 좌표를 세운다</b><em>S1–S3</em>
+          표지에 이어 S2가 7장의 한계에서 출발한다고 밝히고 Apple 비유로 관계 활용의 아이디어를 미리 심습니다. <button type="button" class="jump" data-goto="3">S3</button>이 오늘의 질문을 던져 남은 79장의 목적지를 정해 둡니다.
+        </li>
+        <li class="flow-item">
+          <b>§8.1 한계 진단 — 문제를 만든다</b><em>S4–S11</em>
+          잘하는 일(<button type="button" class="jump" data-goto="5">S5</button>)을 먼저 인정하고 네 가지 한계(<button type="button" class="jump" data-goto="6">S6</button>)로 표적을 좁힙니다. 이어 두 입력을 대조하고(S7·S8) 기록된 출력에서 후보 0개를 확인한 뒤(<button type="button" class="jump" data-goto="9">S9</button>), 그림으로 대조를 굳히고(S10) 이 장의 접근을 제시합니다(S11).
+        </li>
+        <li class="flow-item">
+          <b>§8.2 재료 준비 1 — 근거가 될 그래프를 만든다</b><em>S12–S21</em>
+          두 파일(S13)과 계층 구조(S14)를 보여 준 뒤 적재 세 단계를 예고하고(<button type="button" class="jump" data-goto="15">S15</button>), Listing 8.3(S16·S17) → 8.4(S18·S19) → 8.5(S20·S21) 순으로 그 자리를 채웁니다. 마지막 S21이 뒤에서 세 번 쓰일 <code>type</code> 값을 남깁니다.
+        </li>
+        <li class="flow-item">
+          <b>§8.3 재료 준비 2 — 모델을 로컬에 놓는다</b><em>S22–S27</em>
+          Ollama와 Llama 3.1 8B를 소개하고(S23) 두 줄 명령(S24), 주소만 바꾸는 클라이언트(S25), <code>temperature=0</code>(S26)까지 간 다음, 왜 굳이 범용 모델인지를 설계 의도로 마무리합니다(S27).
+        </li>
+        <li class="flow-item">
+          <b>§8.4 세 단계의 지도</b><em>S28–S33</em>
+          그림 8.2로 전체 흐름을 깔고(S29) NER·CS·CD를 한 장씩 예고합니다(S30·S31·S32). <button type="button" class="jump" data-goto="33">S33</button>이 세 단계 모두에 온톨로지가 닿는다는 설계 원칙을 못 박습니다.
+        </li>
+        <li class="flow-item">
+          <b>§8.4.1 개체명 인식(NER)</b><em>S34–S42</em>
+          허용 범주를 만들고(S35) 그림으로 위치를 확인한 뒤(S36), 프롬프트(S37·S38)에 지카 문장을 넣고(<button type="button" class="jump" data-goto="39">S39</button>) 출력을 읽습니다(S40). S41이 Organism은 최종 답이 아니라고 못 박고, S42가 문자 위치를 일반 코드에 맡긴 이유를 답합니다.
+        </li>
+        <li class="flow-item">
+          <b>§8.4.2 후보 선택(CS)</b><em>S43–S50</em>
+          단계의 입출력(S43)과 그림(S44)에 이어, LLM을 쓰지 않는 두 이유(<button type="button" class="jump" data-goto="45">S45</button>)가 이 절의 논지입니다. 조회 코드(S46), 퍼지 매칭(S47), 벡터 검색 확장(S48)을 지나 세 후보가 실제로 나옵니다(S49·S50).
+        </li>
+        <li class="flow-item">
+          <b>§8.4.3 후보 명확화(CD) — 가장 긴 절</b><em>S51–S74</em>
+          전략(S51·S53)과 세 단계(S54)를 세운 뒤, 최단 경로 탐지(S56–S61), 경로-텍스트 변환(S62–S64), 텍스트 경로 요약(S65–S67), 최종 명확화(S68–S72) 순으로 재료가 쌓입니다. S73·S74가 §8.1의 실패를 되돌아보며 사슬을 닫습니다.
+        </li>
+        <li class="flow-item">
+          <b>§8.5 결론과 경계</b><em>S75–S79</em>
+          결론(S76)과 역할 분담표(S77), 핵심 메시지 여섯 가지(S78)에 이어 실무 경계 여섯 가지(<button type="button" class="jump" data-goto="79">S79</button>)로 주장의 상한선을 긋습니다.
+        </li>
+        <li class="flow-item">
+          <b>마무리</b><em>S80–S83</em>
+          용어표 두 장(S80·S81)은 참조용이고, 체크포인트(<button type="button" class="jump" data-goto="82">S82</button>)가 앞의 논점을 질문으로 되받으며, S83이 오늘을 세 문장으로 접습니다.
+        </li>
+      </ul>
+
+      <h2 class="map-h">슬라이드 사이의 호응 관계</h2>
+      <ul>
+        <li class="rel-item"><b>예고와 회수 · 시험 문장</b> <button type="button" class="jump" data-goto="39">S39</button>에서 입력으로 넣은 지카 문장이 <button type="button" class="jump" data-goto="72">S72</button>에서 세 개의 SNOMED 개체로 확정되어 돌아옵니다. 같은 문장이 S8의 변형 입력 안에도 들어 있습니다.</li>
+        <li class="rel-item"><b>실패와 해소</b> <button type="button" class="jump" data-goto="9">S9</button>의 후보 0개 실패가 <button type="button" class="jump" data-goto="73">S73</button>·<button type="button" class="jump" data-goto="74">S74</button>에서 해소됩니다. S74의 마지막 줄이 명시적으로 §8.1을 되돌아봅니다.</li>
+        <li class="rel-item"><b>예고와 채움 · 적재</b> <button type="button" class="jump" data-goto="15">S15</button>가 적재 세 단계를 예고하고 <button type="button" class="jump" data-goto="16">S16</button>–<button type="button" class="jump" data-goto="21">S21</button>이 그 세 칸을 순서대로 채웁니다.</li>
+        <li class="rel-item"><b>씨앗과 수확 · 라벨 전파</b> <button type="button" class="jump" data-goto="21">S21</button>이 만든 <code>type</code> 값이 <button type="button" class="jump" data-goto="35">S35</button>에서 허용 범주 목록으로, <button type="button" class="jump" data-goto="37">S37</button>에서 프롬프트의 <code>{named_entities}</code>로, <button type="button" class="jump" data-goto="46">S46</button>에서 검색 필터 <code>$labels</code>로 세 번 회수됩니다.</li>
+        <li class="rel-item"><b>설계와 이유</b> <button type="button" class="jump" data-goto="17">S17</button>이 <code>SNOMED_IS_A</code>를 왜 한 벌 더 만드는지 말해 두고, 세 장 뒤 <button type="button" class="jump" data-goto="20">S20</button>의 전파 쿼리가 그 관계만 골라 쓰면서 답을 확인시킵니다.</li>
+        <li class="rel-item"><b>예고와 실행 · 명확화 3단계</b> <button type="button" class="jump" data-goto="32">S32</button>가 탐지·변환·요약을 예고하고 <button type="button" class="jump" data-goto="54">S54</button>가 그 셋을 다시 세운 뒤, S56–S61·S62–S64·S65–S67이 각각을 실행합니다.</li>
+        <li class="rel-item"><b>후보가 좁혀지는 사슬</b> <button type="button" class="jump" data-goto="50">S50</button>의 세 후보가 <button type="button" class="jump" data-goto="67">S67</button>의 선천성 문맥 한 문장을 만나 <button type="button" class="jump" data-goto="72">S72</button>에서 762725007 하나로 결정됩니다.</li>
+        <li class="rel-item"><b>초기 라벨의 운명</b> <button type="button" class="jump" data-goto="41">S41</button>이 Organism은 최종 답이 아니라고 못 박고, <button type="button" class="jump" data-goto="72">S72</button>가 정정된 결과를 보여 주며, <button type="button" class="jump" data-goto="79">S79</button>의 첫 경계 항목이 그것을 운영 규칙으로 옮깁니다.</li>
+        <li class="rel-item"><b>표적과 결론</b> <button type="button" class="jump" data-goto="6">S6</button>의 네 번째 한계가 <button type="button" class="jump" data-goto="11">S11</button>의 접근, <button type="button" class="jump" data-goto="33">S33</button>의 설계 원칙, <button type="button" class="jump" data-goto="78">S78</button>의 핵심 메시지에서 차례로 회수됩니다.</li>
+        <li class="rel-item"><b>비유의 반복</b> S2의 Apple 비유가 <button type="button" class="jump" data-goto="11">S11</button>의 의사와 코드집 비유로 이어지고, <button type="button" class="jump" data-goto="77">S77</button>의 역할 분담표에서 표 형태로 정리됩니다.</li>
+        <li class="rel-item"><b>같은 그림, 옮겨 가는 강조</b> <button type="button" class="jump" data-goto="29">S29</button>의 전체 흐름도가 S36·S44·S52에서 강조 위치를 바꾸며 다시 나오고, <button type="button" class="jump" data-goto="55">S55</button>가 마지막 상자의 속을 열어 보입니다.</li>
+        <li class="rel-item"><b>질문으로 되받기</b> <button type="button" class="jump" data-goto="82">S82</button>의 Q1은 S9와 S74를, Q2는 <button type="button" class="jump" data-goto="45">S45</button>를, Q3은 <button type="button" class="jump" data-goto="57">S57</button>을, Q4는 <button type="button" class="jump" data-goto="70">S70</button>을 각각 겨냥합니다.</li>
+      </ul>
+
+      <h2 class="map-h">부연 설명 19장을 다루는 법</h2>
+      <p>상단에 부연 설명 배지가 붙은 슬라이드는 S16·S17·S26·S37·S38·S42·S47·S48·S57·S58·S59·S61·S63·S66·S69·S70·S71·S80·S81 열아홉 장입니다. 모두 본선 논지를 떠받치는 코드 세부와 프롬프트 세부, 용어표라서 빼도 이야기의 뼈대는 끊기지 않습니다.</p>
+      <p>시간이 부족하면 이렇게 접습니다. 적재 코드 S16·S17은 제약과 인덱스를 먼저 걸고 is-a만 한 벌 더 만든다는 한 줄로 대신하고, S26은 <code>temperature=0</code> 한마디만 남깁니다. 프롬프트 세부 S37·S38은 허용 목록과 퓨샷 예시가 있다는 사실만 짚고 S39로 넘어가며, S42·S47·S48은 화면만 스치고 지나갑니다. 경로 추출 세 장 S57·S58·S59는 허브 350개 제외와 1~2홉 제한이라는 두 제한만 말한 뒤 S60으로 가고, S61·S63·S66도 같은 방식으로 접습니다. Asthma 예시 S69·S70·S71은 S70 한 장만 남겨 과도한 구체화를 피한다는 교훈을 살리는 것이 가장 손해가 적습니다. 용어표 S80·S81은 넘기고 리포트 부록 A를 안내하면 됩니다.</p>
+      <p>반대로 시간이 남으면 S57과 S70을 먼저 되살리십시오. 이 두 장이 체크포인트 Q3·Q4와 직접 연결되어 토론을 붙이기 좋습니다.</p>
+    </aside>
+
+    <nav class="col col--list" id="listCol" aria-label="슬라이드 선택기">
+      <div class="list-head" id="listHead">SLIDES 1–83<span>클릭하거나 방향키로 이동합니다</span></div>
+      <div id="slideList"></div>
+    </nav>
+
+    <section class="col col--script" id="scriptCol" aria-label="선택한 슬라이드의 발표 스크립트" tabindex="-1">
+      <article id="scriptBody"></article>
+    </section>
+  </main>
+
+  <script>
+  const SLIDES = [
+  { n: 1, sec: "도입", coord: "커버", supp: false,
+    title: "표지 · Chapter 8",
+    what: `회차의 좌표를 여는 표지다. 이 장의 제목은 오픈 LLM과 도메인 온톨로지를 활용한 개체명 명확화이고, 부제가 장 전체를 한 문장으로 압축한다. 문장 속 언급이 실제로 가리키는 대상을, 온톨로지의 관계와 경로까지 근거로 삼아 확정한다는 것이다. 여기서 관계와 경로라는 두 단어가 이 장이 앞 장과 갈라지는 지점을 미리 지목한다. 발표자·학습 범위·일시가 함께 표시된다.`,
+    how: [`제목과 한 줄 부제, 그리고 세 항목의 메타 정보만 놓은 표지 레이아웃이다. 설명을 덧붙이지 않고 부제 한 줄에 장의 주장을 담는 방식으로 전달한다.`,
+      `부제에 쓰인 <b>관계와 경로</b>는 §8.1의 네 번째 한계, §8.4.3의 최단 경로, §8.5의 결론에서 그대로 반복되는 표현이다. 표지가 그 표현을 처음 노출하는 자리 역할을 한다.`],
+    why: `이 장의 한 문장을 발표 시작 지점에 고정해 두는 슬라이드다. 뒤에서 관계와 경로라는 말이 나올 때마다 청중이 되짚을 기준점이 여기서 만들어진다. 이 문장이 없으면 §8.1의 한계 진단이 단순한 도구 비판으로 읽힐 수 있다.` },
+
+  { n: 2, sec: "도입", coord: "학습 목표", supp: false,
+    title: "이 장에서 다루는 내용",
+    what: `이 장의 출발점과 학습 목표 세 가지를 다루는 장이다. 7장은 개체명 명확화에 초점을 맞추면서 생물의학 전용 도구인 scispaCy의 역할을 강조했고, 이 장은 scispaCy가 잘하는 것과 못하는 것을 짚은 뒤 그 한계를 오픈 LLM과 온톨로지의 조합으로 넘어선다. 목표는 세 가지로 제시된다. 전통적 명확화 도구의 한계를 이해하는 것, 범용 LLM과 도메인 온톨로지를 결합해 명확화를 수행하는 방법을 배우는 것, 최단 경로 탐지와 경로-텍스트 변환과 텍스트 경로 요약을 잇는 다단계 과정을 직접 구현해 보는 것이다.`,
+    how: [`도입 문단으로 7장과의 접점을 먼저 세운 뒤, 01·02·03 세 장의 카드로 목표를 나열하는 구성이다. 한계 이해에서 결합 방법으로, 다시 직접 구현으로 추상도가 낮아지는 순서를 취한다.`,
+      `Apple 비유 상자로 아이디어를 앞당겨 심는다. Apple이라는 단어만으로는 과일과 회사를 가릴 수 없지만 주변의 아이폰·주가·신제품과 그래프의 Apple Inc.가 iPhone을 만든다는 관계를 보면 판단이 가능하다는 구조다. 여기서 Apple은 이 장의 모호한 언급 Zika에, 주변 단어는 문맥 단서에, 그래프 관계는 온톨로지의 개체 간 관계에 대응한다.`,
+      `비유의 경계를 함께 명시한다. 실제 후보와 관계는 모델의 기억이 아니라 SNOMED에서 조회한다는 단서가 붙어 있어, 비유가 과잉 해석되는 것을 막는다.`],
+    why: `이 장이 7장의 어느 지점에서 출발하는지를 확정하는 장이다. 이 좌표가 없으면 §8.2에서 SNOMED 적재가 다시 나오는 이유가 설명되지 않는다. 여기서 심은 Apple 비유는 S11의 의사와 코드집 비유, S77의 역할 분담표로 두 번 더 회수되며 장 전체의 역할 분담 논지를 떠받친다.` },
+
+  { n: 3, sec: "도입", coord: "전체 흐름", supp: false,
+    title: "OVERVIEW · 네 덩이로 보는 이 장",
+    what: `교재 절 순서를 네 덩이로 묶어 보여 주는 개요다. §8.1은 scispaCy가 단서 없는 문장에서 후보조차 만들지 못하는 실패를 기록된 출력으로 확인하는 한계 진단이고, §8.2와 §8.3은 SNOMED를 Neo4j에 적재하고 Ollama로 Llama 3.1 8B를 로컬에 배포하는 재료 준비다. §8.4는 개체명 인식·후보 선택·후보 명확화 세 단계를 지카 문장 하나로 끝까지 따라가는 본론이고, §8.5는 이 접근이 무엇을 해결하고 무엇을 보장하지 않는지 정리하는 결론이다. 마지막에 이 장의 질문이 제시된다. 언급 곁에 단서 단어가 없을 때 무엇을 근거로 정확한 개체를 고를 수 있는가이다.`,
+    how: [`네 개의 칸을 화살표로 이어 시간 순서를 그대로 공간 순서로 옮긴 흐름 구성이다. 각 절이 무엇을 주장하려고 쓰였는지를 한 줄씩 붙여, 절 번호가 아니라 역할로 기억되게 한다.`,
+      `§8.2와 §8.3을 한 칸에 묶어 재료 준비로 표시한다. 다섯 개 절을 네 덩이로 줄여 전체 부피를 낮추는 방식이다.`,
+      `마지막 질문 상자를 별도로 두어 개요가 목록으로 끝나지 않게 한다. 이 질문이 §8.1의 실패로 구체화되고 §8.4.3의 답으로 회수된다.`],
+    why: `83장짜리 발표에서 현재 위치를 잃지 않게 하는 지도 역할을 한다. 여기서 던진 질문이 S9의 후보 0개 출력으로 문제화되고 S72의 확정 결과로 답을 얻으므로, 이 장은 발표 전체의 서사 틀을 세우는 유일한 슬라이드다.` },
+
+  { n: 4, sec: "§8.1", coord: "§8.1 · 섹션 표지", supp: false,
+    title: "§8.1 전통적 NED 시스템의 한계",
+    what: `첫 번째 절의 표지다. §8.1은 전통적 개체명 명확화 시스템의 한계를 이해하는 절이고, 부제가 그 한계를 scispaCy가 놓치는 관계와 경로로 지목한다. 한 줄 요약은 표준 어휘집만으로는 개체 사이의 관계와 경로를 명확화에 쓸 수 없다는 것이다.`,
+    how: [`제목과 부제, 절 번호만 놓은 표지 형식이다. 내용을 담지 않고 구획만 표시한다.`,
+      `부제에 <b>표준 어휘집만으로는</b>이라는 조건절을 넣어, 바로 다음 장에서 scispaCy의 강점을 인정하는 전개와 충돌하지 않게 한다.`],
+    why: `절 사이에 호흡을 주는 구획 표시다. 조건절을 미리 노출해 두어, S5에서 scispaCy를 칭찬하는 대목이 앞선 주장과 모순되는 것처럼 들리지 않게 한다.` },
+
+  { n: 5, sec: "§8.1", coord: "§8.1 · 잘하는 일", supp: false,
+    title: "scispaCy가 잘하는 일",
+    what: `scispaCy의 강점을 먼저 정리하는 장이다. scispaCy는 spaCy 프레임워크 위에 세워진 생물의학 전용 자연어 처리 도구로, UMLS 같은 표준화된 개체를 담은 어휘집과 온톨로지를 내장하고 있다. 이런 표준 개체는 텍스트 속 언급을 실제 대상과 연결해 모호함을 없애는 데 유용하다. 실무에서 이 연결이 값진 이유는 표기 통일 문제로 드러난다. 고혈압, hypertension, 혈압이 높은 병처럼 병원과 논문마다 다르게 적힌 표현을 하나의 표준 개념 ID로 묶으면 여러 기관의 데이터를 같은 기준으로 분석할 수 있다. 여기까지가 7장이 다룬 범위다.`,
+    how: [`내장 자원과 얻는 효과라는 두 칸으로 나눠, 왼쪽에는 도구와 용어 정의를, 오른쪽에는 그 정의가 만들어 내는 실무적 이득을 배치한 2열 구성이다.`,
+      `고혈압의 세 표현이 하나의 표준 개념 ID로 모이는 예시로 추상적인 표준화 개념을 구체화한다. 언급과 표준 개체라는 두 용어가 이 예시 안에서 함께 정의된다.`,
+      `마지막에 출발점 문장을 두어 이 범위가 7장의 것이고 이 장은 그 다음 한계에서 시작한다고 표시한다.`],
+    why: `한계를 말하기 전에 강점을 인정해 비판의 공정성을 확보하는 장이다. 리포트도 같은 순서로 서술한다. 또 여기서 정의한 언급과 표준 개체가 장 전체에서 반복 사용되므로, 용어 정의를 뒤로 미루지 않고 여기서 끝내는 구성이기도 하다.` },
+
+  { n: 6, sec: "§8.1", coord: "§8.1 · 한계", supp: false,
+    title: "네 가지 한계 — 표적은 네 번째",
+    what: `원서 저자들이 정리한 표준 어휘집 기반 명확화의 네 가지 한계를 다루는 장이다. 첫째는 도메인 고정으로, 특정 응용 도메인 곧 생물의학 분야에만 맞춰 설계되어 있다. 둘째는 갱신 부담으로, 새 개체와 용어를 반영하도록 참조 지식베이스를 확장하고 갱신하기가 어렵다. 셋째는 정보 미활용으로, 지식베이스에 담긴 방대한 정보를 온전히 활용하지 못한다. 넷째는 관계 미사용으로, 개체 사이에 이미 존재하는 관계와 경로를 명확화 작업에 쓰지 못한다. 이 장이 정면으로 다루는 것은 마지막 항목이다.`,
+    how: [`01부터 04까지 번호를 붙인 카드 네 장으로 한계를 나열하되, 마지막 항목에 이 장의 표적이라는 무게를 싣는 구성이다. 넷을 균등하게 다루지 않고 하나로 좁혀 가는 방식이다.`,
+      `Mercury 비유로 네 번째 항목을 구체화한다. 이름만 비교하면 수성·수은·자동차 브랜드를 가르기 어렵지만, Mercury가 Planet의 한 종류이고 Sun을 공전한다는 저장된 관계를 보면 판단이 쉬워진다는 구조다.`,
+      `비유의 경계를 붙인다. 실제 관계는 임의로 상상하지 않고 온톨로지에 저장된 것만 쓴다는 단서가 명시되어 있다.`,
+      `맨 아래 한 줄로 결손의 성격을 규정한다. 사전 항목은 갖췄지만 항목들이 서로 어떻게 연결되는지를 쓰지 못하는 것이 핵심이라는 문장이다.`],
+    why: `이 장 전체가 네 번째 한계 하나를 겨냥하므로, 표적을 좁히는 이 슬라이드가 없으면 뒤의 SNOMED 적재와 최단 경로 탐지가 왜 필요한지 흐려진다. 네 번째 항목은 S11의 접근, S33의 설계 원칙, S78의 핵심 메시지에서 차례로 회수되며 장의 축을 이룬다.` },
+
+  { n: 7, sec: "§8.1", coord: "§8.1 · 첫 번째 입력", supp: false,
+    title: "첫 번째 입력 — 단서가 곁에 있을 때",
+    what: `한계가 실제로 어떤 결과 차이를 만드는지 확인하는 대조 실험의 앞쪽 절반이다. 입력은 7장 도입부에서 사용한 유럽 질병예방통제센터, ECDC의 문구다. scispaCy는 이 입력에서 Zika 주변의 문맥 단어를 이용해 세 개의 올바른 명확화 결과를 찾아낸다. 이 문제가 쉬운 이유는 선천성이나 증후군처럼 정답을 알려 주는 강한 단어가 언급 바로 곁에 붙어 있기 때문이다.`,
+    how: [`인용 상자로 원문 문구를 그대로 보여 주고, 그 아래에 왜 쉬운 문제인지를 한 줄로 규정하는 구성이다. 결과를 먼저 말하고 조건을 설명하는 순서다.`,
+      `Apple은 달고 아삭하다는 예시를 붙여 강한 문맥 단서의 개념을 만든다. 달다·아삭하다가 이 문구의 선천성·증후군에 대응한다.`,
+      `마지막 문장이 다음 슬라이드를 예고한다. 이 조건이 사라지면 어떻게 되는지를 두 번째 입력이 보여 준다고 명시한다.`],
+    why: `이 장 없이 S8만 보면 실패가 도구의 무능처럼 읽히지만, 성공 사례를 먼저 세우면 실패의 원인이 도구가 아니라 입력 조건이라는 점이 드러난다. 리포트도 같은 이유로 두 입력을 나란히 배치한다.` },
+
+  { n: 8, sec: "§8.1", coord: "§8.1 · 두 번째 입력", supp: false,
+    title: "두 번째 입력 — 단서를 뺐을 때",
+    what: `같은 실험의 뒤쪽 절반으로, 선천성이나 증후군 같은 주변 단어를 뺀 변형 입력을 다룬다. 이 문구에서는 명확화 단계를 뒷받침할 단어가 언급 곁에 없다. 중요한 점은 단서가 사라진 것이 아니라 언급에서 멀어졌다는 것이다. 플라비바이러스과, 소두증, 선천성 기형 같은 의학적 단서는 여전히 존재하지만 여러 문장에 흩어져 있다. 이 차이 하나만으로 결과가 갈린다.`,
+    how: [`앞 장과 같은 인용 상자 형식을 유지해 두 입력을 형태적으로 대조 가능하게 만든다. 캡션에도 단서 단어를 뺀 변형 입력이라고 명시한다.`,
+      `Apple 예시를 변형해 이어 붙인다. 그 회사는 새 휴대폰을 공개했다, Apple의 주가가 올랐다는 문장에서 Apple 바로 옆에 회사라는 단어가 없어 앞 문장까지 함께 봐야 하는 상황이 흩어진 단서에 대응한다.`,
+      `달라진 조건을 한 줄로 규정한다. 사라진 것이 아니라 멀어졌다는 진단이 이 장의 결론이다.`],
+    why: `실패의 원인을 정확히 지목하는 장이다. 단서가 멀어졌다는 진단이 있어야 §8.4.3에서 흩어진 개체를 그래프 경로로 다시 이어 붙이는 해법이 논리적으로 연결된다. 이 문구의 마지막 문장이 S39에서 NER 입력으로 다시 등장하는 것도 이 장의 몫이다.` },
+
+  { n: 9, sec: "§8.1", coord: "§8.1 · 기록된 출력", supp: false,
+    title: "기록된 출력 — 후보가 0개",
+    what: `변형 입력에 대한 scispaCy의 실제 출력을 다루는 장이다. 첫 번째와 세 번째 Zika는 C0276289 Zika Virus Infection을 비롯한 세 후보로 명확화되지만, 두 번째 문장의 Zika disease 언급 아래는 비어 있다. 출력을 읽는 법은 이렇다. Recognized entity는 그 표현을 텍스트에서 찾았다는 뜻이고 뒤의 두 숫자는 문자 위치이며, Ranked target candidates 아래가 비어 있으면 연결할 표준 개체 후보를 찾지 못했다는 뜻이다. 이 장이 담는 핵심은 실패의 종류다. 답을 잘못 고른 것이 아니라 순위를 매길 후보가 0개다.`,
+    how: [`기록된 실행 출력을 코드 창에 그대로 싣고, 옆에 출력 읽는 법 패널을 두는 코드 슬라이드 구성이다. 주장 대신 원자료를 근거로 내세운다.`,
+      `세 개의 Recognized entity 블록을 위·가운데·아래로 배치해, 가운데 블록만 비어 있다는 대조가 화면 안에서 즉시 보이게 한다.`,
+      `오답과 후보 부재를 구별하는 문장을 별도 항목으로 세운다. 이 구별이 이 장의 실질적 내용이다.`],
+    why: `이 장이 발표의 문제 설정이다. 여기서 확인한 빈칸이 S73과 S74에서 채워지면서 서사가 닫히므로, 뒤의 60여 장이 존재하는 이유가 이 슬라이드 하나에 걸려 있다. 체크포인트 S82의 Q1도 정확히 이 장면을 겨냥한다.` },
+
+  { n: 10, sec: "§8.1", coord: "§8.1 · 그림 1", supp: false,
+    title: "그림 1 · 갈라지는 명확화 결과",
+    what: `두 입력에 대한 scispaCy의 명확화 결과를 한 화면에 나란히 놓은 그림이다. 위쪽은 단서가 언급 곁에 있는 원래 ECDC 문구이고 아래쪽은 단서를 뺀 변형 문구다. 같은 scispaCy와 UMLS 조합인데도 아래쪽에서는 Zika disease의 후보 검색이 실패한다. 이 그림이 강조하는 경계는 순위가 밀린 것이 아니라 순위를 매길 후보 자체가 없는 실패라는 점이다.`,
+    how: [`입력과 결과를 위아래 두 줄로 배치한 대조형 도해다. 달라진 변수가 입력 하나뿐임을 배치 자체로 보이는 방식이다.`,
+      `그림 아래 캡션에 읽는 법·비교·경계 세 항목을 두어, 도형이 스스로 해석 방향을 안내하게 만든다.`,
+      `S7·S8·S9에서 세 장에 걸쳐 나눠 본 실험을 한 장으로 압축한다.`],
+    why: `텍스트 출력만 보고 넘어가면 대조의 인상이 흐려지므로, 그림으로 한 번 고정한 뒤 S11의 해법으로 넘어가는 구성이다. 이 장이 §8.1의 실험부를 닫고 해법부를 여는 경첩 역할을 한다.` },
+
+  { n: 11, sec: "§8.1", coord: "§8.1 · 이 장의 접근", supp: false,
+    title: "이 장의 접근 — 역할을 나눈다",
+    what: `이 장이 채택한 해법의 구조를 다루는 장이다. 오픈 LLM과 도메인 온톨로지를 결합해 앞의 한계들을 정면으로 다루고, scispaCy 같은 도메인 전용 도구와 달리 풍부한 온톨로지를 쓸 수 있는 다른 응용 도메인에도 그대로 적용할 수 있다. 두 재료의 성격은 뚜렷이 다르다. 원서 저자들은 LLM을 유창한 달변가에 가깝다고 표현하는데, 문맥 해석과 설명은 잘하지만 정확한 코드와 관계를 기억에서 만들어 내게 두어서는 안 된다. 도메인 온톨로지는 검증된 사실을 정리해 둔 대장으로서 선택 가능한 후보와 개체 간 관계, 계층 구조를 공급하고, 지식 갱신도 모델 재학습 대신 온톨로지 수정으로 처리한다.`,
+    how: [`LLM과 도메인 온톨로지를 좌우 두 칸에 놓고 각각의 성격을 대비시키는 2열 구성이다. 잘하는 일과 맡길 수 없는 일을 짝으로 배치한다.`,
+      `의사와 코드집 비유로 두 역할을 묶는다. LLM은 설명을 잘하는 의사, 온톨로지는 표준 의학 교과서와 코드집이며, 의사가 문맥을 해석하되 선택 가능한 병명과 관계는 코드집에서 확인하는 구조다.`,
+      `비유의 경계를 명시한다. 코드집과 달리 온톨로지는 관계까지 담고 있어 확인만이 아니라 추론의 근거로도 쓰인다는 단서다.`],
+    why: `문제에서 해법으로 넘어가는 전환점이다. 여기서 세운 역할 분담이 §8.4의 세 단계에서 그대로 반복되고 S77의 역할 분담표로 정리되므로, 장 전체의 설계 원칙을 처음 선언하는 자리다. 리포트는 이 대목에서 검색과 경로 계산은 데이터베이스가 수행하고 결과만 LLM에 건넨다는 단서를 덧붙인다.` },
+  { n: 12, sec: "§8.2", coord: "§8.2 · 섹션 표지", supp: false,
+    title: "§8.2 도메인 온톨로지 적재하기",
+    what: `두 번째 절의 표지다. §8.2는 SNOMED를 Neo4j에 싣는 절로, 명확화의 근거가 될 개념과 관계를 먼저 그래프에 올리는 일을 다룬다. 앞 절에서 관계를 근거로 쓰겠다고 선언했으므로, 그 관계가 담긴 그래프를 만드는 작업이 이 절의 내용이 된다.`,
+    how: [`제목·부제·절 번호만 놓은 표지 형식이다. 부제가 이 절의 산출물, 곧 개념과 관계가 올라간 그래프를 지목한다.`,
+      `§8.2와 §8.3이 본론이 아니라 재료 준비라는 성격을 표지에서 미리 표시한다.`],
+    why: `이어지는 여섯 장이 코드 슬라이드라서, 준비 단계라는 성격을 먼저 표시하지 않으면 청중이 본론에 들어온 것으로 오인한다. S28의 §8.4 표지가 전환점으로 또렷하게 읽히려면 이 구획이 먼저 필요하다.` },
+
+  { n: 13, sec: "§8.2", coord: "§8.2 · 원본 데이터", supp: false,
+    title: "SNOMED와 두 개의 배포 파일",
+    what: `이 장이 쓰는 원본 데이터를 다루는 장이다. 명확화를 이끌 온톨로지로는 7장에서 소개한 SNOMED, 곧 체계화된 의학 명명법을 쓴다. SNOMED는 45만 개가 넘는 개념과 풍부한 관계 유형을 담은 다국어 임상 용어 저장소이며, 단순한 의학 단어 목록이 아니라 개념과 개념 사이의 관계까지 함께 담긴 구조다. 예제 시나리오는 7장과 같은 두 개의 배포 파일을 쓴다. 설명 파일은 개체의 이름과 별칭을 담아 노드와 관계에 붙일 이름표를 제공하고, 관계 파일은 개체와 관계를 식별하는 숫자 코드를 담아 노드 사이를 잇는 선을 제공한다.`,
+    how: [`설명 파일과 관계 파일을 좌우 두 칸에 놓고, 각각을 이름표와 선이라는 한 단어로 규정하는 2열 구성이다. 파일명을 그대로 노출하되 역할 한 줄이 앞에 오는 순서다.`,
+      `예시 상자에서 선천성 지카 감염과 소두증이 선천성이라는 공통 속성에 연결되는 형태를 미리 보여 준다. 이 연결이 §8.4.3에서 실제 경로로 되돌아온다.`,
+      `두 파일의 실제 모습은 7장 7.5.2절, 리스팅의 주석 판본은 7.6.4절, 전체 예제 코드는 책의 온라인 저장소에 있다는 출처 안내를 덧붙인다.`],
+    why: `이름표와 선이라는 역할 구분이 곧바로 S15의 적재 세 단계로 이어진다. 또 여기서 한 번 노출한 선천성 공통 속성 예시가 S56·S60·S67에서 실제 경로 문자열로 회수되므로, 미리 심어 두면 뒤의 이해 비용이 줄어든다.` },
+
+  { n: 14, sec: "§8.2", coord: "§8.2 · 그림 8.1", supp: false,
+    title: "그림 2 · SNOMED 계층 구조",
+    what: `SNOMED의 계층 구조와 정보 전파 방식을 다루는 그림이다. 맨 위 루트에서 아래로 내려가며 읽으면, 루트 바로 아래 1레벨 노드가 온톨로지의 원형 개체이고 깊은 곳의 노드는 자기 조상인 1레벨 노드의 이름을 범주로 물려받는다. 이 전파가 필요한 이유는 §8.4.1에서 개체명 인식의 허용 범주 목록을 만드는 밑바탕이 되기 때문이다.`,
+    how: [`루트에서 하위로 내려가는 트리 도해로, 세로 방향 하나가 곧 전파 방향이 되게 그린 구성이다.`,
+      `캡션에 읽는 법·핵심·왜 필요한가 세 항목을 두어, 그림이 구조 설명에 그치지 않고 뒤 절의 쓰임까지 예고하게 한다.`],
+    why: `이 그림이 없으면 S20의 라벨 전파 쿼리가 맥락 없이 등장한다. 계층 구조를 먼저 도해로 세운 뒤 쿼리를 보여 주는 순서라야 코드가 그림의 구현으로 읽힌다.` },
+
+  { n: 15, sec: "§8.2", coord: "§8.2 · Listing 8.3·8.4·8.5", supp: false,
+    title: "적재 세 단계 예고",
+    what: `적재 작업이 세 단계로 나뉜다는 것을 다루는 장이다. 세 리스팅이 각각 다른 일을 맡고, 앞 단계의 결과 위에 다음 단계가 정보를 얹는 순서다. Listing 8.3은 관계 파일로부터 Neo4j에 노드와 관계를 만들고, Listing 8.4는 설명 파일에서 이름과 별칭을 뽑아 노드와 관계에 붙이며, Listing 8.5는 계층 구조를 따라가며 1레벨 노드의 정보를 더 깊은 노드로 전파한다.`,
+    how: [`세 개의 칸을 화살표로 이어 누적 순서를 보이는 흐름 구성이다. 리스팅 번호가 아니라 각 단계가 하는 일이 카드 제목이 된다.`,
+      `지하철 비유로 세 동사를 묶는다. 8.3은 역과 역 사이의 노선을 놓고, 8.4는 각 역과 노선에 사람이 읽을 이름을 붙이며, 8.5는 각 역이 어느 권역에 속하는지 상위 분류를 내려보내는 일이다.`,
+      `비유의 경계를 명시한다. 지하철 노선과 달리 SNOMED의 관계는 방향과 유형이 여러 가지이고 그 차이가 뒤의 명확화 근거가 된다는 단서다.`],
+    why: `S16부터 S21까지 여섯 장의 코드가 이어지므로 그 목차 역할을 하는 장이다. 이 예고가 없으면 코드 슬라이드가 나열로만 보인다. §8.2에서 시간이 부족해도 이 장은 남겨야 뒤의 여섯 장이 구조를 얻는다.` },
+
+  { n: 16, sec: "§8.2", coord: "§8.2 · Listing 8.3", supp: true,
+    title: "제약 조건과 인덱스 걸기",
+    what: `Listing 8.3의 앞부분, 곧 적재에 앞서 걸어 두는 제약과 인덱스를 다루는 장이다. set_constraints는 SnomedEntity 노드의 id가 유일하도록 제약을 걸고, 이름과 관계 속성에 인덱스를 만들어 검색을 빠르게 한다. 제약 조건은 같은 개념이 두 개의 노드로 갈라지지 않게 막고, 인덱스는 노드 이름과 관계의 id·유형·UMLS 코드로 찾는 조회를 빠르게 한다. 45만 개 규모를 배치로 밀어 넣기 전에 걸어 두어야 중복 노드와 느린 조회를 예방할 수 있다는 것이 순서의 이유다.`,
+    how: [`코드 창과 코드 읽기 패널을 나란히 두는 코드 슬라이드 구성이다. 패널이 CREATE CONSTRAINT와 CREATE INDEX 두 가지로만 요약해, 다섯 줄짜리 쿼리 목록을 두 개념으로 접는다.`,
+      `제약 조건은 같은 주민등록번호로 두 사람을 만들지 못하게 하는 규칙, 인덱스는 책 뒤의 찾아보기라는 두 비유로 낯선 데이터베이스 용어를 대체한다.`,
+      `맨 아래 한 줄이 순서의 근거를 담당한다. 왜 적재보다 먼저인가에 답하는 방식이다.`],
+    why: `명확화 논지에 직접 기여하지 않아 부연 배지가 붙은 장이다. 다만 여기서 만든 이름 인덱스가 S46의 전문 검색 인덱스로 이어지므로, 인덱스라는 재료 하나는 남겨 두는 편이 뒤와 연결된다.` },
+
+  { n: 17, sec: "§8.2", coord: "§8.2 · Listing 8.3", supp: true,
+    title: "관계 MERGE와 SNOMED_IS_A",
+    what: `Listing 8.3의 본체, 곧 관계를 배치로 적재하는 부분을 다루는 장이다. 모든 관계는 SNOMED_RELATION으로 저장되고, 관계 유형이 116680003 곧 A는 B의 한 종류다라는 상위 관계일 때는 SNOMED_IS_A가 추가로 한 번 더 만들어진다. MERGE는 데이터가 없으면 만들고 이미 있으면 기존 데이터를 재사용하는 명령이다. 관계를 두 벌로 저장하는 설계 의도는 용도 분리에 있다. 일반적인 그래프 탐색에는 SNOMED_RELATION을 쓰고, 계층을 타고 오르내릴 때는 SNOMED_IS_A만 골라 쓴다.`,
+    how: [`코드 창에 MERGE 세 줄과 FOREACH 블록을 함께 싣고, 옆 패널에서 MERGE·116680003·FOREACH 관용구 세 가지를 짚는 구성이다.`,
+      `설계 의도를 두 개의 질문 대비로 전달한다. 지카와 소두증이 어떻게 연결되는가는 SNOMED_RELATION이 답하고, 소두증이 어느 상위 범주에 속하는가는 SNOMED_IS_A가 답한다.`],
+    why: `관계를 두 벌로 저장하는 이유가 세 장 뒤 S20의 전파 쿼리에서 실증된다. §8.2에서 가장 또렷한 예고와 회수의 짝이므로, 부연 배지가 붙어 있어도 두 질문의 대비만은 남겨 두는 편이 구조를 살린다.` },
+
+  { n: 18, sec: "§8.2", coord: "§8.2 · Listing 8.4", supp: false,
+    title: "관계에 유형 이름과 별칭 붙이기",
+    what: `Listing 8.4의 첫 번째 쿼리, 곧 관계 쪽에 이름을 붙이는 단계를 다루는 장이다. 설명 파일에서 읽은 값으로 SNOMED_RELATION의 type과 aliases를 채워, 숫자 코드로만 저장돼 있던 관계에 IS_A나 RISK_FACTOR_FOR처럼 사람이 읽을 수 있는 유형 이름이 붙는다. is-a 관계는 이미 별도 관계로 만들어 두었으므로 여기서는 제외된다. 채우기 방식은 덮어쓰지 않는 쪽이다. 값이 아직 비어 있을 때만 새 값을 넣고, 별칭도 이미 들어 있지 않을 때만 리스트에 덧붙여 중복을 막는다.`,
+    how: [`Cypher 쿼리 전문과 코드 읽기 패널을 나란히 두되, 패널이 SET 절의 CASE 구문 두 개로 논지를 좁히는 구성이다.`,
+      `덮어쓰지 않고 채운다는 표현으로 CASE WHEN IS NULL의 의미를 한 단어로 압축한다.`,
+      `마지막 한 줄이 이 단계의 목적을 뒤 절과 연결한다. 경로 문자열이 노드와 관계 유형이 함께 보이는 형태로 읽히려면 관계에 이름이 있어야 한다는 근거다.`],
+    why: `이 장이 없으면 S58의 경로 문자열에 왜 REL_TYPE이 적혀 있는지 설명할 근거가 사라진다. 관계에 이름을 붙이는 일이 미화가 아니라 뒤 단계의 필수 재료라는 것이 이 장의 논지다.` },
+
+  { n: 19, sec: "§8.2", coord: "§8.2 · Listing 8.4", supp: false,
+    title: "개체에 대표 이름과 별칭 붙이기",
+    what: `Listing 8.4의 두 번째 쿼리, 곧 개체 쪽에 이름을 붙이는 단계를 다루는 장이다. 이 단계가 끝나면 개체마다 대표 이름 하나와 별칭 목록이 생긴다. 한 개념이 myocardial infarction이라는 대표 이름과 heart attack 같은 별칭을 함께 갖게 되는 구조다. 같은 파일을 두 번 배치 처리해 관계와 개체를 각각 채운다. 이 이름과 별칭이 뒤에서 전문 검색으로 후보를 찾을 때 검색 인덱스의 재료가 되므로, 문장에 heart attack이 나와도 표준 개념 myocardial infarction을 후보로 검색할 수 있게 된다.`,
+    how: [`코드 창 옆에 한 개념, 여러 표현이라는 제목의 패널을 두어 쿼리의 결과를 먼저 규정하는 구성이다. 코드는 확인용으로 배치된다.`,
+      `중복 방지 장치를 주소록에 이미 저장된 별명을 다시 추가하지 않는 것에 빗대 설명한다.`,
+      `마지막 한 줄이 다음 단계의 재료라는 성격을 표시해 §8.4.2와 연결한다.`],
+    why: `별칭 저장이 뒤의 후보 선택 품질을 결정한다. S48에서 전문 검색이 글자 모양이 다른 동의어를 잡지 못한다는 한계를 다룰 때, 그 반대편에 이 장의 별칭 저장이 있다는 것을 알고 있어야 논의가 성립한다.` },
+
+  { n: 20, sec: "§8.2", coord: "§8.2 · Listing 8.5", supp: false,
+    title: "1레벨 범주를 하위 트리로 전파하기",
+    what: `Listing 8.5, 곧 라벨 전파 쿼리를 다루는 장이다. 루트 노드 138875005 바로 아래에 붙은 1레벨 노드들이 온톨로지의 원형 범주이며 Disease, Organism, Procedure 같은 것들이다. 각 1레벨 노드에서 SNOMED_IS_A를 하위 방향으로 끝까지 확장하며, 아직 그 범주 이름을 갖지 않은 노드에 라벨을 붙인다. 주석 A는 1레벨 노드에서 하위 방향으로 경로를 확장하는 부분으로 maxLevel이 마이너스 1이라 깊이 제한 없이 하위 트리 전체를 훑고, B는 확장된 경로에 등장한 모든 노드를 펼쳐 모으며, C는 각 하위 노드의 id와 붙일 라벨을 돌려준다.`,
+    how: [`쿼리 안에 원서의 주석 표시 A·B·C를 그대로 남기고, 옆 패널에서 그 세 지점만 해설하는 주석 따라 읽기 구성이다. 줄 단위 설명 대신 세 개의 이정표로 긴 쿼리를 접는다.`,
+      `relationshipFilter에 SNOMED_IS_A가 지정된 대목이 S17에서 이 관계를 따로 만든 이유를 실증한다.`,
+      `maxLevel 마이너스 1이라는 값으로 대상 범위가 하위 트리 전체임을 수치로 보인다.`],
+    why: `S17이 남긴 설계 의도가 여기서 답을 얻는다. 동시에 이 쿼리가 만든 값이 S21에서 정리되고 S35·S37·S46에서 세 번 쓰이므로, §8.2에서 회수율이 가장 높은 코드다.` },
+
+  { n: 21, sec: "§8.2", coord: "§8.2 · Listing 8.5 결과", supp: false,
+    title: "전파의 결과 — 깊은 개체도 범주를 안다",
+    what: `라벨 전파가 남긴 결과와 그 쓰임을 다루는 장이다. SNOMED_IS_A 관계를 이용해 계층 연결을 따라 의미 유형을 트리 구조 전체에 전파한 결과, 깊은 곳의 세밀한 개체도 자신이 어떤 큰 범주에 속하는지를 갖게 된다. 예컨대 복부 초음파 검사는 여러 단계 아래에 있어도 최상위 Procedure 라벨을 갖는다. 이 type 값들을 모으면 온톨로지가 인정하는 범주 목록이 되고, §8.4.1에서 LLM이 임의의 분류명을 만들지 않고 SNOMED에 실제로 존재하는 범주 안에서만 분류하도록 제한하는 근거가 된다.`,
+    how: [`전파된 값과 쓰이는 곳이라는 두 칸으로 나눠, 왼쪽에는 <code>type</code> 속성이 채워진다는 결과를, 오른쪽에는 그것이 NER의 허용 범주 목록이 된다는 용도를 배치한 구성이다.`,
+      `조직도 비유로 계층 전파를 설명한다. 연구개발본부에서 AI연구소를 거쳐 NLP팀으로 내려가도 최상위 소속 정보가 전달되는 구조다.`,
+      `비유의 경계를 명시한다. 조직도와 달리 한 개체가 여러 범주를 동시에 가질 수 있어 <code>type</code>은 목록으로 저장된다.`,
+      `마지막 한 줄로 §8.2를 닫는다. 그래프에 개체·이름과 별칭·관계·범주가 모두 올라와 있다는 준비 완료 선언이다.`],
+    why: `§8.2 전체의 결론이자 §8.4.1의 씨앗이다. 여기서 만든 type 값이 S35의 조회 쿼리, S37의 프롬프트 자리표시자, S46의 검색 필터에서 세 번 회수되므로, 이 장을 흐리게 넘기면 뒤의 세 장이 근거를 잃는다.` },
+  { n: 22, sec: "§8.3", coord: "§8.3 · 섹션 표지", supp: false,
+    title: "§8.3 Ollama와 Llama 3.1 8B로 모델 준비하기",
+    what: `세 번째 절의 표지다. 앞 절에서 온톨로지를 준비했으므로 이 절은 모델을 준비한다. 외부 API 대신 내 컴퓨터에서 도는 오픈 모델로 NED 시스템을 배포하는 것이 이 절의 내용이며, 여섯 장으로 짧게 구성되어 있다.`,
+    how: [`제목·부제·절 번호만 놓은 표지 형식이다. 부제가 외부 API에서 로컬 오픈 모델로 옮겨 간다는 변화를 지목한다.`,
+      `재료 준비의 두 번째이자 마지막 절이라는 위치를 표시한다.`],
+    why: `준비 구간이 여기서 끝나고 다음 절부터 본론이 시작된다는 경계를 만든다. 이 표시가 있어야 S28의 §8.4 표지가 발표의 무게 중심이 옮겨 가는 지점으로 읽힌다.` },
+
+  { n: 23, sec: "§8.3", coord: "§8.3 · 실행 환경", supp: false,
+    title: "Ollama와 Llama 3.1 8B",
+    what: `이 장이 쓰는 실행 환경 두 가지를 다루는 장이다. 앞 장들에서는 OpenAI API로 자연어 처리 작업을 수행했지만, 여기서는 Ollama와 메타가 공개한 Llama 3.1 8B로 NED 시스템을 로컬에 배포한다. Ollama는 내 컴퓨터에서 LLM을 실행하는 오픈소스 도구로 데이터에 대한 완전한 통제권을 주고 지연 시간과 외부 제공자 의존을 함께 줄이며, macOS·Linux·Windows와 호환되고 명령줄과 그래픽 인터페이스를 모두 제공한다. Llama 3.1 8B는 80억 파라미터의 오픈소스 LLM으로 최대 12만 8천 토큰의 문맥 길이를 지원하고 다국어 정보 처리에 최적화되어 있으며 소비자용 하드웨어에서도 효율적으로 배포되도록 설계되었다.`,
+    how: [`Ollama와 Llama 3.1 8B를 좌우 두 칸에 놓고, 왼쪽은 왜 로컬인가를 오른쪽은 어떤 모델인가를 담당하게 하는 2열 구성이다.`,
+      `의료 기록을 외부 서버에 보내지 않고 사내 PC나 서버에서 처리하는 상황으로 데이터 통제권을 구체화한다.`,
+      `과장을 막는 경계 문장을 붙인다. 로컬 실행이 항상 더 빠르다는 뜻은 아니며 실제 속도와 품질은 GPU·메모리·양자화 방식에 따라 달라진다는 단서다.`],
+    why: `청중이 자기 환경으로 가장 쉽게 옮겨 볼 수 있는 대목이다. 동시에 로컬 실행의 이점을 과장하지 않는 태도가 §8.5의 실무 경계와 같은 결이어서, 이 경계 문장이 장 전체의 신뢰 수준을 유지한다.` },
+
+  { n: 24, sec: "§8.3", coord: "§8.3 · Listing 8.6", supp: false,
+    title: "두 줄로 끝나는 배포",
+    what: `Listing 8.6, 곧 배포에 쓰인 두 줄의 명령을 다루는 장이다. 설치 파일은 공식 사이트에서 받고, 설치 뒤에는 두 줄로 Llama 3.1 8B를 내려받아 배포한다. ollama serve는 로컬에서 요청을 받을 Ollama 서버를 띄우고, ollama pull llama3.1:latest는 최신 Llama 3.1 모델을 내려받는다. 이 두 줄로 외부 API 호출이 내 컴퓨터 안의 호출로 바뀐다.`,
+    how: [`두 줄짜리 코드 창과 명령별 역할 패널만으로 구성한 최소 코드 슬라이드다. 분량 자체가 배포 문턱이 낮다는 메시지를 대신한다.`,
+      `식당 비유로 두 명령의 선후 관계를 만든다. 첫 줄은 주문을 받을 식당 문을 여는 일, 둘째 줄은 주방에서 쓸 재료를 들여오는 일이며, 서버가 떠 있어야 뒤의 파이썬 코드가 요청을 보낼 수 있다.`],
+    why: `배포 비용이 낮다는 인상이 §8.5에서 이 접근을 다른 도메인으로 옮길 수 있다고 말할 때 설득력의 근거가 된다. 서버가 먼저 떠 있어야 한다는 선후 관계는 S25 코드의 전제이기도 하다.` },
+
+  { n: 25, sec: "§8.3", coord: "§8.3 · Listing 8.7", supp: false,
+    title: "목적지만 로컬로 바꾸기",
+    what: `Listing 8.7의 앞부분, 곧 파이썬에서 로컬 모델에 연결하는 코드를 다루는 장이다. Ollama는 OpenAI Chat Completions API와 호환되도록 만들어져 있어서, 로컬에 배포한 모델과도 앞 장들에서 쓰던 것과 같은 파이썬 코드로 곧장 대화할 수 있다. 바뀌는 것은 주소뿐이다. base_url이 요청 목적지를 외부 서버가 아니라 내 컴퓨터의 Ollama, 곧 localhost의 11434 포트로 지정하고, api_key는 OpenAI Chat Completions API가 형식상 요구하지만 오픈 모델에서는 실제로 쓰이지 않으므로 아무 값이나 넣어도 된다.`,
+    how: [`클래스 초기화 코드와 코드 읽기 패널을 나란히 두되, 패널이 base_url과 api_key 두 줄로만 논지를 좁히는 구성이다.`,
+      `자동차 비유로 변화의 범위를 규정한다. 엔진은 OpenAI에서 로컬 Llama로 바뀌었지만 운전대와 페달, 곧 OpenAI Chat Completions API 인터페이스는 그대로다.`,
+      `비유의 경계를 붙인다. 인터페이스가 같다고 응답 품질과 속도까지 같지는 않다는 단서다.`],
+    why: `코드 변경 비용이 거의 없다는 것이 이 장의 요지이고, 그것이 §8.5의 유연성 주장에 근거를 준다. base_url 한 줄이 §8.3의 실질적 내용이므로 다른 대목에 무게를 둘 이유가 없다.` },
+
+  { n: 26, sec: "§8.3", coord: "§8.3 · Listing 8.7", supp: true,
+    title: "temperature=0과 응답 꺼내기",
+    what: `Listing 8.7의 generate 메서드를 다루는 장이다. 메시지를 받아 응답을 만드는 이 메서드에서 temperature는 0으로 설정되어 있는데, 창의적인 답보다 일관된 답을 내도록 하는 값이다. 의료 코드가 실행할 때마다 바뀌면 안 되기 때문이며, 같은 프롬프트에 같은 답이 나와야 뒤의 단계별 결과를 서로 비교할 수 있다. 마지막 줄은 응답 객체에서 choices 0번, message, content 순서로 열어 실제 모델 답변을 꺼내며, 원문 코드에 남아 있는 주석은 반환 형식이 ChatGPT API 형식임을 전제한다는 뜻이다.`,
+    how: [`메서드 전문을 코드 창에 싣고, 옆 패널에서 temperature와 응답 추출 두 가지만 해설하는 구성이다. max_tokens나 top_p 같은 나머지 인자는 다루지 않는다.`,
+      `응답 추출을 큰 응답 객체에서 실제 답변이 든 자리를 순서대로 열어 꺼낸다는 표현으로 설명해, 중첩 접근을 한 문장으로 접는다.`,
+      `맨 아래에서 재현성이라는 한 단어로 이 설정의 의미를 규정해, 뒤에 이어지는 여러 기록된 출력이 서로 비교 가능한 근거가 된다는 점을 남긴다.`],
+    why: `이 장에서 확보한 결정적 출력이 뒤에 나오는 여러 기록된 출력을 서로 비교 가능하게 만드는 전제다. 다만 2024년 10월 실행 스냅샷이라는 단서는 S27이 따로 붙이므로, 이 장은 설정의 존재만 확인하고 넘어가는 부연 성격을 갖는다.` },
+
+  { n: 27, sec: "§8.3", coord: "§8.3 · 설계 의도", supp: false,
+    title: "왜 굳이 범용 모델인가",
+    what: `범용 모델을 NED에 쓰는 이유를 다루는 장이다. 원서 저자들은 Llama 3.1 같은 범용 모델을 쓰는 것이 LLM이 도메인 전용 온톨로지와 결합될 때 틈새 영역에서도 얼마나 잘 작동할 수 있는지를 보여 주려는 시도라고 설명한다. 이 설계가 가정하지 않는 것이 있다. 범용 LLM이 45만 개 규모의 의학 개념과 그 식별자를 정확히 기억한다고 가정하지 않으며, 그 지식은 온톨로지에서 조회해 프롬프트에 넣는다. 언어 이해는 LLM이 맡고 전문 지식은 SNOMED가 공급하는 분담이다.`,
+    how: [`가정하지 않는 것과 실제 분담이라는 두 칸으로 나눠, 부정문에서 시작해 긍정문으로 넘어가는 구성이다. 무엇을 기대하지 않는지를 먼저 세운다.`,
+      `문서 이해를 잘하는 신입 분석가에게 회사의 정확한 제품 코드와 부품 관계를 제품 마스터 DB로 제공하는 구조에 빗대 분담을 설명한다.`,
+      `실행 시점 기록을 명시한다. 예시 결과는 다음 절들에 나오는 프롬프트로 생성했으며 2024년 10월에 당시 최신 Llama 3.1 모델을 사용해 얻은 것이라는 단서다.`],
+    why: `§8.3을 닫고 §8.4로 넘어가는 다리다. 모델이 지식을 기억하지 않는다는 선언이 있어야 S45에서 후보 선택에 LLM을 쓰지 않는 이유가 자연스럽게 이어진다. 실행 시점 단서는 리포트가 참고 자료에서도 반복해 강조하는 대목이다.` },
+
+  { n: 28, sec: "§8.4", coord: "§8.4 · 섹션 표지", supp: false,
+    title: "§8.4 종단 간 NED 과정",
+    what: `본론에 해당하는 네 번째 절의 표지다. §8.4는 종단 간 NED 과정을 다루며, 비정형 텍스트 한 편이 온톨로지의 정확한 개체로 확정되기까지의 전 과정을 따라간다. 하위 절 §8.4.1부터 §8.4.3까지를 포함해 발표의 절반 가까운 분량을 차지한다.`,
+    how: [`제목·부제·절 번호만 놓은 표지 형식이다. 부제가 입력에서 출력까지라는 범위를 지목한다.`,
+      `앞의 두 절이 준비였고 여기서부터 본론이라는 구획을 표시한다.`],
+    why: `발표의 무게 중심이 옮겨 가는 지점을 명시하는 장이다. 준비와 본론의 경계가 표시되지 않으면 §8.2·§8.3의 코드와 §8.4의 코드가 같은 층위로 읽힌다.` },
+
+  { n: 29, sec: "§8.4", coord: "§8.4 · 그림 8.2", supp: false,
+    title: "그림 3 · NED 시스템의 작업 흐름",
+    what: `이 예제의 NED 과정을 그린 멘탈 모델이다. 과정은 비정형 텍스트를 담은 입력 문서에서 시작해 명확화된 개체로 끝나며, 위쪽 세 상자가 개체명 인식·후보 선택·후보 명확화의 세 단계를 이룬다. 이 그림의 핵심은 아래에서 올라오는 도메인 온톨로지 공급선이 세 단계 모두에 닿는다는 점이다. 각 단계는 여러 상호작용을 거치며 입력 텍스트의 개체를 정확히 명확화한다.`,
+    how: [`왼쪽 입력에서 오른쪽 출력으로 흐르는 가로축과, 아래 온톨로지에서 위 세 단계로 올라가는 세로축을 겹친 도해다. 처리 순서와 지식 공급 관계를 두 방향으로 분리해 보인다.`,
+      `캡션에 읽는 법·핵심·해석 세 항목을 두어 그림이 스스로 해석 방향을 안내하게 한다.`,
+      `이 흐름도가 S36·S44·S52에서 강조 위치를 바꿔 가며 반복 등장하는 원형이 된다.`],
+    why: `§8.4의 40여 장 동안 현재 위치를 잃지 않게 하는 뼈대 그림이다. 세 단계 모두에 온톨로지가 닿는다는 구조가 S33의 설계 원칙과 S77의 역할 분담표로 이어지므로, 이 도해가 뒤의 두 주장을 미리 시각화한다.` },
+
+  { n: 30, sec: "§8.4", coord: "§8.4 · 1단계", supp: false,
+    title: "1단계 개체명 인식 — 구조화된 데이터로",
+    what: `세 단계 가운데 첫 번째, 개체명 인식을 다루는 장이다. 입력 문서는 LLM 기반 NER 구성 요소가 분석하며, NER는 텍스트에서 관심 개체를 찾아 범주를 붙이는 작업이다. LLM이 도메인 온톨로지에 담긴 지식을 이용해 입력 텍스트 속 관련 생물의학 개체를 찾아내고, 예컨대 Zika 같은 용어는 SNOMED에 따라 Disease 개념으로 인식될 수 있다. 전체 구조는 두 축으로 요약된다. LLM이 개체를 찾아 라벨을 붙이는 발견과, 다단계 접근으로 가장 정확한 개체를 고르는 확정이다. 이 단계의 산출물은 날것의 텍스트를 대신하는 구조화된 데이터다.`,
+    how: [`하는 일과 두 축으로 본 전체 구조라는 두 칸으로 나눠, 단계 하나의 설명에서 전체 구조의 예고로 넘어가는 구성이다.`,
+      `시험 비유로 두 축을 만든다. 문제에서 중요한 단어에 밑줄을 긋는 일이 발견, 참고서의 개념 관계를 조사해 보기 중 정답을 고르는 일이 확정이다.`,
+      `맨 아래 주의 문장이 이 단계의 한계를 미리 규정한다. NER에서 붙인 라벨은 초기 분류일 뿐이고 정확한 표준 개체는 뒤의 명확화 단계에서 확정된다.`],
+    why: `날것의 텍스트가 구조화된 데이터로 바뀌는 지점을 설명한다. 여기서 처음 나오는 초기 분류라는 단서가 S41에서 강조되고 S72에서 정정되며 S79의 실무 경계 첫 항목으로 마무리되는, 장에서 가장 길게 이어지는 복선이다.` },
+
+  { n: 31, sec: "§8.4", coord: "§8.4 · 2단계", supp: false,
+    title: "2단계 후보 선택 — 후보 풀 만들기",
+    what: `두 번째 단계인 후보 선택을 다루는 장이다. 전문 검색 메커니즘이 각 개체 언급에 대해 가능한 매칭 목록을 만들어 내며, Zika라는 용어 하나가 SNOMED에서는 Zika Virus, Zika Virus Infection, Congenital Zika Virus Infection 같은 여러 개체에 대응할 수 있다. 이 단계의 경계는 분명하다. 잠재적 명확화 대상의 후보 풀을 마련하는 데서 멈추고 정답을 고르지 않으며, 다음 단계에서 시스템이 이 후보들을 평가해 가장 정확한 매칭을 찾는다. 후보를 넓게 모으는 일과 그중 하나를 고르는 일은 근거가 다르므로 단계를 분리한 것이다.`,
+    how: [`예시와 이 단계의 경계라는 두 칸으로 나눠, 왼쪽에 Zika의 세 후보를 나열하고 오른쪽에 아직 정답을 고르지 않는다는 제약을 두는 구성이다.`,
+      `용의자 명단 비유로 단계 분리를 설명한다. 범인을 확정하기 전에 조건에 맞는 명단을 먼저 만드는 구조이며, 명단이 후보 풀에 범인 확정이 후보 명확화에 대응한다.`,
+      `비유의 경계를 명시한다. 명단에 오르는 기준은 수사관의 직관이 아니라 온톨로지의 이름·별칭 검색 결과다.`],
+    why: `단계를 나누는 이유가 여기서 세워지지 않으면 S45에서 후보 선택에 LLM을 쓰지 않는 판단이 설득되지 않는다. 여기 나온 세 후보가 S50과 S72를 잇는 사슬의 출발점이기도 하다.` },
+
+  { n: 32, sec: "§8.4", coord: "§8.4 · 3단계", supp: false,
+    title: "3단계 후보 명확화 — 세 단계 예고",
+    what: `마지막 단계인 후보 명확화를 다루는 장이다. 이 단계에서 LLM은 선택을 다듬어 각 언급에 가장 정밀하게 맞는 개체를 결정하고, 입력 문서에 언급된 각 개체가 온톨로지 안의 대응 개체로 정확히 매핑되도록 보장한다. 내부는 다시 세 단계로 나뉜다. 온톨로지 구조에서 후보 사이의 최단 경로를 찾고, 관련 경로 세부를 자연어로 옮기고, 옮긴 문장을 요약해 문맥 지식으로 명확화를 뒷받침한다. 결정의 근거는 후보와 주변 개체 사이의 연결 관계다.`,
+    how: [`최단 경로 탐지·경로-텍스트 변환·텍스트 경로 요약 세 칸을 화살표로 이은 흐름 구성이다. §8.4.3의 20여 장이 이 세 칸을 하나씩 펼치는 구조가 된다.`,
+      `지카 예시로 세 단계의 결과를 미리 보인다. Zika, 임신, 소두증, 선천성 기형이 함께 나오고 그래프에서도 짧게 연결되면 Congenital Zika virus infection을 선택하는 식이다.`],
+    why: `§8.4.3 전체의 목차를 미리 세우는 장이다. S54가 같은 세 단계를 다시 세우고 S56 이후가 하나씩 실행하므로, 여기서 세 단어를 심어 두어야 24장짜리 절이 나열로 흩어지지 않는다.` },
+
+  { n: 33, sec: "§8.4", coord: "§8.4 · 설계 원칙", supp: false,
+    title: "매 단계에 온톨로지를 통합한다",
+    what: `이 접근의 설계 원칙을 다루는 장이다. LLM 주도 접근이지만 명확화 과정의 매 단계마다 도메인 전용 온톨로지를 통합하며, 온톨로지의 계층 구조와 관계 구조를 함께 끌어들임으로써 모델이 개체 분류와 명확화에 대해 더 근거 있는 결정을 내리게 한다. 구체적으로 범주는 NER 단계에 공급되어 모델이 새 분류명을 만들지 못하게 하고, 후보는 CS 단계에 공급되어 모델의 기억이 아니라 온톨로지 조회 결과로 후보를 만들게 하며, 관계는 CD 단계에 공급되어 후보 사이의 경로를 판단 근거로 제공한다. 용어가 여러 의미나 연관을 가질 수 있는 복잡한 경우에 특히 효과가 크고, 온톨로지만 갱신하면 새 지식이 반영된다는 것도 장점이다.`,
+    how: [`범주·후보·관계 세 카드가 각각 NER·CS·CD에 대응하도록 배치한 구성이다. S29 그림의 세로 공급선을 세 개의 항목으로 문장화한 형태다.`,
+      `각 카드가 온톨로지가 무엇을 막는지를 함께 적어, 공급이 곧 제약이라는 설계 성격을 드러낸다.`,
+      `맨 아래에서 갱신 용이성을 장점으로 덧붙여 §8.1의 두 번째 한계와 연결한다.`],
+    why: `S6의 네 가지 한계 가운데 두 번째와 네 번째가 이 장에서 회수된다. 세 하위 절의 논지를 한 장에 압축한 형태여서, 시간이 부족해 §8.4.1부터 §8.4.3까지를 줄여야 할 때도 이 장은 남겨야 구조가 유지된다.` },
+  { n: 34, sec: "§8.4.1", coord: "§8.4.1 · 1단계", supp: false,
+    title: "§8.4.1 개체명 인식(NER)",
+    what: `§8.4.1의 도입으로, NER의 목표와 방법을 다루는 장이다. 목표는 비정형 텍스트에 언급된 개체명을 찾아 Disease, Organism, Procedure 같은 미리 정해진 범주로 분류하는 것이다. 방법은 프롬프트 엔지니어링, 곧 관심 있는 개체 유형을 프롬프트 안에 명시적으로 정의해 주는 방식이며, 어떤 개체를 정의할지는 데이터 과학자나 데이터 엔지니어가 도메인 전문가와 협의해 정하는 경우가 많다. 이 시나리오에서는 SNOMED의 구조화된 의학 지식을 끌어들여 LLM이 더 정밀하고 문맥을 아는 개체 인식을 수행하게 한다. NER와 NED의 질문도 여기서 구분된다. NER는 문장에 어떤 이름이 있고 대략 무슨 종류인가를 묻고, NED는 그 이름이 지식베이스의 정확히 어느 항목인가를 묻는다.`,
+    how: [`방법과 두 작업의 경계라는 두 칸으로 나눠, 왼쪽에 프롬프트 엔지니어링 설명을 오른쪽에 NER와 NED의 질문 대비를 배치한 구성이다. 두 질문을 나란히 놓는 형식이 이 장에서 가장 값진 장치다.`,
+      `다른 도메인의 예시로 이식성을 보인다. 의료에서는 Disease와 Procedure를 찾지만 제조 문서에서는 Product·Part·Defect·Process를 찾도록 범주를 정해야 하며, 범주 목록 자체가 도메인마다 달라진다는 점이 이 접근의 이식성을 만든다.`],
+    why: `장 전체에서 NER와 NED가 섞여 나오므로, 두 질문의 구분이 여기서 세워지지 않으면 뒤에서 계속 혼동이 생긴다. 제조 예시는 S77의 A200 예시와 짝을 이루며 §8.5의 이식 가능성 주장을 미리 준비한다.` },
+
+  { n: 35, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.8", supp: false,
+    title: "허용 범주 목록 만들기",
+    what: `Listing 8.8, 곧 온톨로지에서 허용 범주를 뽑아내는 쿼리를 다루는 장이다. NER를 하려면 먼저 온톨로지에서 미리 정의된 범주를 모두 가져와야 한다. 이 쿼리는 모든 SnomedEntity 노드의 type 속성, 곧 §8.2의 라벨 전파로 채워진 범주를 펼쳐 세고 빈도 높은 순으로 정렬한 뒤 하나의 리스트로 모아 돌려준다. UNWIND가 목록으로 저장된 범주를 한 줄씩 펼치고, count와 ORDER BY DESC가 등장 횟수 순으로 정렬하며, collect가 프롬프트의 named_entities 자리에 들어갈 하나의 목록을 만든다. 이 목록은 모델이 새로운 분류명을 만들지 않고 제공된 보기 안에서만 고르게 하는 제약이 된다.`,
+    how: [`짧은 Cypher 쿼리 전문과 쿼리 읽는 법 패널을 나란히 두고, 패널이 꺼내고·세고·모은다는 세 동사로 쿼리를 압축하는 구성이다.`,
+      `마지막 항목이 이 목록의 역할을 제약으로 규정한다. 조회 결과가 곧 모델의 답안 목록이 된다는 관계를 명시한다.`],
+    why: `§8.2의 라벨 전파가 여기서 처음 회수된다. 이 연결이 드러나지 않으면 §8.2의 여섯 장이 지나간 코드로 남고, 드러나면 준비 절이 본론의 재료였다는 구조가 성립한다.` },
+
+  { n: 36, sec: "§8.4.1", coord: "§8.4.1 · 그림 8.3", supp: false,
+    title: "그림 4 · NED의 첫 단계",
+    what: `NED의 첫 단계인 NER의 입력과 출력을 보여 주는 그림이다. 진하게 강조된 구간이 이번 단계이고 회색 구간은 아직 실행되지 않은 뒤 단계다. 입력 문서가 들어가면 범주 라벨이 붙은 언급 목록이 나온다. 이 그림의 핵심은 범주가 모델이 만든 것이 아니라 온톨로지의 1레벨 노드에서 유도된다는 점이며, SNOMED에서는 1레벨 노드가 범주를 정의하고 그 정보가 다른 모든 노드로 전파된다.`,
+    how: [`S29의 전체 흐름도를 재사용하되 첫 상자만 강조하고 나머지를 회색으로 낮춘 단계 강조형 도해다. 같은 그림의 강조 위치가 진행률 표시 역할을 한다.`,
+      `캡션이 읽는 법·입력과 출력·핵심 세 항목으로 나뉘어, 강조 구간과 산출물과 범주의 출처를 각각 지목한다.`],
+    why: `같은 흐름도의 강조가 옮겨 가는 첫 사례라서, 여기서 반복 구조를 인지시키면 S44와 S52에서 청중이 자동으로 현재 위치를 읽는다. 그림 자체의 정보량은 적고 위치 표시가 주된 기능이다.` },
+
+  { n: 37, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.9", supp: true,
+    title: "시스템 메시지 — 범주를 고정한다",
+    what: `Listing 8.9의 시스템 메시지 부분을 다루는 장이다. 시스템 메시지는 SNOMED 온톨로지의 의학 도메인 범주에 속하는 개체명의 등장을 추출하되 무관하거나 범위를 벗어난 범주는 피하라고 지시한다. 중괄호로 표시된 named_entities 자리에 Listing 8.8이 모아 온 허용 범주 목록이 들어가고, 그 아래 한 줄이 목록 밖의 범주를 명시적으로 금지한다. 함께 실린 input은 비뇌형 모균증이라는 의학적 상태의 위험 요인을 다루는 예시 입력으로, 당뇨병이나 면역억제처럼 인식해야 할 의학 용어를 나열한다. 전체 프롬프트는 책의 코드 저장소에 있다.`,
+    how: [`프롬프트 원문을 코드 창에 그대로 싣고 옆 패널에서 자리표시자와 금지 문장 두 곳만 짚는 구성이다. 규칙과 연습 문제라는 두 항목으로 system과 input의 역할을 나눈다.`,
+      `자리표시자 named_entities가 앞 장 쿼리의 출력을 받는 지점임을 명시해 두 슬라이드를 잇는다.`],
+    why: `§8.2의 라벨 전파가 두 번째로 회수되는 자리다. 온톨로지가 NER 단계에 공급된다는 S33의 첫 카드가 실제 코드로 구현된 모습이어서, 설계 원칙과 구현을 잇는 증거 역할을 한다.` },
+
+  { n: 38, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.9", supp: true,
+    title: "퓨샷 예시가 출력 형식을 고정한다",
+    what: `Listing 8.9의 assistant 부분, 곧 퓨샷 예시를 다루는 장이다. assistant는 모델이 내놓아야 할 정답 형식을 JSON으로 보여 주는 예시이며, JSON으로 답하라고 말만 하는 것보다 실제 JSON 예시를 함께 보여 주는 편이 형식 오류를 줄이는 데 유리하다. 이 예시가 뽑아 낸 개체는 네 개다. Risk factors는 Events, rhinocerebral mucormycosis와 poorly controlled diabetes mellitus는 Disease, severe immunosuppression은 Qualifier value 라벨을 받았다. 출력 구조를 보면 sentence 키가 문장 단위 처리를 강제해 의미의 각 단위를 개별적으로 분석하게 하고, entities에는 문장 내 고유 ID와 텍스트에서 찾은 언급, SNOMED 범주 라벨이 담긴다.`,
+    how: [`JSON 예시를 코드 창에 싣고, 옆 패널에서 언급과 라벨의 짝 네 줄을 따로 뽑아 보여 주는 구성이다. 중첩 구조를 따라 읽는 대신 결과 목록으로 먼저 이해하게 한다.`,
+      `맨 아래에서 출력 구조를 sentence와 entities 두 키로 규정하고, 문장 단위 처리가 강제된다는 점을 명시한다.`],
+    why: `문장 단위 처리가 §8.4.3의 전제다. 한 문장 안에 함께 등장한 개체를 단서로 쓰는 전략이 성립하려면 처리 단위가 문장이어야 하므로, 부연 배지가 붙어 있어도 이 한 가지는 뒤와 직접 이어진다.` },
+
+  { n: 39, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.10", supp: false,
+    title: "입력 문장 — 그 지카 문장이 돌아온다",
+    what: `Listing 8.10, 곧 NER 프롬프트에 전달되는 사용자 메시지를 다루는 장이다. 입력 문장은 §8.1에서 scispaCy가 후보를 만들지 못했던 바로 그 지카 문장이다. Zika만 보면 바이러스인지 질병인지 모호하지만, 임신·태반 장벽·소두증·선천성 기형이라는 중요한 단서가 같은 문장에 함께 있다. 단서가 언급 바로 옆에 붙어 있지 않으므로 뒤의 명확화를 시험하기에 적합한 문장이며, 같은 문장으로 scispaCy는 후보를 만들지 못했다.`,
+    how: [`짧은 코드 창에 입력 문장만 싣고, 옆 패널이 이 문장을 고른 이유를 세 항목으로 설명하는 구성이다. 코드보다 선택의 근거가 화면의 중심이다.`,
+      `마지막 한 줄이 비교의 조건을 명시한다. 같은 입력에 새 접근을 적용한다는 통제 실험 구조를 세운다.`],
+    why: `이 장이 §8.4에서 가장 중요한 예고다. 여기서 넣은 문장이 S40에서 개체 셋으로 쪼개지고 S49·S50에서 후보를 얻고 S60·S67에서 경로 증거를 얻어 S72에서 세 개의 SNOMED 개체로 확정되므로, 남은 30여 장이 이 한 문장을 중심으로 묶인다.` },
+
+  { n: 40, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.11", supp: false,
+    title: "NER 출력 — 세 개체와 문자 위치",
+    what: `NER 단계가 실제로 내놓은 결과물의 구조를 다루는 장이다. 출력의 각 항목은 문장 내 고유 ID, 언급 문자열, SNOMED 범주 라벨, 시작·끝 문자 위치의 네 필드로 이루어진다. 지카 문장에서는 세 개체가 식별되었다. Zika는 Organism으로 인식되어 19번째에서 22번째 문자 구간을 차지하고, Microcephaly는 Clinical finding으로 라벨링되어 의학적 상태임을 나타내며 105번째에서 116번째 문자에 있고, Congenital malformations 역시 Clinical finding이고 122번째에서 145번째 문자 사이에 있다. 여기서 Zika에 붙은 Organism이 이 단계의 잠정 판단일 뿐 최종 답이 아니라는 점이 이 장이 담는 핵심이다.`,
+    how: [`JSON 출력 일부를 코드 창에 싣고, 옆 패널에서 세 개체를 언급·라벨·위치의 짝으로 나열하는 구성이다. 중첩 JSON을 따라 읽는 부담을 목록이 대신한다.`,
+      `첫 항목만 전문으로 보이고 나머지는 생략 표시로 접어, 구조 하나를 이해하면 나머지가 같다는 점을 형식으로 전달한다.`],
+    why: `첫 단계의 실제 산출물이자 뒤의 두 장을 동시에 예고하는 장이다. 여기 붙은 Organism 라벨이 S41의 주제이자 S72에서 정정되는 대상이고, start와 end 필드가 S42가 다루는 후처리의 이유가 된다.` },
+
+  { n: 41, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.11 해석", supp: false,
+    title: "Organism은 최종 답이 아니다",
+    what: `NER 출력의 라벨을 어디까지 신뢰해야 하는지를 다루는 장이다. Zika가 Organism으로 분류된 점이 관찰 대상이며, 이 초기 라벨이 명확화 과정에서 어떻게 다듬어지는지는 §8.4.3에서 확인된다. 이 단계에서 확정되는 것은 문장 안에서 어떤 문자열이 개체인지, 그리고 그 개체가 온톨로지의 어느 큰 범주에 드는지까지다. 아직 확정되지 않은 것은 지식베이스의 정확한 항목으로, Zika 바이러스인지 지카 바이러스병인지 선천성 지카 감염인지는 후보 선택과 후보 명확화를 거쳐야 내려진다. 초기 라벨은 다음 단계에서 후보 검색의 탐색 공간을 좁히는 데 쓰인다.`,
+    how: [`확정되는 것과 확정되지 않은 것을 좌우 두 칸에 놓아, 같은 출력에서 신뢰 구간과 유보 구간을 갈라 보이는 대비 구성이다.`,
+      `Jaguar 비유로 초기 라벨의 성격을 설명한다. 일단 동물이나 브랜드와 관련된 이름으로 찾아 둔 뒤 엔진·신차·변속기 문맥을 보고 자동차 브랜드로 확정하는 구조다.`,
+      `비유의 경계를 명시한다. 최종 확정은 사람의 직관이 아니라 온톨로지 경로라는 명시적 근거로 이루어진다.`],
+    why: `S30이 심은 초기 분류라는 복선을 명시적으로 못 박는 장이다. 이 장이 없으면 S72에서 Organism이 감염 개체로 바뀌는 장면이 오류 정정처럼 보이고, 있으면 설계대로 작동한 결과로 읽힌다. S79의 실무 경계 첫 항목도 이 내용을 운영 규칙으로 옮긴 것이다.` },
+
+  { n: 42, sec: "§8.4.1", coord: "§8.4.1 · Listing 8.12", supp: true,
+    title: "문자 위치는 파이썬이 계산한다",
+    what: `Listing 8.12, 곧 문자 위치를 채우는 파이썬 함수를 다루는 장이다. LLM은 문장 속 언급의 시작·끝 문자 위치를 정확히 알아내는 데 약하므로, start와 end 필드는 이 함수로 후처리해 생성했다. 함수는 find로 다음 등장을 찾고 못 찾으면 마이너스 1이 돌아와 반복이 끝나며, 찾을 때마다 검색 시작점을 언급 길이만큼 앞으로 밀어 다음 등장을 이어서 찾는다. end_index는 마지막 문자를 포함하는 인덱스다. 설계로 보면 하이브리드로, 의미를 판단하는 일은 LLM에 맡기고 글자 위치 계산처럼 정확해야 하는 일은 일반 코드에 맡긴다.`,
+    how: [`함수 전문을 코드 창에 싣고 옆 패널에서 반복 종료 조건과 시작점 이동 두 가지만 짚는 구성이다.`,
+      `Zika and Zika disease라는 짧은 예로 같은 언급이 여러 번 등장할 때의 동작을 보인다.`,
+      `맨 아래에서 이 함수가 전통적 NER 시스템이 제공하던 언급의 위치 정보를 채운다고 규정해, 하이브리드 설계의 의미를 정리한다.`],
+    why: `LLM에 맡기지 말아야 할 일이 있다는 것을 보여 주는 유일한 코드다. S45의 후보 선택에 LLM을 쓰지 않는 판단, S77의 일반 파이썬 코드 행과 함께 장의 역할 분담 논지를 떠받친다.` },
+  { n: 43, sec: "§8.4.2", coord: "§8.4.2 · 2단계", supp: false,
+    title: "§8.4.2 후보 선택(CS)",
+    what: `§8.4.2의 도입으로, 후보 선택 단계의 입력과 출력을 다루는 장이다. 이 단계는 각 개체명이 의도했을 수 있는 의미와 일치하는 관련 개체나 개념을 찾아낸다. 입력은 NER 과정이 입력 텍스트에 표시한 언급들과 조회 대상인 도메인 온톨로지이고, 출력은 언급마다 하나 이상의 후보 개체 목록이다. 최종 답을 바로 고르는 것이 아니라 가능한 정답 후보를 빠짐없이 수집하는 것이 이 단계의 성격이며, 여기서 빠진 개체는 다음 단계에서 결코 선택될 수 없다는 것이 설계 기준이 된다.`,
+    how: [`입력과 출력을 좌우 두 칸에 놓아 단계의 경계를 정의로 못 박는 구성이다. 이 절의 나머지 슬라이드가 모두 이 정의의 구현이 된다.`,
+      `Java 예시로 후보 수집의 성격을 보인다. 프로그래밍 언어와 인도네시아 섬과 커피를 모두 가져온 뒤 다음 단계에서 문맥으로 하나를 고르는 구도다.`,
+      `맨 아래 한 줄이 이 단계의 원칙을 재현율로 규정한다. 놓치는 후보가 없어야 한다는 문장이다.`],
+    why: `재현율이 목표라는 기준이 세워져야 S47의 퍼지 매칭과 S48의 벡터 검색 확장이 왜 나오는지가 설명된다. 세 슬라이드가 모두 후보를 놓치지 않기 위한 장치라는 하나의 목적으로 묶인다.` },
+
+  { n: 44, sec: "§8.4.2", coord: "§8.4.2 · 그림 8.4", supp: false,
+    title: "그림 5 · NED의 두 번째 단계",
+    what: `NED의 두 번째 단계인 후보 선택의 입력과 출력을 보여 주는 그림이다. 강조된 두 번째 상자를 중심으로 언급 목록이 언급별 후보 목록으로 바뀌는 방향을 따라 읽는다. 앞 단계와 달라진 점은 입력이 날것의 문서가 아니라 라벨이 붙은 언급이라는 것이고, 경계는 출력이 후보 목록이며 아직 정답이 하나로 좁혀지지 않았다는 것이다.`,
+    how: [`S29·S36과 같은 흐름도에서 강조 위치만 두 번째 상자로 옮긴 도해다. 그림 자체가 진행률 표시 역할을 겸한다.`,
+      `캡션이 읽는 법·앞 단계와의 차이·경계 세 항목으로 나뉘어, 무엇이 달라졌고 무엇이 아직 아닌지를 각각 지목한다.`],
+    why: `단계 그림 반복의 두 번째 사례로 정보량은 적고 위치 표시가 주된 기능이다. 다만 출력이 아직 후보 목록이라는 경계가 여기서 한 번 더 확인되어야 S50에서 세 후보를 보여 줄 때 정답으로 오인되지 않는다.` },
+
+  { n: 45, sec: "§8.4.2", coord: "§8.4.2 · 설계 판단", supp: false,
+    title: "이 단계에서는 LLM을 쓰지 않는다",
+    what: `이 절의 핵심 설계 판단을 다루는 장이다. 후보 선택 단계에서는 LLM을 쓰지 않으며, 원서 저자들은 두 가지 이유를 든다. 첫째, LLM 안에 박제된 지식에 기대기보다 도메인 온톨로지에서 후보를 직접 조회하고 싶기 때문이다. 유창하지만 이따금 사실을 지어내는 모델의 기억보다 검증된 사실 대장을 믿는 선택이다. 둘째, 온톨로지의 크기가 너무 커서 그 전체를 프롬프트에 통째로 실을 수 없기 때문이며, SNOMED는 45만 개가 넘는 개념을 담고 있다. 그래서 후보 조회는 각 언급과 가깝게 일치하는 문자열을 찾아 주는 Neo4j의 전문 검색 기능이 맡는다.`,
+    how: [`두 이유를 좌우 두 칸에 나눠, 신뢰의 문제와 용량의 문제를 분리해 배치한 구성이다. 판단 하나에 근거 둘을 붙이는 형식이다.`,
+      `직원 45만 명 중 동명이인을 찾을 때 전 직원 명단을 LLM에게 읽히지 않고 인사 데이터베이스에서 검색하는 비유로 두 이유를 한 장면에 묶는다. 45만이라는 수가 비유와 실제 양쪽에서 같은 값으로 쓰인다.`],
+    why: `LLM을 어디에 쓰고 어디에 쓰지 않을지가 이 장의 판단 축이다. S42의 문자 위치 계산, S77의 역할 분담표와 함께 그 축을 떠받치며, 체크포인트 S82의 Q2가 정확히 이 장을 겨냥한다.` },
+
+  { n: 46, sec: "§8.4.2", coord: "§8.4.2 · 후보 조회 코드", supp: false,
+    title: "라벨로 좁히고 전문 검색으로 찾는다",
+    what: `후보 조회 쿼리를 다루는 장이다. 쿼리는 이름과 별칭으로 만든 전문 검색 인덱스를 조회한 뒤, node.type 중 하나가 labels 안에 있는 개체만 남기는 조건을 얹는다. 이 labels는 NER 단계의 출력에서 모은 값으로, 시스템이 언급된 개체 유형과 관련 있는 개체의 부분집합만 찾도록 강제한다. 예컨대 cold라는 언급의 라벨이 Disease면 감기 쪽에서, Temperature면 낮은 온도 쪽에서 찾도록 범위가 줄어든다. 반환값은 후보의 이름과 SNOMED 식별자다.`,
+    how: [`쿼리 전문과 쿼리 읽는 법 패널을 나란히 두고, 패널이 인덱스 조회 한 줄과 라벨 조건 한 줄로 논지를 좁히는 구성이다.`,
+      `cold라는 한 단어 예시로 라벨 필터의 효과를 보인다. 같은 문자열이 라벨에 따라 다른 탐색 공간으로 간다는 점이 한 줄로 드러난다.`],
+    why: `§8.2의 라벨 전파가 세 번째이자 마지막으로 회수되는 자리이면서, S40의 NER 라벨이 실제로 소비되는 지점이기도 하다. 동시에 이 필터가 S79의 실무 경계에서 위험 요인으로도 언급되므로, 작동 방식이 여기서 정확히 이해되어야 뒤의 경계 논의가 성립한다.` },
+
+  { n: 47, sec: "§8.4.2", coord: "§8.4.2 · 후보 조회 코드", supp: true,
+    title: "퍼지 매칭 ~0.80",
+    what: `검색어를 만드는 generate_full_text_query 함수를 다루는 장이다. 이 함수는 입력 언급을 단어로 나눈 뒤 각 단어 뒤에 물결표 0.80을 붙이는데, 이것이 퍼지 매칭이다. 철자가 조금 다르거나 변형된 형태도 유사도 0.80 이상이면 후보로 잡히고, 단어가 여럿이면 AND로 이어 모든 단어가 비슷하게 일치하도록 요구한다. 이 기준에는 양쪽 경계가 있다. 너무 낮으면 무관한 후보가 늘고 너무 높으면 오탈자나 변형 표현을 놓친다. 앞 장의 라벨 필터가 범위를 좁히고 이 퍼지 매칭이 표기 차이를 흡수하는 구조다.`,
+    how: [`함수 전문을 코드 창에 싣고 옆 패널에서 유사도 0.80이라는 임계값 하나로 논지를 모으는 구성이다.`,
+      `임계값의 양쪽 위험을 함께 적어, 값을 올리거나 내리는 선택이 무엇을 잃는지 대칭으로 보인다.`,
+      `맨 아래에서 두 장치의 합이라고 규정해 앞 장과 한 세트로 묶는다.`],
+    why: `S43에서 세운 놓치지 않기 원칙의 구체적 장치다. 라벨 필터가 정밀도를, 퍼지 매칭이 재현율을 담당하는 짝을 이루므로 앞 장과 붙여 읽을 때 의미가 완성된다.` },
+
+  { n: 48, sec: "§8.4.2", coord: "§8.4.2 · 확장 가능성", supp: true,
+    title: "벡터 검색을 더하면",
+    what: `원서의 참고 사항인 벡터 기반 검색의 확장 가능성을 다루는 장이다. 전문 검색 메커니즘은 실용적인 해법이지만, 벡터 기반 검색을 함께 넣으면 문자 매칭으로는 잡히지 않는 추가 후보까지 끌어와 성능을 더 높일 수 있다. 전문 검색은 철자 유사성에 강해 인덱스로 유사한 문자열을 빠르게 찾고 퍼지 매칭으로 오탈자와 어미 변형을 흡수하지만 글자 모양이 전혀 다른 동의어는 잡지 못한다. 벡터 검색은 의미 유사성에 강해 heart attack과 myocardial infarction처럼 표기가 달라도 뜻이 가까운 짝을 찾아낸다. 두 방식은 배타적이지 않으므로 결합할 수 있지만, 이 장의 예제는 전문 검색만 쓰고 벡터 검색은 확장 방향으로만 제시된다.`,
+    how: [`전문 검색과 벡터 검색을 좌우 두 칸에 놓고 각각의 강점과 약점을 대칭으로 나열하는 2열 구성이다.`,
+      `heart attack과 myocardial infarction이라는 한 쌍으로 의미 유사성 개념을 구체화한다. §8.2의 Listing 8.4가 한 개념에 함께 저장해 둔 대표 이름과 별칭이 바로 그 예다.`,
+      `맨 아래에서 구현된 것과 제안된 것을 갈라 명시한다. 예제가 실제로 쓴 것은 전문 검색이고 벡터 검색은 성능을 더 높일 수 있는 확장 방향으로만 제시된다는 구분이다.`],
+    why: `구현된 것과 제안된 것을 구분하는 장이다. 이 구분이 흐려지면 발표가 실제보다 많은 것을 주장하게 된다. §8.5의 실무 경계와 같은 태도이며, S19의 별칭 저장과도 이어진다.` },
+
+  { n: 49, sec: "§8.4.2", coord: "§8.4.2 · Listing 8.14", supp: false,
+    title: "candidates 필드가 붙는다",
+    what: `Listing 8.14, 곧 후보 선택 단계에서 갱신된 결과의 구조를 다루는 장이다. Zika를 입력 용어로 넘겼을 때 쿼리가 돌려준 결과에는 앞 단계의 언급 정보 아래에 candidates 필드가 새로 붙어 있다. 각 후보는 두 필드로 식별되는데, snomed_id는 SNOMED에서 그 개념의 고유 식별자이고 name은 해당 식별자에 연결된 의학 개체의 이름이다. candidates에는 시스템이 각 언급에 대해 찾아낸 잠재적 매칭이 담기며, 각 후보는 SNOMED를 근거로 한 그 언급의 가능한 해석 하나를 나타낸다. 앞 단계의 label과 위치 정보는 그대로 유지된 채 후보만 덧붙는다.`,
+    how: [`갱신된 JSON을 코드 창에 싣고, 옆 패널에서 후보의 두 필드만 설명하는 구성이다. 후보의 구체적 내용은 다음 장으로 미룬다.`,
+      `기존 필드 위에 새 필드가 얹히는 형태를 그대로 보여, 파이프라인이 데이터를 덮어쓰지 않고 누적한다는 성질을 화면 구조로 전달한다.`],
+    why: `누적 구조가 있어야 S72의 최종 출력에서 id를 통해 원래 언급으로 되돌아갈 수 있고, S71이 말하는 결과의 활용성도 성립한다. 이 장은 그 성질을 처음 노출하는 자리다.` },
+
+  { n: 50, sec: "§8.4.2", coord: "§8.4.2 · Listing 8.14 해석", supp: false,
+    title: "세 후보 — 아직 아무것도 확정되지 않았다",
+    what: `Zika에 붙은 세 후보의 의미를 다루는 장이다. Zika virus는 식별자 50471002로 병원체 자체를 가리키고, Zika virus disease는 3928002로 감염으로 생긴 질환을 가리키며, Congenital Zika virus infection은 762725007로 태아기 감염을 가리키는 더 좁은 개념이다. 이 셋은 임상 용어에서 Zika가 가질 수 있는 의학적 의미들이며, 이 시점에는 셋 다 이름만 보면 그럴듯하다는 점이 중요하다. 다음 단계에서는 소두증과 선천성 기형의 후보들이 이 세 Zika 후보 중 누구와 더 의미 있게 연결되는지를 온톨로지 경로로 확인한다.`,
+    how: [`후보 세 개를 1·2·3 카드로 나열하되, 병원체에서 질환으로 다시 태아기 감염으로 범위가 좁아지는 순서로 배치한 구성이다.`,
+      `각 카드에 SNOMED 식별자를 병기해, 이름이 아니라 식별자가 최종 산출물이라는 점을 형식으로 보인다.`,
+      `맨 아래 두 줄이 현재 상태와 다음 단계의 비교 방식을 각각 규정한다.`],
+    why: `이름 유사도로는 결정할 수 없다는 사실이 여기서 드러나야 §8.4.3의 20여 장이 필요한 작업으로 읽힌다. 여기 나온 762725007이 S67의 요약과 S72의 최종 답으로 이어지는 사슬의 중간 고리이기도 하다.` },
+  { n: 51, sec: "§8.4.3", coord: "§8.4.3 · 3단계", supp: false,
+    title: "§8.4.3 후보 명확화(CD)",
+    what: `§8.4.3의 도입으로, 후보 명확화의 전략을 다루는 장이다. 이 단계는 대상 개체와 한 문장에 함께 등장하는 다른 의학 개체가 제공하는 문맥 정보를 활용한다. 함께 등장한 개체들을 도메인 온톨로지의 구조화된 지식과 교차 참조함으로써 선택된 후보를 검증하고 다듬어 가장 정확한 매칭을 결정한다. 근거의 성격이 앞 단계와 달라진다는 점이 핵심이다. 후보 이름이 얼마나 비슷한지가 아니라, 후보가 주변 개체와 어떤 관계로 연결되는지를 근거로 삼는다.`,
+    how: [`전략과 근거의 성격이라는 두 칸으로 나눠, 무엇을 하는지와 무엇을 근거로 삼는지를 분리해 배치한 구성이다.`,
+      `Java 예시로 동반 개체의 역할을 보인다. JVM·Spring·코드가 함께 나오면 섬이나 커피가 아니라 프로그래밍 언어라고 판단하는 구도다.`,
+      `비유의 경계를 명시한다. 여기서 동반 개체는 단어 그 자체가 아니라 이미 후보가 붙은 개체이고, 연결 여부는 온톨로지에서 계산한다.`],
+    why: `이름 유사도에서 관계 문맥으로 근거가 바뀌는 선언이다. S6의 네 번째 한계가 실제로 해소되기 시작하는 자리이며, S74가 이 선언을 결과로 확인한다.` },
+
+  { n: 52, sec: "§8.4.3", coord: "§8.4.3 · 그림 8.5", supp: false,
+    title: "그림 6 · NED의 세 번째 단계",
+    what: `NED의 세 번째 단계인 후보 명확화를 보여 주는 그림이다. 강조된 세 번째 상자를 중심으로 언급별 여러 후보가 명확화된 개체 하나로 좁혀지는 방향을 따라 읽는다. 앞 두 단계와 다른 점은 그래프 알고리즘과 LLM이 이 상자 안에서 함께 일한다는 것이며, 최단 경로 탐지는 알고리즘이 문맥 판단은 LLM이 맡는다.`,
+    how: [`같은 흐름도에서 강조를 세 번째 상자로 옮긴 도해다. 여러 후보가 하나로 수렴하는 방향이 화살표로 표현된다.`,
+      `캡션이 앞 단계와의 차이를 담당 구성의 변화로 규정한다. 이 상자만 두 종류의 일꾼을 갖는다는 예고가 S55로 이어진다.`],
+    why: `단계 그림 반복의 마지막 사례이자 이 상자 안이 복잡하다는 예고다. S55가 같은 상자를 열어 세 단계로 펼치므로 두 장이 짝을 이룬다.` },
+
+  { n: 53, sec: "§8.4.3", coord: "§8.4.3 · 문맥의 값어치", supp: false,
+    title: "곁에 microcephaly가 있다는 사실",
+    what: `동반 등장이 왜 값진 문맥인지를 다루는 장이다. Zika와 microcephaly를 함께 언급하는 문장을 놓고 보면, 선천성 지카 바이러스 감염이 소두증을 일으킨다고 알려져 있으므로 이 동반 등장은 Congenital Zika virus infection과의 연관을 시사한다. 명확화 과정은 이 동시 출현을 이용해 Zika의 다른 가능한 의미, 곧 일반적인 바이러스나 무관한 용어보다 선천성 지카 바이러스 감염을 우선하도록 할 수 있다. 이 문장의 단서 묶음인 임신·태반·소두증·선천성 기형은 단순한 바이러스 자체보다 태아의 선천성 감염 개념을 강하게 가리킨다.`,
+    how: [`동반 등장이 하는 일과 단서 묶음이라는 두 칸으로 나눠, 메커니즘과 이 문장의 구체적 재료를 각각 배치한 구성이다.`,
+      `후보를 지우는 것이 아니라 우선순위를 만든다는 표현으로 이 단계의 작동 방식을 정확히 규정한다.`,
+      `맨 아래에서 다단계 접근을 예고해 S54로 넘긴다. 최단 경로를 찾고 자연어로 옮기고 요약한다는 세 동작이 여기서 처음 한 문장으로 묶인다.`],
+    why: `S8에서 단서가 멀어졌다고 진단한 문제가 여기서 해법으로 뒤집힌다. 멀어진 단서라도 같은 문장 안에 있으면 동반 개체로 쓸 수 있다는 것이 이 장의 논지여서, §8.1의 진단과 짝을 이룬다.` },
+
+  { n: 54, sec: "§8.4.3", coord: "§8.4.3 · 세 단계", supp: false,
+    title: "탐지 · 변환 · 요약",
+    what: `후보 명확화가 거치는 세 단계를 다시 세우는 장이다. 최단 경로 탐지는 한 문장 안의 서로 다른 언급들에 연관된 후보 개체 사이에서 길이가 가장 짧은 경로를 찾아, 각 언급이 의도한 의미를 밝히는 데 도움이 되는 잠재적 관계를 드러낸다. 경로-텍스트 변환은 LLM이 텍스트 정보 처리에 강하다는 강점을 활용하기 위해 각 그래프 경로를 자연어 문장으로 옮긴다. 텍스트 경로 요약은 변환된 경로에서 나온 모든 텍스트 정보를 하나의 종합적 설명으로 요약해, 관계의 핵심을 잡아내고 더 정확한 명확화 결정을 돕는다.`,
+    how: [`01·02·03 세 카드를 화살표로 이어 순서를 고정하는 구성이다. S32의 예고를 본격 실행 직전에 확대해 다시 세우는 형식이다.`,
+      `여행 비유로 세 단계를 묶는다. 지도에서 가까운 길을 찾고, 노선도를 A역에서 B역을 거쳐 C역으로 간다는 문장으로 바꾸며, 여러 길 안내에서 최종 판단에 필요한 핵심 연결만 남기는 순서다.`],
+    why: `24장짜리 절의 목차 역할을 하는 장이다. S56 이후가 이 세 칸을 하나씩 실행하므로, 이 장을 건너뛰면 뒤의 코드와 출력이 나열로 흩어진다.` },
+
+  { n: 55, sec: "§8.4.3", coord: "§8.4.3 · 그림 8.6", supp: false,
+    title: "그림 7 · 누가 무엇을 맡는가",
+    what: `후보 명확화 상자의 내부를 세 단계로 펼쳐 보이는 그림이다. 점선 상자 안의 세 단계를 위에서 아래로 읽으며, 이 그림의 요점은 담당 구분이다. 첫 단계인 최단 경로 탐지는 Neo4j의 그래프 데이터 사이언스 라이브러리가 후보 사이의 연결을 찾는 방식으로 수행하고, 뒤의 두 단계인 경로-텍스트 변환과 텍스트 경로 요약은 LLM이 맡아 관계 정보를 해석하고 압축한다. 상자를 빠져나온 결과가 명확화된 개체다.`,
+    how: [`앞 그림에서 세 번째 상자였던 부분을 점선 상자로 확대해 내부를 여는 도해다. 같은 시스템을 축척만 바꿔 다시 그리는 방식이다.`,
+      `캡션이 읽는 법·역할·출력 세 항목으로 나뉘고, 그중 역할 항목이 1단계와 2·3단계 사이의 담당 경계를 명시한다.`],
+    why: `장의 역할 분담 논지가 그림으로 확정되는 자리다. S11의 의사와 코드집, S45의 LLM 미사용, S77의 역할 분담표와 같은 이야기이며 그중 가장 구체적인 형태다.` },
+
+  { n: 56, sec: "§8.4.3", coord: "§8.4.3 · 1단계 예시", supp: false,
+    title: "최단 경로는 이렇게 생겼다",
+    what: `1단계가 뽑아 낸 최단 경로의 실제 모습을 다루는 장이다. 경로 문자열에는 화살표의 방향과 관계 유형이 함께 표시되며, 이 경로는 선천성 지카 바이러스 감염과 소두증이 Congenital이라는 공통 속성으로 연결된다는 사실을 말한다. 가운데 Congenital은 두 개체가 공유하는 발생 속성 노드다. 한 가지 확인이 필요한 대목도 함께 다뤄진다. 원문은 이 경로의 뒷부분을 Zika virus disease와 Chikungunya fever 사이의 경로라고 설명하지만 표시된 경로의 노드는 Congenital Zika virus infection, Congenital, Micrencephaly이며, 다른 예시가 섞인 편집 오류로 보아 앞의 해석대로 읽는 것이 자연스럽다.`,
+    how: [`경로 문자열 두 줄만 코드 창에 싣고, 옆 패널에서 그 경로가 말하는 내용을 두 항목으로 푸는 구성이다. 표기법을 처음 소개하는 자리라 예시를 하나로 줄인다.`,
+      `가운데 노드로 화살표 둘이 모이는 형태를 공통 속성 공유로 해석해, 방향이 반대인 두 화살표의 의미를 규정한다.`,
+      `원문과 표시된 노드의 불일치를 확인이 필요한 대목으로 따로 표시한다. 리포트가 통합 해설판의 검토 메모를 근거로 남긴 판단이다.`],
+    why: `추상적이던 최단 경로가 처음으로 화면에 나타나는 장이다. 여기서 표기법을 익혀야 S58·S60·S64를 읽을 수 있다. 편집 오류 메모는 원문을 그대로 읽으면 청중이 혼란스러워지는 대목을 미리 정리하는 역할을 한다.` },
+
+  { n: 57, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.15", supp: true,
+    title: "허브 350개 제외와 1~2홉 제한",
+    what: `Listing 8.15의 앞부분, 곧 경로 추출 쿼리의 두 가지 제한을 다루는 장이다. 쿼리는 먼저 gds.degree.stream으로 차수가 가장 높은 노드 350개를 허브로 모으는데, 이 노드들은 지나치게 많이 연결되어 있어 나중에 제외되며 그 결과 더 의미 있고 덜 일반적인 연결에 집중하게 된다. 그다음 두 개체 사이의 모든 최단 경로를 찾되 경로 길이를 1홉에서 2홉으로 제한한다. 두 제한의 이유는 구별력과 계산량이다. 사물이나 질병처럼 거의 모든 것과 연결된 넓은 개념을 거치면 모든 후보가 가까워 보여 구별력이 사라지고, 경로가 길어질수록 우연한 연결과 계산량이 함께 늘어난다.`,
+    how: [`쿼리 앞부분을 코드 창에 싣고 옆 패널에서 두 제한만 뽑아 각각의 이유를 붙이는 구성이다. 350과 1~2홉이라는 두 수치가 논지의 축이 된다.`,
+      `허브 노드를 사물·질병·사람처럼 거의 모든 것과 연결된 넓은 개념으로 예시화해, 차수라는 그래프 용어를 의미로 바꾼다.`],
+    why: `경로 증거의 품질을 지키는 두 장치라서, 이것이 없으면 최단 경로가 판단 근거로 쓰일 수 없다. 부연 배지가 붙었지만 논지 기여도가 높고, 체크포인트 S82의 Q3이 정확히 이 두 제한을 묻는다.` },
+
+  { n: 58, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.15", supp: true,
+    title: "방향과 관계 유형이 보이는 문자열로",
+    what: `같은 쿼리의 뒷부분, 곧 경로를 문자열로 형식화하는 부분을 다루는 장이다. 허브 노드가 낀 경로를 걸러 낸 뒤 각 경로에 관여한 노드와 관계를 모아 읽기 쉬운 문자열로 만든다. 방향까지 남기는 이유는 관계 유형이 곧 의미이기 때문이다. A가 B와 연관된다는 것과 A가 B를 유발한다는 것은 전혀 다른 의미이므로, 두 노드가 가깝다는 사실만 남기면 이 구별이 사라진다. 그래서 rel_types와 rel_starts를 함께 모아 관계의 유형과 시작 노드를 문자열에 새긴다.`,
+    how: [`쿼리 뒷부분을 코드 창에 싣고, 옆 패널이 관계 유형이 곧 의미라는 한 문장으로 논지를 세우는 구성이다.`,
+      `ASSOCIATED_WITH와 CAUSES를 나란히 놓아 의미 차이를 대비시키고, 고혈압에서 심혈관질환으로 향하는 위험 요인 관계를 완성된 문자열 예시로 보인다.`],
+    why: `S18에서 관계에 유형 이름을 붙인 이유가 여기서 답을 얻는다. 또 관계 유형과 방향을 보존해야 한다는 원칙이 S79의 세 번째 경계 항목, 곧 ASSOCIATED_WITH를 유발한다로 옮기면 안 된다는 대목의 근거가 된다.` },
+
+  { n: 59, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.15 정리", supp: true,
+    title: "차수 계산 · 경로 탐색 · 경로 변환",
+    what: `Listing 8.15 전체를 세 단계로 정리하는 장이다. 원서 저자들이 꼽은 결정적인 단계는 차수 계산, 최단 경로 탐색, 경로 변환이다. 차수 계산은 gds.degree.stream으로 연결 수가 가장 높은 노드들을 조회해 허브를 식별하고 나중에 제외되게 한다. 최단 경로 탐색은 ID로 지정한 두 개체 사이의 모든 최단 경로를 1~2홉 이내에서 찾되 허브 노드를 걸러 내어 지나치게 넓은 관계를 피한다. 경로 변환은 식별된 경로를 펼쳐 관여한 노드와 관계를 모두 모은 뒤 관계의 방향과 유형을 보여 주는 읽기 쉬운 문자열로 형식화한다. 산출물은 방향과 관계 유형이 보존된 경로 문자열 목록이다.`,
+    how: [`01·02·03 세 카드를 화살표로 이어 앞의 두 코드 슬라이드를 순서로 압축하는 구성이다. 새 정보를 더하지 않고 절차만 세운다.`,
+      `맨 아래 한 줄이 이 단계의 산출물을 규정해, 다음 단계가 무엇을 입력으로 받는지 명시한다.`],
+    why: `S57과 S58이 부분을 보였다면 이 장은 전체 순서를 세운다. 세 슬라이드가 한 세트여서 함께 다루거나 함께 접는 것이 자연스러운 구성이다.` },
+
+  { n: 60, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.16", supp: false,
+    title: "탐지된 경로 목록",
+    what: `Listing 8.16, 곧 Neo4j GDS 라이브러리로 실제 탐지한 경로들을 다루는 장이다. 각 항목은 id와 path를 담고, 각 경로는 온톨로지 경로에서의 동시 출현을 근거로 생물의학 개체 사이의 관계적 연결을 보여 준다. 전체 목록은 13개 항목이며 다수가 선천성 지카 바이러스 감염에서 여러 선천성 상태로 이어진다. 관계 유형은 세 가지가 나온다. OCCURRENCE는 공통 발생 속성을 공유한다는 뜻이고, IS_A는 상위·하위 분류 관계이며, PATHOLOGICAL_PROCESS는 병리 과정 속성을 공유한다는 뜻이다. 후보 조합마다 여러 경로가 나올 수 있어 목록이 길어진다.`,
+    how: [`JSON 목록의 일부를 코드 창에 싣되 앞의 두 항목과 뒤쪽 한 항목만 남기고 나머지를 생략 표시로 접는 구성이다. 목록의 길이를 형식으로 전달한다.`,
+      `옆 패널이 관계 유형 세 가지를 사전처럼 정리해, 뒤에 나오는 모든 경로 문자열을 읽을 수 있는 열쇠를 제공한다.`,
+      `맨 아래에서 이 목록을 그대로 최종 LLM에 넣지 않고 문장으로 바꾼 뒤 요약한다고 밝혀 다음 두 단계의 명분을 세운다.`],
+    why: `1단계의 산출물이 화면에 나오는 장이자 2·3단계의 필요성을 스스로 만드는 장이다. 13개 항목의 부피가 곧 요약의 명분이므로, 길다는 인상이 이 슬라이드의 기능이다.` },
+
+  { n: 61, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.16 해석", supp: true,
+    title: "경로 목록에서 읽어 낼 세 가지",
+    what: `Listing 8.16의 출력을 원서 저자들의 정리에 따라 세 가지로 나눠 읽는 장이다. 첫째는 선천성 지카 감염 경로들로, 많은 경로가 선천성 지카 바이러스 감염에서 시작해 OCCURRENCE 관계를 통해 소두증·첨두증·다발성 선천 기형 같은 여러 선천성 상태로 연결되며 이는 원인이나 발생으로서의 연관을 시사한다. 둘째는 공유되는 선천성 상태로, Congenital이 여러 선천성 상태를 잇는 공통 노드이며 이 상태들이 비슷한 발생 속성을 공유함을 나타낸다. 셋째는 대안적 관계들로, 일부 경로는 IS_A나 병리 과정 관계를 써서 계층적이고 속성 기반의 관계를 보여 준다. 해석의 경계도 함께 제시된다. 경로가 짧다는 것은 관련성의 단서이지 인과의 증명이 아니다.`,
+    how: [`01·02·03 세 카드로 관찰 결과를 유형별로 나누는 구성이다. 원자료를 다시 싣지 않고 앞 장의 출력을 해석 층위에서만 다룬다.`,
+      `첨두증이 두개골 조기유합 증후군 아래로 분류되고 그것이 다시 선천성 기형과 연결되는 사례로 계층 관계의 형태를 구체화한다.`,
+      `맨 아래 해석의 경계 항목이 근접성과 인과를 갈라 놓는다.`],
+    why: `경로 증거를 어디까지 읽어도 되는지 선을 긋는 장이다. 근접성을 인과로 읽지 않는다는 원칙이 S79의 두 번째 경계 항목과 S83의 적용 조건으로 이어지며, 발표의 학술적 정직성을 지탱한다.` },
+
+  { n: 62, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.17", supp: false,
+    title: "경로를 문장으로 옮기는 프롬프트",
+    what: `2단계인 경로-텍스트 변환의 프롬프트를 다루는 장이다. 이 변환은 모델이 개체 사이의 연결을 해석하기 쉽게 만들고 비슷한 용어를 구별하는 데 도움이 되는 문맥을 제공한다. 시스템 지시의 핵심은 경로에 나온 정확한 개체 이름을 그대로 쓰라는 요구다. 이름을 비슷한 표현으로 바꾸면 원래 후보 ID와 다시 연결하기 어려워지기 때문이며, 문장은 자연스럽게 만들되 후보 이름은 정확히 보존해야 뒤 단계의 LLM이 개체를 정확히 짚어 명확화할 수 있다. 문장 형식을 택한 이유는 LLM이 그래프 기호보다 관계를 서술한 문장을 더 안정적으로 해석하기 때문이다.`,
+    how: [`프롬프트의 단순화 버전을 코드 창에 싣고, 옆 패널이 이름은 그대로 두라는 지시 하나로 논지를 모으는 구성이다.`,
+      `input에 고혈압-심혈관질환-심근경색 경로를 두어, 결과는 다음 장에서 보이는 입력과 출력의 분리 구성을 만든다.`,
+      `맨 아래에서 왜 문장인가에 답해 형식 선택의 근거를 남긴다.`],
+    why: `LLM에게 유리한 형식으로 데이터를 바꾼다는 발상이 이 장의 핵심이며, §8.5의 결론에서 관계 데이터의 자연어화로 다시 정리된다. 이름 보존 요구는 S67의 요약과 S72의 최종 매칭이 성립하기 위한 전제이기도 하다.` },
+  { n: 63, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.17", supp: true,
+    title: "변환 결과의 모범 답안",
+    what: `경로-텍스트 변환 프롬프트의 assistant 예시를 다루는 장이다. 고혈압에서 심혈관질환으로, 심근경색에서 심혈관질환으로 이어지던 두 관계가 하나의 설명 문장으로 풀린다. 고혈압은 심혈관질환의 위험 요인이고 심근경색도 심혈관질환과 연관되므로 고혈압이 심혈관질환과의 연결을 통해 심근경색 위험을 높일 수 있다는 서술이다. 프롬프트의 세부는 세 구성 요소로 이루어진다. 시스템 지시는 Neo4j 그래프 경로를 명확하고 사람이 읽기 쉬운 문장으로 옮기라는 것이고, 입력 그래프 경로는 Neo4j 데이터베이스에서 온 복잡한 관계이며, 어시스턴트 출력은 생성된 문장을 담은 유효한 JSON 구조다.`,
+    how: [`assistant 응답 전문을 코드 창에 싣고, 옆 패널에서 프롬프트의 세 구성 요소를 정리하는 구성이다. 앞 장의 지시와 이 장의 결과가 입력과 출력으로 짝을 이룬다.`,
+      `그래프의 세 개체 이름이 문장 안에 그대로 살아 있는 형태로, 앞 장의 이름 보존 요구가 지켜진 결과를 눈으로 확인하게 한다.`,
+      `JSON으로 감싸는 이유를 다음 프로그램이 결과를 안정적으로 읽게 하기 위해서라고 밝힌다.`],
+    why: `지시와 결과를 짝지어 보여 주어 프롬프트 설계가 추상적으로 남지 않게 하는 장이다. 부연 배지가 붙었지만 S64의 실제 변환 결과를 읽는 기준선을 여기서 제공한다.` },
+
+  { n: 64, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.18", supp: false,
+    title: "우리 경로들이 문장이 되어 나온다",
+    what: `Listing 8.18, 곧 지카 예시의 경로들이 각각 한 문장으로 변환된 결과를 다루는 장이다. 그래프의 화살표가 무엇과 연관된다, 어디에서 발생한다 같은 자연어 서술로 바뀌었다. 읽을 때의 기준도 함께 제시된다. 문장이 다소 어색하더라도 목적은 문학적으로 좋은 글을 만드는 것이 아니며, 정확한 개체명과 관계를 잃지 않고 LLM에 전달하는 것이 목적이다. 이 JSON 항목들이 그래프 경로를 LLM이 해석하고 명확화에 활용할 수 있는 형태로 만들어 준다.`,
+    how: [`변환된 문장 목록을 코드 창에 싣되 세 항목만 남기고 나머지를 생략 표시로 접는 구성이다. S60의 경로 목록과 항목 수가 대응한다.`,
+      `옆 패널이 미문이 목적이 아니라는 기준을 먼저 세워, 어색한 문장이 결함으로 읽히지 않게 한다.`],
+    why: `변환 단계의 산출물이다. 문장 수가 여전히 많다는 사실이 다음 요약 단계의 명분이 되고, 어색함을 결함이 아닌 설계 결과로 규정하는 기준이 이 파이프라인의 목적을 정확히 전달한다.` },
+
+  { n: 65, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.19", supp: false,
+    title: "요약으로 인지 부하를 낮춘다",
+    what: `3단계인 텍스트 경로 요약의 프롬프트를 다루는 장이다. 최종 명확화를 실행하기 전에 변환된 경로 문장들을 요약하는데, 모델의 인지 부하 곧 토큰 수를 줄여 개체 관계를 해석하고 가장 정확한 후보를 고르기 쉽게 만들기 위해서다. 시스템 지시는 온톨로지 경로에서 나온 문장들을 짧은 요약으로 압축하되 그 요약이 개체명 명확화 작업을 뒷받침하는 데 쓰인다고 알려 준다. input에는 고혈압·당뇨병·천식·골다공증에 관한 네 문장이 들어가고 각 문장은 의학적 상태와 그 결과 또는 연관 사이의 관계를 담으며, assistant는 이를 하나의 매끈한 문맥 문장으로 묶어 낸다.`,
+    how: [`프롬프트의 단순화 버전을 코드 창에 싣고 옆 패널이 입력의 구성을 네 개의 관계 문장으로 규정하는 구성이다.`,
+      `회의록 비유로 요약의 목적을 설명한다. 20페이지를 그대로 주는 대신 의사결정에 필요한 1페이지 요약을 제공하는 구도이며, 중복 문장이 줄면 비용과 처리 시간이 함께 줄고 핵심 관계가 더 잘 드러난다.`],
+    why: `요약을 왜 하는지에 답하는 장이다. 요약의 목적이 단축이 아니라 판단 근거의 정제라는 점은 다음 장이 맡으므로, 여기서는 부피 문제만 다루고 넘어가는 분업이 이루어진다.` },
+
+  { n: 66, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.19", supp: true,
+    title: "요약은 줄이는 것이 아니라 보존하는 것",
+    what: `요약 프롬프트의 assistant 예시와 좋은 요약의 조건을 다루는 장이다. 시스템은 온톨로지 경로에서 나온 문장들을 요약하되 식별된 모든 개체를 요약 안에 보존하라고 지시받으며, 출력은 유효한 JSON 객체여야 하고 각 요약은 context라는 키 아래 문자열로 제공된다. 목표는 무조건 짧게 줄이는 것이 아니다. 최종 후보를 구별하는 데 필요한 개체명·관계 유형·관계 방향은 요약에 남아야 하며, 너무 압축하면 결정 근거 자체가 사라질 수 있다. 뒤의 NED가 원래 후보와 근거를 다시 찾을 수 있을 만큼 정확해야 한다.`,
+    how: [`assistant 응답 전문을 코드 창에 싣고, 옆 패널이 좋은 요약의 조건을 세 가지 보존 항목으로 세우는 구성이다.`,
+      `네 문장이 한 문단으로 묶이면서도 병명들이 그대로 남아 있는 형태로, 압축과 보존이 동시에 성립한 결과를 보인다.`],
+    why: `요약의 위험을 명시하는 장이고, S79의 다섯 번째 경계 항목인 토큰 절감과 정보 보존의 균형이 여기서 나온다. 부연 배지가 붙었지만 실무 경계와 직결되는 세 가지 보존 항목을 담고 있다.` },
+
+  { n: 67, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.20", supp: false,
+    title: "여러 경로가 한 문장으로 압축된다",
+    what: `Listing 8.20, 곧 지카 예시에 요약을 적용한 결과를 다루는 장이다. 앞서 본 여러 경로 문장이 하나의 문맥 문장으로 압축된다. 선천성 지카 바이러스 감염의 발생이 소두증·첨두증·다발성 선천 기형·기타 선천성 기형을 포함한 여러 선천성 기형과 연관되고, 이 상태들이 모두 Congenital이라는 개체와 공통의 연결을 공유한다는 내용이다. 이 요약은 여러 경로가 공통적으로 말하는 내용을 하나의 판단 근거로 합치고, 복잡한 관계 정보의 정제된 판본을 LLM에 건네 명확화에 가장 관련 있는 문맥에 집중하게 한다. 개체명이 그대로 보존되어 있어 후보 목록과 다시 맞춰 볼 수 있으며, 세 Zika 후보 가운데 Congenital Zika virus infection만 이 선천성 문맥과 직접적으로 강하게 맞는다.`,
+    how: [`요약 결과 한 문단만 코드 창에 싣는 최소 구성이다. 앞의 13개 경로와 여러 문장이 한 상자로 줄어든 대비가 화면 부피로 드러난다.`,
+      `옆 패널이 이 요약이 하는 일을 근거 통합·정제·이름 보존 세 항목으로 나눈다.`,
+      `맨 아래 한 줄이 결정에 미치는 영향을 명시해, 세 후보 중 하나만 이 문맥과 맞는다는 결론을 미리 세운다.`],
+    why: `모든 재료가 하나의 근거로 수렴하는 자리다. S50의 세 후보와 S72의 최종 답 사이를 잇는 결정적 고리여서, 이 요약 한 문장이 없으면 S72의 결과가 근거 없이 등장한 것으로 보인다.` },
+
+  { n: 68, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.21", supp: false,
+    title: "최종 명확화 프롬프트 — 세 입력",
+    what: `Listing 8.21, 곧 최종 명확화 프롬프트를 다루는 장이다. 시스템 지시는 세 가지 입력을 명확히 구분한다. 원문장은 명확화가 필요한 모호한 개체를 담은 주 문장이고, 후보 개체는 각 언급에 대한 잠재적 SNOMED 개체 목록으로 각기 여러 가능한 해석이나 라벨을 가지며, 문맥 문장은 원문장 속 각 모호한 개체의 의미를 밝히도록 돕는 추가 문장들이다. 모델은 문맥 문장에 등장한 개체를 1차 정보원으로 삼아 각 모호한 언급에 가장 잘 맞는 후보를 고르라는 지시를 받고, 후보 목록 밖의 새로운 의학 개념을 만들어 내지 않고 제공된 후보 중에서만 고른다.`,
+    how: [`시스템 프롬프트 전문을 코드 창에 싣되 번호가 매겨진 세 줄이 그대로 세 입력의 목록이 되게 하는 구성이다. 옆 패널이 같은 셋을 문제·보기·해설로 옮긴다.`,
+      `세 입력이 각각 앞선 슬라이드의 산출물이라는 대응 관계를 갖는다. 원문장은 S39, 후보는 S50, 문맥은 S67에서 만들어졌다.`,
+      `맨 아래에서 선택의 제한을 명시해, 이 프롬프트가 생성이 아니라 선택 과제임을 규정한다.`],
+    why: `앞의 30여 장이 만든 재료가 한자리에 모이는 장이다. 세 입력이 각각 어느 슬라이드의 산출물인지가 드러나야 §8.4 전체가 하나의 조립 과정으로 읽힌다. 후보 밖으로 나가지 않는다는 제약은 S33의 설계 원칙이 마지막 단계에서 지켜지는 모습이다.` },
+
+  { n: 69, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.21", supp: true,
+    title: "Asthma 하나에 후보 아홉 개",
+    what: `최종 명확화 프롬프트의 입력 예시를 다루는 장이다. 예시는 천식과 알레르기성 비염을 함께 다루는 문장인데, 후보 목록에는 Asthma 하나에 대해 아홉 개의 세부 후보가 달려 있다. Extrinsic asthma with asthma attack, Asthma, Intrinsic asthma, Asthma attack, Asthma monitored, Asthma severity, Occasional asthma, Mild asthma, Moderate asthma가 그것이다. 구체성의 정도가 제각각이라 이름만으로는 어느 것이 맞는지 가릴 수 없고, 문맥이 필요한 상황을 잘 보여 준다.`,
+    how: [`입력 JSON을 코드 창에 싣고 옆 패널에서 아홉 후보를 두 줄로 나열하는 구성이다. 목록의 길이 자체가 이 장의 논지다.`,
+      `Zika의 세 후보와 대비되는 규모를 보여, 후보 수가 많아질 때 이름 대조가 무력해진다는 점을 수치로 전달한다.`],
+    why: `문맥이 필요한 이유를 극단적인 사례로 보여 준다. 다음 장의 교훈이 성립하려면 후보가 많다는 상황이 먼저 성립해야 하므로 두 장이 한 세트로 묶인다.` },
+
+  { n: 70, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.21", supp: true,
+    title: "과도한 구체화를 피한다",
+    what: `아홉 후보에 대한 모델의 선택과 그 판단 기준을 다루는 장이다. 모델은 문맥에 가장 잘 맞는 일반적인 Asthma, 곧 195967001을 골랐고 함께 언급된 Allergic rhinitis, 61582004도 정확히 짚었다. 여기서 드러나는 기준은 과도한 구체화를 피한다는 것이다. 원문에 발작·경증·중등도 같은 구체적인 정보가 없으므로 Asthma attack이나 Mild asthma, Moderate asthma를 고르면 원문보다 과도하게 구체화한 답이 되며, 이 경우에는 일반적인 Asthma가 가장 안전하고 타당하다. 후보가 많다고 해서 가장 구체적인 후보를 선택하는 것이 아니라, 원문과 문맥이 실제로 뒷받침하는 수준까지만 구체화해야 한다.`,
+    how: [`assistant 응답 전문을 코드 창에 싣고, 옆 패널이 판단의 기준을 과도한 구체화 회피 하나로 규정하는 구성이다.`,
+      `고르지 않은 후보들을 이유와 함께 나열해, 정답보다 오답의 근거로 기준을 설명하는 방식을 취한다.`],
+    why: `이 접근이 무조건 구체적인 답을 고르는 시스템이 아님을 증명하는 장이다. Zika 사례만 보면 구체화 편향으로 오해할 수 있는데, 문맥이 일반적인 후보를 지지하는 이 사례가 그 오해를 막는다. 체크포인트 S82의 Q4가 정확히 이 기준을 묻는다.` },
+
+  { n: 71, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.21 정리", supp: true,
+    title: "프롬프트의 지시 · 입력 · 출력",
+    what: `명확화 프롬프트를 지시와 입력과 출력의 구조로 정리하는 장이다. 시스템은 모호한 개체를 식별하고 정확히 명확화하도록 지시받으며, 원문장의 각 개체를 분석하고 요약된 문맥 정보가 제공하는 문맥적 의미에 가장 잘 맞는 후보를 골라야 하고 이 문맥 세부에 부합하는 개체를 우선한다. 입력은 원문장·후보 개체·문맥 문장 세 가지다. 어시스턴트 출력은 두 필드로 이루어지는데, id는 개체 언급의 고유 식별자로 원문에서 어느 표현에 대한 답인지 연결하고, disambiguation은 선택된 SNOMED 개체를 담은 객체로 snomed_id와 name을 포함한다. 출력이 JSON 형식이므로 결과를 데이터베이스 저장이나 후속 분석에 바로 사용할 수 있다.`,
+    how: [`입력 구조와 어시스턴트 출력을 좌우 두 칸에 놓아, 들어가는 것과 나오는 것을 대칭으로 정리하는 구성이다. 앞 세 장의 코드를 다시 싣지 않고 구조만 남긴다.`,
+      `id 필드가 원문의 어느 표현에 대한 답인지 연결한다는 설명으로, S40의 NER 출력에 있던 id와 같은 번호임을 드러낸다.`],
+    why: `출력이 그대로 후속 시스템에 들어갈 수 있다는 점이 이 파이프라인의 실용적 가치다. id로 원문 언급까지 되돌아갈 수 있는 성질은 S49에서 확인한 데이터 누적 구조 덕분에 성립한다.` },
+
+  { n: 72, sec: "§8.4.3", coord: "§8.4.3 · Listing 8.22", supp: false,
+    title: "결과 — 세 언급이 확정됐다",
+    what: `Listing 8.22, 곧 명확화 과정의 최종 결과를 다루는 장이다. §8.1에서 scispaCy가 후보조차 만들지 못했던 그 지카 문장을 LLM에 넘긴 결과, 세 언급이 각각 하나의 SNOMED 개체로 확정됐다. id 0번 Zika는 Congenital Zika virus infection, 762725007이고, id 1번 microcephaly는 Micrencephaly, 204030002이며, id 2번 congenital malformations는 Multiple congenital malformations, 116022009다. 각 개체는 SNOMED 온톨로지에서 가장 관련 있는 개념에 매칭되어 문맥 정보를 바탕으로 정밀하게 식별되고 분류되었다.`,
+    how: [`최종 JSON을 코드 창에 싣되 첫 항목만 전문으로 남기고, 옆 패널이 세 언급의 확정 결과를 언급에서 개념으로 향하는 화살표 형식으로 정리하는 구성이다.`,
+      `확정 결과를 이름과 식별자의 짝으로 적어, 이 파이프라인의 산출물이 이름이 아니라 코드임을 형식으로 보인다.`],
+    why: `S39에서 넣은 문장이 답으로 돌아오고 S9의 빈칸이 채워지는 자리다. 장에서 가장 오래 준비된 회수여서, 첫 줄의 Congenital Zika virus infection이 S40·S41의 Organism 라벨을 정정한다는 대비가 이 슬라이드의 실질적 내용이다.` },
+
+  { n: 73, sec: "§8.4.3", coord: "§8.4.3 · 그림 8", supp: false,
+    title: "그림 8 · Zika 언급의 상태 변화",
+    what: `지카 언급 하나가 단계마다 어떻게 상태를 바꿔 왔는지를 한 화면에 정리한 그림이다. 왼쪽 초기 라벨에서 오른쪽 최종 개체까지 네 칸이 각각 이 절의 기록된 출력에 대응하며, 순서는 Listing 8.11, 8.14, 8.16과 8.20, 8.22다. 이 그림이 강조하는 핵심은 바뀐 것이 입력 문장이 아니라 판단에 쓸 수 있는 근거의 양이라는 점이다. scispaCy가 주변 단서 없이는 놓쳐 버렸던 바로 그 문장을 이 접근은 온톨로지의 관계 구조를 빌려 풀어냈다. 다만 이 결과는 2024년 10월 실행 기준의 기록이며 모델과 온톨로지 판본에 따라 달라질 수 있다.`,
+    how: [`네 칸을 가로로 이은 상태 변화 도해로, 각 칸이 실제 리스팅 출력에 대응하는 증거 사슬 형식이다.`,
+      `캡션이 읽는 법·핵심·경계 세 항목으로 나뉘고, 핵심 항목이 변한 것과 변하지 않은 것을 갈라 놓는다.`,
+      `중간 단계 없이 첫 칸에서 마지막 칸으로 건너뛸 수 없다는 점이 이 그림의 해석 경계로 제시된다.`],
+    why: `발표의 증거 사슬을 한 장으로 압축한다. 결과만 기억하고 과정을 잊는 것을 막는 장치이며, 실행 시점 스냅샷이라는 단서를 S27에 이어 한 번 더 확인하는 자리이기도 하다.` },
+
+  { n: 74, sec: "§8.4.3", coord: "§8.4.3 · 정리", supp: false,
+    title: "단어 유사도를 넘어 관계 문맥으로",
+    what: `§8.4.3을 닫으며 전체 과정을 세 줄로 접는 장이다. NER 단계에서 Zika는 단순히 Organism으로 잡혔지만 최종 명확화에서는 함께 등장한 소두증과 선천성 기형이라는 문맥 덕분에 Congenital Zika virus infection으로 정확히 좁혀졌다. 초기 개체명 인식은 Zika라는 표현이 있고 생물체와 관련 있어 보인다는 수준까지만 말했고, 후보 선택은 바이러스·바이러스병·선천성 감염을 보기로 만들었으며, 최종 명확화는 임신·소두증·선천성 기형과의 그래프 관계를 근거로 선천성 지카 감염을 골랐다. 이 장이 이룬 핵심 발전은 단순한 단어 유사도를 넘어 개체 사이의 관계 문맥을 판단에 쓴 것이다.`,
+    how: [`01·02·03 세 칸을 화살표로 이어 세 단계의 산출물을 한 줄씩 적는 구성이다. 판단의 확신도가 단계마다 올라가는 순서로 배치된다.`,
+      `맨 아래에서 §8.1을 명시적으로 되돌아본다. 같은 입력에서 scispaCy는 후보를 만들지 못했고 이 접근은 관계 경로라는 새 근거로 답을 냈다는 대조다.`],
+    why: `S9에서 연 문제가 여기서 닫히며 서사가 완결된다. §8.5는 이 결론 위에 얹히는 논평이 되고, 체크포인트 S82의 Q1이 S9와 이 장을 함께 묻는다.` },
+  { n: 75, sec: "§8.5", coord: "§8.5 · 섹션 표지", supp: false,
+    title: "§8.5 결론",
+    what: `마지막 절의 표지다. §8.5는 결론이고 부제는 온톨로지와 오픈 LLM이 서로의 빈틈을 메운다는 것이다. 이 절은 무엇이 해결됐고 무엇은 여전히 사람이 통제해야 하는지를 함께 정리한다. 성과를 정리하는 네 장과 적용 경계를 정리하는 한 장, 모두 다섯 장으로 이루어진다.`,
+    how: [`제목·부제·절 번호만 놓은 표지 형식이다. 부제가 두 재료의 상호 보완이라는 결론의 성격을 지목한다.`,
+      `해결된 것과 남은 것을 함께 다룬다는 예고를 부제 아래 한 줄에 담는다.`],
+    why: `본론이 끝나고 논평 구간으로 넘어가는 신호다. 이 예고가 있어야 S79의 경계 논의가 결론에 붙은 사족이 아니라 예정된 구성으로 읽힌다.` },
+
+  { n: 76, sec: "§8.5", coord: "§8.5 · 결론", supp: false,
+    title: "무엇을 해결했는가",
+    what: `이 장이 해결한 것을 세 항목으로 정리하는 장이다. 오픈 LLM과 도메인 전용 온톨로지를 사용하는 NED 시스템을 탐구한 결과, SNOMED 같은 도메인 온톨로지를 Llama 3.1 8B 같은 오픈 범용 LLM과 통합하면 scispaCy처럼 생물의학 도메인에서 쓰이는 전통적 자연어 처리 도구의 한계 일부를 해소할 수 있다. 첫째는 이식 가능한 접근으로, 이 유연한 접근은 여러 응용 도메인에 걸쳐 적응할 수 있고 필요한 것은 개체의 관계적 성질을 기술하는 풍부한 온톨로지다. 둘째는 알고리즘과 모델의 결합으로, 최단 경로 탐지와 전문 검색에 Neo4j의 GDS 라이브러리를 쓰고 LLM의 명확화 능력을 결합하면 견고한 시스템이 된다. 셋째는 관계 데이터의 자연어화로, 경로-텍스트 변환과 텍스트 경로 요약을 통해 비슷한 개체를 구별하는 힘을 키웠다.`,
+    how: [`01·02·03 세 카드로 성과를 나열하되, 이식성에서 시작해 구현 방식을 거쳐 이 장의 고유 기여로 좁혀 가는 순서를 취한 구성이다.`,
+      `한계 일부라는 원문의 절제된 표현을 그대로 유지해, 성과 서술이 과장으로 넘어가지 않게 한다.`,
+      `맨 아래에서 이 프레임워크가 미래 응용의 토대를 놓는다는 전망으로 닫는다.`],
+    why: `§8.1이 제기한 문제에 대한 공식 답변이다. 한계 일부라는 표현을 지키는 것이 중요한데, 리포트도 원문의 절제를 그대로 보존하고 있어 여기서 과장하면 S79의 경계 논의와 어긋난다.` },
+
+  { n: 77, sec: "§8.5", coord: "§8.5 · 역할 분담", supp: false,
+    title: "누가 무엇을 맡았는가",
+    what: `이 장에서 만든 시스템을 구성 요소별 책임으로 다시 정리하는 장이다. LLM은 문장 이해, 개체명 인식, 경로 설명, 요약, 최종 문맥 판단을 맡았다. SNOMED와 Neo4j는 검증된 개체·별칭·관계를 저장하고 후보를 검색하며 경로를 계산했다. 일반 파이썬 코드는 문자 위치 계산과 형식 처리, 단계 사이의 연결을 맡았다. 이 구도가 다른 도메인으로 옮겨질 수 있다는 주장은 제조 예로 제시된다. A200 모델의 패널에서 세로줄 불량이 발생했다는 문장에서 A200 TV가 디스플레이 패널을 부품으로 갖고 그 패널이 세로줄 결함을 갖는다는 관계를 이용하면 A200 자동차나 세탁기 후보가 아니라 TV 제품 코드를 선택할 수 있다. 다만 이 구도가 성립하려면 도메인에 개체 간 관계를 담은 온톨로지가 먼저 있어야 한다.`,
+    how: [`구성 요소와 맡는 역할 두 열로 이루어진 표 형식이다. 흩어져 있던 판단들을 한 화면에 모아 대조 가능하게 만든다.`,
+      `세 행이 각각 앞선 슬라이드에 대응한다. LLM 행은 S40, SNOMED·Neo4j 행은 S46, 파이썬 행은 S42의 내용이다.`,
+      `제조 예시에서 모호한 언급이 든 문장, 제품 관계 구조, 최종 선택이 각각 지카 문장, SNOMED의 관계 구조, 후보 명확화에 대응하도록 짝을 명시한다.`],
+    why: `S11에서 선언한 역할 분담이 표로 확정되는 자리다. A200 예시가 §8.5의 이식 가능성 주장을 청중의 업무 언어로 옮겨 S82의 토론 질문으로 연결한다.` },
+
+  { n: 78, sec: "§8.5", coord: "§8.5 · 요약", supp: false,
+    title: "이 장의 핵심 메시지 여섯 가지",
+    what: `이 장의 핵심 메시지 여섯 가지를 두 덩이로 정리하는 장이다. 문제와 한계 쪽은 세 가지다. 개체명 명확화는 복잡한 도메인에서 개체를 정확히 식별하고 구별하는 데 필수적이고, scispaCy 같은 전통적 자연어 처리 도구는 다양한 도메인에 쓸 수 없고 개체 사이의 관계를 활용하지 못하며 참조 지식을 확장하고 갱신하기도 어렵고, 범용 LLM과 도메인 온톨로지를 결합하면 이 문제들을 해소할 수 있다. 구현과 확장 쪽도 세 가지다. LLM과 도메인 온톨로지가 얽힌 유연한 종단 간 NED 과정을 배포했고, 명확화를 최단 경로 탐지·경로-텍스트 변환·텍스트 경로 요약 세 단계로 나눴으며, 미래의 응용은 이 프레임워크로 풍부한 온톨로지를 갖춘 다른 도메인에도 적응할 수 있다.`,
+    how: [`여섯 항목을 문제와 한계, 구현과 확장이라는 두 칸으로 묶는 구성이다. 나열을 두 덩이로 접어 기억 부담을 줄인다.`,
+      `왼쪽 두 번째 항목이 S6의 네 가지 한계를 세 구절로 압축해, 장의 출발점을 결론 자리에서 다시 확인한다.`,
+      `맨 아래 한 문장 정리가 리포트의 Final Takeaway와 같은 문장으로 장 전체를 닫는다.`],
+    why: `S6에서 세운 표적이 마지막으로 회수되는 자리다. 텍스트의 의미는 LLM이 해석하되 선택 가능한 개체와 관계의 근거는 도메인 온톨로지에서 가져온다는 한 문장이, 이 발표에서 청중이 가져갈 최종 명제가 된다.` },
+
+  { n: 79, sec: "§8.5", coord: "§8.5 · 실무 경계", supp: false,
+    title: "실무로 옮길 때 지킬 선 여섯 가지",
+    what: `이 접근을 실무 데이터에 적용할 때 어긋나기 쉬운 지점을 여섯 가지로 정리하는 장이다. 해석의 선은 셋이다. NER 라벨은 최종 개체가 아니어서 Zika에서 Organism은 초기 분류이고 Zika에서 SNOMED 762725007이 최종 연결이며, 최단 경로가 인과관계를 증명하지는 않으므로 관계 유형과 방향을 함께 봐야 하고, 경로를 문장으로 바꿀 때 의미를 과장하면 ASSOCIATED_WITH가 유발한다로 바뀌어 원래 지식보다 강한 주장이 된다. 설계의 선도 셋이다. NER 라벨 필터가 너무 엄격하면 정답 후보를 제거할 수 있고, 요약은 토큰 절감과 정보 보존 사이의 균형이 필요하며, 온톨로지 품질이 결과의 상한선을 결정한다.`,
+    how: [`해석의 선과 설계의 선이라는 두 칸으로 나눠, 결과를 읽을 때의 위험과 시스템을 만들 때의 위험을 분리한 구성이다.`,
+      `여섯 항목이 각각 앞선 슬라이드의 내용을 운영 규칙으로 옮긴 형태다. 순서대로 S41, S61, S58, S46, S66, S13에 대응한다.`,
+      `각 항목이 위험만 적지 않고 대응 방향을 함께 적는다. 여러 라벨을 허용하거나 필터 없는 보조 검색을 함께 두는 방안이 그 예다.`],
+    why: `발표가 과장으로 끝나지 않게 하는 장치다. 리포트의 보충 절을 그대로 옮긴 것으로, 본문이 이미 보여 준 실패 지점과 설계 의도를 점검 항목으로 바꾼 형태다. 이 장이 빠지면 장 전체가 도구 홍보로 읽힌다.` },
+
+  { n: 80, sec: "마무리", coord: "핵심 용어 1", supp: true,
+    title: "용어 정리 · 과정과 단계",
+    what: `참조용 용어표 두 장 중 첫 번째로, 과정과 단계를 가리키는 용어를 다룬다. 개체명 명확화·개체명 인식·후보 선택·후보 명확화 네 가지가 이 장의 뼈대를 이루고, 최단 경로 탐지·경로-텍스트 변환·텍스트 경로 요약이 마지막 단계의 세 부분이다. 전문 검색과 퍼지 매칭, 프롬프트 엔지니어링은 구현에 쓰인 기법이다. 각 용어에 한 줄 설명이 붙어 있으며 같은 표가 리포트 부록 A에도 정리되어 있다.`,
+    how: [`용어와 한 줄 설명 두 열로 이루어진 표 형식이다. 논지를 전개하지 않고 조회 가능한 형태로만 배치한다.`,
+      `과정과 단계를 가리키는 용어만 모으고 도구와 자원은 다음 장으로 분리해, 열 개씩 두 장으로 나눈다.`],
+    why: `발표 중 용어가 막혔을 때 되돌아올 참조 지점이다. 논지를 전개하지 않아 부연 배지가 붙어 있고, 시간이 부족하면 가장 먼저 건너뛰어도 뒤가 무너지지 않는 장이다.` },
+
+  { n: 81, sec: "마무리", coord: "핵심 용어 2", supp: true,
+    title: "용어 정리 · 도구와 자원",
+    what: `용어표의 두 번째 장으로, 도구와 자원과 그래프 구조를 가리키는 용어를 다룬다. LLM과 scispaCy, SNOMED와 UMLS, 온톨로지, Ollama와 Llama 3.1 8B, Neo4j GDS가 도구와 자원 쪽이고, 허브 노드와 SNOMED_IS_A가 그래프 구조 쪽이다. SNOMED는 45만 개 이상의 개념과 풍부한 관계 유형을 담은 다국어 임상 용어 온톨로지, Llama 3.1 8B는 최대 128K 토큰 문맥을 지원하는 80억 파라미터 오픈소스 LLM으로 정리되어 있다.`,
+    how: [`앞 장과 같은 두 열 표 형식을 유지해 두 장이 하나의 사전으로 읽히게 하는 구성이다.`,
+      `허브 노드와 SNOMED_IS_A 두 항목이 이 장에서만 등장하는 그래프 용어라서 표 끝에 따로 배치된다.`],
+    why: `앞 장과 한 세트인 참조용 슬라이드다. 함께 다루거나 함께 건너뛰는 것이 자연스러우며, 건너뛸 경우 리포트 부록 A가 같은 역할을 대신한다.` },
+
+  { n: 82, sec: "마무리", coord: "CHECKPOINT", supp: false,
+    title: "CHECKPOINT · 네 개의 질문",
+    what: `오늘 다룬 내용으로 답할 수 있는 질문 네 가지와 토론 질문 하나를 다루는 장이다. Q1은 같은 지카 문장에서 scispaCy가 후보를 만들지 못한 이유와 이 장의 접근이 그 자리에 넣은 새 근거를 묻고, Q2는 후보 선택 단계에서 LLM을 쓰지 않은 두 가지 이유를 묻는다. Q3은 최단 경로 탐지에서 허브 노드를 제외하고 1~2홉으로 제한하지 않으면 생기는 문제를 묻고, Q4는 후보가 아홉 개일 때 가장 구체적인 후보를 고르면 안 되는 이유를 묻는다. 토론 질문은 우리 도메인에 이만한 관계 정보를 담은 온톨로지가 있는지, 없다면 무엇부터 만들어야 하는지다.`,
+    how: [`네 질문을 Q1부터 Q4까지 나열하고 그 아래 토론 질문을 별도 상자로 두는 구성이다. 답을 함께 적지 않아 확인이 아니라 재구성을 요구한다.`,
+      `네 질문이 각각 앞선 슬라이드를 겨냥한다. Q1은 S9와 S74, Q2는 S45, Q3은 S57, Q4는 S70이다.`,
+      `토론 질문만 도메인을 바꿔, 이 장의 내용을 청중 자신의 업무로 옮기게 만든다.`],
+    why: `답을 외우기보다 판단 근거를 말할 수 있는지 확인하는 자리다. 네 질문이 발표의 핵심 논점을 하나씩 겨냥하도록 배치되어 이 장 하나로 이해도 점검이 끝나며, 토론 질문은 리포트의 토론 항목과 이어진다.` },
+
+  { n: 83, sec: "마무리", coord: "WRAP UP", supp: false,
+    title: "WRAP UP · 세 문장으로",
+    what: `83장을 세 문장으로 접는 마무리 장이다. 핵심 메시지는 관계를 근거로 삼으면 단서가 흩어진 문장도 풀린다는 것이다. 첫째 한계의 정체로, 전통적 NED는 표준 개체는 갖췄지만 개체 사이의 관계와 경로를 명확화에 쓰지 못했다. 둘째 결합의 구조로, 범주와 후보와 관계는 온톨로지가 공급하고 해석과 요약과 최종 판단은 LLM이 맡는다. 셋째 적용의 조건으로, 관계를 담은 온톨로지가 있어야 하고 경로의 근접성을 인과로 읽지 않아야 한다.`,
+    how: [`01·02·03 세 카드로 문제·구조·조건을 차례로 놓고 그 아래 Q&A 표시와 리포트 링크를 두는 마감 구성이다.`,
+      `마지막 카드에 성과가 아니라 조건을 배치해, 발표가 주장이 아니라 경계에서 끝나게 한다.`],
+    why: `장 전체를 세 문장으로 접는 자리다. 세 번째 항목에 경계를 넣은 구성이 §8.5의 실무 경계와 같은 태도를 유지시키므로, 성과만 강조하고 끝내지 않는 것이 이 슬라이드의 설계 의도다.` }
+];
+
+  const SEC_LABEL = {
+    "도입": "도입 · 좌표 세우기",
+    "§8.1": "§8.1 한계 진단",
+    "§8.2": "§8.2 온톨로지 적재",
+    "§8.3": "§8.3 모델 준비",
+    "§8.4": "§8.4 종단 간 NED",
+    "§8.4.1": "§8.4.1 개체명 인식(NER)",
+    "§8.4.2": "§8.4.2 후보 선택(CS)",
+    "§8.4.3": "§8.4.3 후보 명확화(CD)",
+    "§8.5": "§8.5 결론",
+    "마무리": "마무리 · 용어와 점검"
+  };
+
+  const listEl = document.getElementById("slideList");
+  const bodyEl = document.getElementById("scriptBody");
+  const listCol = document.getElementById("listCol");
+  const scriptCol = document.getElementById("scriptCol");
+  const byNumber = new Map();
+  let current = 0;
+
+  function buildList() {
+    const parts = [];
+    let lastSec = null;
+    SLIDES.forEach(function (s) {
+      if (s.sec !== lastSec) {
+        lastSec = s.sec;
+        const group = SLIDES.filter(function (x) { return x.sec === s.sec; });
+        const first = group[0].n;
+        const last = group[group.length - 1].n;
+        const span = first === last ? ("S" + first) : ("S" + first + "–S" + last);
+        parts.push('<div class="sec-head"><span>' + SEC_LABEL[s.sec] + "</span><em>" + span + "</em></div>");
+      }
+      parts.push(
+        '<button type="button" class="s-item" data-n="' + s.n + '">' +
+        '<span class="s-item__no">S' + s.n + "</span>" +
+        '<span class="s-item__title">' + s.title + "</span>" +
+        (s.supp ? '<span class="badge-supp">부연</span>' : "") +
+        '<span class="s-item__meta">' + s.coord + "</span>" +
+        "</button>"
+      );
+      byNumber.set(s.n, s);
+    });
+    listEl.innerHTML = parts.join("");
+  }
+
+  function renderScript(n) {
+    const s = byNumber.get(n);
+    if (!s) { return; }
+    const prev = byNumber.get(n - 1);
+    const next = byNumber.get(n + 1);
+    const howItems = s.how.map(function (h) { return "<li>" + h + "</li>"; }).join("");
+    bodyEl.innerHTML =
+      '<header class="sc-head">' +
+        '<p class="sc-head__kicker">SLIDE ' + s.n + " / 83</p>" +
+        "<h1>" + s.title + "</h1>" +
+        '<div class="sc-head__meta">' +
+          '<span class="chip chip--coord">' + s.coord + "</span>" +
+          '<span class="chip">' + SEC_LABEL[s.sec] + "</span>" +
+          (s.supp
+            ? '<span class="chip chip--supp">부연 설명 슬라이드</span>'
+            : '<span class="chip">본선 슬라이드</span>') +
+        "</div>" +
+      "</header>" +
+      '<section class="sc-block">' +
+        '<h2 class="sc-block__h">무엇을 이야기하는가 <i>SAY</i></h2>' +
+        '<p class="sc-what">' + s.what + "</p>" +
+      "</section>" +
+      '<section class="sc-block">' +
+        '<h2 class="sc-block__h">어떻게 전달하는가 <i>DELIVER</i></h2>' +
+        '<ul class="sc-how">' + howItems + "</ul>" +
+      "</section>" +
+      '<section class="sc-block">' +
+        '<h2 class="sc-block__h">왜 이것을 이야기하는가 <i>WHY</i></h2>' +
+        '<p class="sc-why">' + s.why + "</p>" +
+      "</section>" +
+      '<nav class="sc-nav">' +
+        (prev
+          ? '<button type="button" data-goto="' + prev.n + '">← S' + prev.n + " " + prev.title + "</button>"
+          : "<button type=\"button\" disabled>← 처음</button>") +
+        (next
+          ? '<button type="button" data-goto="' + next.n + '">S' + next.n + " " + next.title + " →</button>"
+          : "<button type=\"button\" disabled>마지막 →</button>") +
+      "</nav>" +
+      '<p class="sc-hint"><kbd>↓</kbd> <kbd>j</kbd> 다음 · <kbd>↑</kbd> <kbd>k</kbd> 이전 · 주소 끝에 <code>?slide=40</code>을 붙이면 그 장으로 바로 엽니다.</p>';
+    scriptCol.scrollTop = 0;
+  }
+
+  function markActive(n) {
+    const items = listEl.querySelectorAll(".s-item");
+    for (let i = 0; i < items.length; i += 1) {
+      const isOn = Number(items[i].getAttribute("data-n")) === n;
+      items[i].classList.toggle("is-active", isOn);
+      if (isOn) {
+        const top = items[i].offsetTop;
+        const bottom = top + items[i].offsetHeight;
+        const viewTop = listCol.scrollTop;
+        const viewBottom = viewTop + listCol.clientHeight;
+        if (top < viewTop + 80 || bottom > viewBottom - 20) {
+          listCol.scrollTop = top - listCol.clientHeight / 2;
+        }
+      }
+    }
+  }
+
+  function select(n, pushUrl) {
+    if (!byNumber.has(n)) { return; }
+    current = n;
+    renderScript(n);
+    markActive(n);
+    if (pushUrl !== false && window.history && window.history.replaceState) {
+      try {
+        window.history.replaceState(null, "", "?slide=" + n);
+      } catch (err) {
+        /* file:// 환경에서는 무시한다 */
+      }
+    }
+  }
+
+  function initialSlide() {
+    const match = /[?&]slide=(\d+)/.exec(window.location.search);
+    if (match) {
+      const n = Number(match[1]);
+      if (byNumber.has(n)) { return n; }
+    }
+    return 1;
+  }
+
+  function syncStickyOffset() {
+    const head = document.getElementById("listHead");
+    if (head) {
+      document.documentElement.style.setProperty("--list-head-h", head.offsetHeight + "px");
+    }
+  }
+
+  buildList();
+  syncStickyOffset();
+  window.addEventListener("resize", syncStickyOffset);
+
+  listEl.addEventListener("click", function (event) {
+    const item = event.target.closest(".s-item");
+    if (item) { select(Number(item.getAttribute("data-n"))); }
+  });
+
+  document.addEventListener("click", function (event) {
+    const jump = event.target.closest("[data-goto]");
+    if (jump) { select(Number(jump.getAttribute("data-goto"))); }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.metaKey || event.ctrlKey || event.altKey) { return; }
+    const key = event.key;
+    if (key === "ArrowDown" || key === "j" || key === "ㅓ") {
+      event.preventDefault();
+      select(Math.min(current + 1, SLIDES.length));
+    } else if (key === "ArrowUp" || key === "k" || key === "ㅏ") {
+      event.preventDefault();
+      select(Math.max(current - 1, 1));
+    } else if (key === "Home") {
+      event.preventDefault();
+      select(1);
+    } else if (key === "End") {
+      event.preventDefault();
+      select(SLIDES.length);
+    }
+  });
+
+  select(initialSlide(), false);
+  </script>
+</body>
+</html>

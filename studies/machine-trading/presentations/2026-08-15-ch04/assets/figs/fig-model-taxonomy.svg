@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 380" role="img" aria-labelledby="title desc" font-family="Noto Sans CJK KR,Apple SD Gothic Neo,Malgun Gothic,Noto Sans KR,NanumGothic,Inter,system-ui,sans-serif">
+  <title id="title">여섯 모델을 출력, 규칙의 모양, 정답 라벨로 구분하기</title><desc id="desc">수치 수익률을 예측하는 모델, 상승 하락 클래스를 예측하는 모델, 보이지 않는 상태를 추정하는 HMM을 구분한다. 규칙의 모양은 선형, 구간별, 비선형, 확률적 상태 전이로 나뉜다. HMM을 제외한 모델은 관측 가능한 목표값을 사용하는 지도 학습이다.</desc>
+  <defs><style>.head{fill:#101828;font-size:16px;font-weight:700}.row{fill:#fff;stroke:#173b67;stroke-width:1.7}.row2{fill:#f8fafc;stroke:#173b67;stroke-width:1.7}.label{fill:#173b67;font-size:13px;font-weight:700}.body{fill:#56606e;font-size:10.5px}.chip1{fill:#dce8f5;stroke:#173b67;stroke-width:1}.chip2{fill:#d8efe0;stroke:#1f7042;stroke-width:1}.chip3{fill:#fde8df;stroke:#b54724;stroke-width:1}.t1{fill:#173b67;font-size:10.5px;font-weight:700}.t2{fill:#1f7042;font-size:10.5px;font-weight:700}.t3{fill:#b54724;font-size:10.5px;font-weight:700}.divider{stroke:#d7dce2;stroke-width:1}</style></defs>
+
+  <rect x="28" y="57" width="864" height="91" rx="13" class="row"/>
+  <text x="50" y="83" class="label">1 · 출력</text><text x="50" y="103" class="body">모델이 직접 예측하는 것</text>
+  <line x1="178" y1="70" x2="178" y2="135" class="divider"/>
+  <rect x="198" y="78" width="225" height="48" rx="9" class="chip1"/><text x="310" y="98" text-anchor="middle" class="t1">다음 날 수익률 수치</text><text x="310" y="116" text-anchor="middle" class="body">단계적 회귀 · 회귀 트리 · 신경망</text>
+  <rect x="439" y="78" width="196" height="48" rx="9" class="chip2"/><text x="537" y="98" text-anchor="middle" class="t2">상승 / 하락 클래스</text><text x="537" y="116" text-anchor="middle" class="body">분류 트리 · SVM</text>
+  <rect x="651" y="78" width="220" height="48" rx="9" class="chip3"/><text x="761" y="98" text-anchor="middle" class="t3">상태와 관측 확률</text><text x="761" y="116" text-anchor="middle" class="body">HMM</text>
+
+  <rect x="28" y="160" width="864" height="99" rx="13" class="row2"/>
+  <text x="50" y="187" class="label">2 · 규칙의 모양</text><text x="50" y="207" class="body">입력과 출력이 이어지는 방식</text>
+  <line x1="178" y1="173" x2="178" y2="246" class="divider"/>
+  <rect x="198" y="181" width="155" height="56" rx="9" class="chip1"/><text x="275" y="202" text-anchor="middle" class="t1">하나의 선형식</text><text x="275" y="222" text-anchor="middle" class="body">단계적 회귀</text>
+  <rect x="365" y="181" width="155" height="56" rx="9" class="chip1"/><text x="442" y="202" text-anchor="middle" class="t1">구간별 상수·클래스</text><text x="442" y="222" text-anchor="middle" class="body">회귀·분류 트리</text>
+  <rect x="532" y="181" width="155" height="56" rx="9" class="chip2"/><text x="609" y="202" text-anchor="middle" class="t2">비선형 변환</text><text x="609" y="222" text-anchor="middle" class="body">다항식 SVM · 신경망</text>
+  <rect x="699" y="181" width="172" height="56" rx="9" class="chip3"/><text x="785" y="202" text-anchor="middle" class="t3">확률적 상태 전이</text><text x="785" y="222" text-anchor="middle" class="body">HMM</text>
+
+  <rect x="28" y="271" width="864" height="81" rx="13" class="row"/>
+  <text x="50" y="297" class="label">3 · 정답 라벨</text><text x="50" y="317" class="body">학습할 때 정답을 볼 수 있는가</text>
+  <line x1="178" y1="283" x2="178" y2="340" class="divider"/>
+  <rect x="198" y="288" width="430" height="45" rx="9" class="chip1"/><text x="413" y="307" text-anchor="middle" class="t1">지도 학습 · 미래 수익률이나 상승/하락을 관측</text><text x="413" y="325" text-anchor="middle" class="body">단계적 회귀 · 두 트리 · SVM · 신경망</text>
+  <rect x="644" y="288" width="227" height="45" rx="9" class="chip3"/><text x="757" y="307" text-anchor="middle" class="t3">은닉 상태 라벨 없음</text><text x="757" y="325" text-anchor="middle" class="body">HMM · EM으로 추정</text>
+</svg>

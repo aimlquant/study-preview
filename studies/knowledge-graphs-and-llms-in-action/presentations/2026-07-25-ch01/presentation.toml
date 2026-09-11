@@ -1,0 +1,30 @@
+study_id = "kg-llm-in-action-2026"
+session_id = "2026-07-25-ch01"
+title = "지식 그래프와 LLM: 환상의 조합"
+date = "2026-07-25"
+presenters = ["수경"]
+chapters = ["Chapter 1"]
+template = "study-deck-v1"
+report_template = "study-report-v1"
+workflow = "raw-report-deck-v1"
+report_source = "report.html"
+artifacts = ["report", "slides"]
+revision_date = "2026-08-05"
+source_fidelity = "source-structure-v1"
+source_material = "materials/aiml/active/knowledge-graphs-and-llms-in-action/chapter_01_knowledge_graphs_and_llms_a_killer_combination/01_knowledge_graphs_and_llms_a_killer_combination_ko_explained.md"
+
+[[retained_unreferenced_assets]]
+path = "assets/figs/extraction-bottleneck.svg"
+reason = "이전 대안 도형이며 사용자 명시 폐기 결정 전까지 보존"
+
+[[retained_unreferenced_assets]]
+path = "assets/figs/hybrid-loop.svg"
+reason = "이전 대안 도형이며 사용자 명시 폐기 결정 전까지 보존"
+
+[[retained_unreferenced_assets]]
+path = "assets/figs/technology-semantics.svg"
+reason = "이전 대안 도형이며 사용자 명시 폐기 결정 전까지 보존"
+
+[[retained_unreferenced_assets]]
+path = "assets/figs/use-case-map.svg"
+reason = "이전 대안 도형이며 사용자 명시 폐기 결정 전까지 보존"

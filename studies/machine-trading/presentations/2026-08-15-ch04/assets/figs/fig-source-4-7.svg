@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" role="img" aria-labelledby="title desc" font-family="Noto Sans CJK KR,Apple SD Gothic Neo,Malgun Gothic,Noto Sans KR,NanumGothic,Inter,system-ui,sans-serif">
+  <title id="title">부스팅 반복 횟수의 시간순 교차 검증과 테스트 결과</title>
+  <desc id="desc">반복 횟수 5, 20, 80, 160의 평균 검증 RMSE를 비교해 160을 선택하지만, 테스트 구간 총수익은 마이너스 2.2퍼센트이고 샤프 비율은 마이너스 0.05다.</desc>
+  <defs><style>.head{fill:#101828;font-size:15px;font-weight:700}.small{fill:#606978;font-size:11px}.axis{stroke:#818895;stroke-width:1.5}.grid{stroke:#e5e8ec;stroke-width:1}.line{fill:none;stroke:#173b67;stroke-width:3}.dot{fill:#173b67;stroke:#fff;stroke-width:1.5}.chosen{fill:#1f7042;stroke:#fff;stroke-width:2}.label{fill:#173b67;font-size:12px;font-weight:700}.green{fill:#1f7042;font-size:12px;font-weight:700}.bad{fill:#b54724}.card{fill:#fff7ed;stroke:#c85b2a;stroke-width:1.5}.rule{fill:#e8f4ec;stroke:#1f7042;stroke-width:1.5}</style></defs>
+  <text x="42" y="32" class="head">1 · 학습 구간 안에서 반복 횟수를 고른다</text>
+  <line x1="84" y1="70" x2="84" y2="256" class="axis"/><line x1="84" y1="256" x2="550" y2="256" class="axis"/>
+  <line x1="84" y1="106" x2="550" y2="106" class="grid"/><line x1="84" y1="175" x2="550" y2="175" class="grid"/><line x1="84" y1="225" x2="550" y2="225" class="grid"/>
+  <text x="72" y="110" text-anchor="end" class="small">0.01416</text><text x="72" y="179" text-anchor="end" class="small">0.01415</text><text x="72" y="229" text-anchor="end" class="small">0.01414</text>
+  <polyline points="130,135 250,151 370,184 500,240" class="line"/>
+  <circle cx="130" cy="135" r="7" class="dot"/><circle cx="250" cy="151" r="7" class="dot"/><circle cx="370" cy="184" r="7" class="dot"/><circle cx="500" cy="240" r="9" class="chosen"/>
+  <text x="130" y="279" text-anchor="middle" class="small">5</text><text x="250" y="279" text-anchor="middle" class="small">20</text><text x="370" y="279" text-anchor="middle" class="small">80</text><text x="500" y="279" text-anchor="middle" class="small">160</text>
+  <text x="317" y="307" text-anchor="middle" class="small">부스팅 반복 횟수</text><text x="500" y="222" text-anchor="middle" class="green">최저 RMSE</text>
+  <rect x="600" y="64" width="262" height="78" rx="12" class="rule"/>
+  <text x="731" y="91" text-anchor="middle" class="green">선택: 160회</text><text x="731" y="115" text-anchor="middle" class="small">검증 RMSE 0.014137</text><text x="731" y="132" text-anchor="middle" class="small">테스트 결과를 보고 고른 값이 아님</text>
+  <text x="600" y="183" class="head">2 · 선택을 고정하고 테스트한다</text>
+  <rect x="600" y="204" width="262" height="103" rx="12" class="card"/>
+  <text x="731" y="234" text-anchor="middle" fill="#9b3f1d" font-size="13" font-weight="700">테스트 총수익 성과</text>
+  <text x="731" y="264" text-anchor="middle" fill="#b54724" font-size="21" font-weight="700">CAGR −2.2%</text>
+  <text x="731" y="291" text-anchor="middle" class="small">샤프 비율 −0.05</text>
+</svg>

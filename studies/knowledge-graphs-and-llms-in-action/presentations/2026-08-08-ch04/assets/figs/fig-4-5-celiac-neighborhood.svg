@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">셀리악병 주변 그래프</title><desc id="desc">한 질병에서 관련 유전자와 PPI 이웃으로 확장되는 탐색 장면</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><rect class="warn" x="55" y="220" width="175" height="105" rx="12"/><text class="t m" x="73" y="247" text-anchor="start" fill="#0f172a">Celiac disease</text><text class="t xs" x="73" y="269" text-anchor="start" fill="#475569">질병 노드</text><text class="t xs" x="73" y="286" text-anchor="start" fill="#475569">탐색 출발점</text><circle class="soft" cx="365" cy="120" r="48"/><text class="t m" x="365" y="125" text-anchor="middle" fill="#0f172a">HLA-DQA1</text><path class="line" d="M230 272 L317 120" marker-end="url(#arrow)"/><circle class="soft" cx="365" cy="230" r="48"/><text class="t m" x="365" y="235" text-anchor="middle" fill="#0f172a">IL2RA</text><path class="line" d="M230 272 L317 230" marker-end="url(#arrow)"/><circle class="soft" cx="365" cy="340" r="48"/><text class="t m" x="365" y="345" text-anchor="middle" fill="#0f172a">CTLA4</text><path class="line" d="M230 272 L317 340" marker-end="url(#arrow)"/><circle class="plain" cx="625" cy="120" r="48"/><text class="t m" x="625" y="125" text-anchor="middle" fill="#0f172a">CXCR4</text><circle class="plain" cx="625" cy="230" r="48"/><text class="t m" x="625" y="235" text-anchor="middle" fill="#0f172a">IRF1</text><circle class="plain" cx="625" cy="340" r="48"/><text class="t m" x="625" y="345" text-anchor="middle" fill="#0f172a">STAT1</text><path class="thin" d="M413 120 L577 120"/><path class="thin" d="M413 230 L577 230"/><path class="thin" d="M413 340 L577 340"/><path class="thin" d="M413 230 L577 120"/><path class="thin" d="M413 340 L577 230"/><text class="t s" x="290" y="82" text-anchor="middle" fill="#64748b">DISGeNET: 질병-유전자 연관</text><text class="t s" x="495" y="82" text-anchor="middle" fill="#64748b">INTERACTS_WITH: 단백질 상호작용</text><rect class="green" x="735" y="150" width="165" height="105" rx="12"/><text class="t m" x="753" y="177" text-anchor="start" fill="#0f172a">확장 후보</text><text class="t xs" x="753" y="199" text-anchor="start" fill="#475569">PPI 이웃 중</text><text class="t xs" x="753" y="216" text-anchor="start" fill="#475569">질병 관련 가능성</text><text class="t xs" x="753" y="233" text-anchor="start" fill="#475569">검증 필요</text><rect class="dark" x="735" y="315" width="165" height="105" rx="12"/><text class="t m" x="753" y="342" text-anchor="start" fill="#fff">연관의 의미</text><text class="t xs" x="753" y="364" text-anchor="start" fill="#e2e8f0">질병→유전자</text><text class="t xs" x="753" y="381" text-anchor="start" fill="#e2e8f0">유전자→단백질</text><text class="t xs" x="753" y="398" text-anchor="start" fill="#e2e8f0">경로로 추적</text><path class="line" d="M673 230 L735 202" marker-end="url(#arrow)"/><path class="line" d="M673 302 L735 365" marker-end="url(#arrow)"/></svg>

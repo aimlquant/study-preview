@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 370" role="img" aria-labelledby="title desc" font-family="Noto Sans CJK KR,Apple SD Gothic Neo,Malgun Gothic,Noto Sans KR,NanumGothic,Inter,system-ui,sans-serif">
+  <title id="title">모델 선택에서 테스트 성과 확인까지</title><desc id="desc">왼쪽에서 예측 모델을 정하고, 가운데에서 시간순 검증과 앙상블 같은 학습 설계를 적용한 다음, 오른쪽에서 사용한 근거를 구분해 테스트 성과를 확인한다.</desc>
+  <defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto"><path d="M0 0L11 5.5L0 11Z" fill="#173b67"/></marker><style>.head{fill:#101828;font-size:16px;font-weight:700}.box{fill:#fff;stroke:#173b67;stroke-width:1.8}.design{fill:#e8f4ec;stroke:#1f7042;stroke-width:1.8}.result{fill:#173b67;stroke:#173b67;stroke-width:1.8}.step{fill:#173b67;font-size:13px;font-weight:700}.green{fill:#1f7042;font-size:13px;font-weight:700}.white{fill:#fff;font-size:13px;font-weight:700}.body{fill:#4f5866;font-size:11px}.pale{fill:#d8e4f2;font-size:10.5px}.item{fill:#f5f7f9;stroke:#d5dae1;stroke-width:1}.method{fill:#fff;stroke:#b9d5c3;stroke-width:1}.arrow{fill:none;stroke:#173b67;stroke-width:2.5;marker-end:url(#arrow)}.tag1{fill:#dce8f5}.tag2{fill:#d8efe0}.tagtext{fill:#173b67;font-size:9px;font-weight:700}.value{fill:#fff;font-size:11px;font-weight:700}</style></defs>
+  <rect x="24" y="61" width="246" height="265" rx="14" class="box"/>
+  <text x="44" y="90" class="step">1 · 무엇을 예측할 모델인가</text>
+  <rect x="44" y="111" width="206" height="30" rx="7" class="item"/><text x="147" y="131" text-anchor="middle" class="body">단계적 회귀 · 회귀 트리</text>
+  <rect x="44" y="149" width="206" height="30" rx="7" class="item"/><text x="147" y="169" text-anchor="middle" class="body">분류 트리 · SVM</text>
+  <rect x="44" y="187" width="206" height="30" rx="7" class="item"/><text x="147" y="207" text-anchor="middle" class="body">HMM · 신경망</text>
+  <text x="147" y="247" text-anchor="middle" class="body">같은 SPY 예측 문제에 적용해</text><text x="147" y="266" text-anchor="middle" class="body">표현 방식의 차이를 비교</text>
+  <rect x="61" y="282" width="172" height="24" rx="6" fill="#fff7ed" stroke="#c85b2a"/><text x="147" y="299" text-anchor="middle" fill="#9b3f1d" font-size="10.5" font-weight="700">복잡함 자체는 목표가 아니다</text>
+
+  <path d="M270 194H318" class="arrow"/>
+  <rect x="320" y="61" width="260" height="265" rx="14" class="design"/>
+  <text x="340" y="90" class="green">2 · 학습 구간 안에서 설계</text>
+  <rect x="340" y="111" width="220" height="34" rx="7" class="method"/><text x="450" y="133" text-anchor="middle" class="body">시간순 교차 검증 · 설정 선택</text>
+  <rect x="340" y="153" width="220" height="34" rx="7" class="method"/><text x="450" y="175" text-anchor="middle" class="body">배깅 · 행 재표본추출 후 평균</text>
+  <rect x="340" y="195" width="220" height="34" rx="7" class="method"/><text x="450" y="217" text-anchor="middle" class="body">랜덤 포레스트 · 행과 변수 후보 변경</text>
+  <rect x="340" y="237" width="220" height="34" rx="7" class="method"/><text x="450" y="259" text-anchor="middle" class="body">반복 학습 · 검증 선택 또는 평균</text>
+  <text x="450" y="298" text-anchor="middle" class="green">테스트셋은 여기서 사용하지 않는다</text>
+
+  <path d="M580 194H628" class="arrow"/>
+  <rect x="630" y="61" width="266" height="265" rx="14" class="result"/>
+  <text x="650" y="90" class="white">3 · 고정된 테스트 구간에서 확인</text>
+  <text x="650" y="112" class="pale">총수익 CAGR · 서로 다른 근거는 태그로 구분</text>
+  <rect x="650" y="129" width="226" height="31" rx="7" fill="#294d78"/><rect x="659" y="136" width="48" height="17" rx="5" class="tag2"/><text x="683" y="148" text-anchor="middle" class="tagtext">Python</text><text x="718" y="149" class="value">SVM</text><text x="862" y="149" text-anchor="end" class="value">11.2%</text>
+  <rect x="650" y="167" width="226" height="31" rx="7" fill="#294d78"/><rect x="659" y="174" width="48" height="17" rx="5" class="tag1"/><text x="683" y="186" text-anchor="middle" class="tagtext">재계산</text><text x="718" y="187" class="value">단계적 회귀</text><text x="862" y="187" text-anchor="end" class="value">10.6%</text>
+  <rect x="650" y="205" width="226" height="31" rx="7" fill="#294d78"/><rect x="659" y="212" width="48" height="17" rx="5" class="tag2"/><text x="683" y="224" text-anchor="middle" class="tagtext">Python</text><text x="718" y="225" class="value">순수 배깅</text><text x="862" y="225" text-anchor="end" class="value">10.5%</text>
+  <rect x="650" y="243" width="226" height="31" rx="7" fill="#294d78"/><rect x="659" y="250" width="48" height="17" rx="5" class="tag2"/><text x="683" y="262" text-anchor="middle" class="tagtext">Python</text><text x="718" y="263" class="value">분류 트리</text><text x="862" y="263" text-anchor="end" class="value">4.0%</text>
+  <rect x="650" y="281" width="226" height="31" rx="7" fill="#294d78"/><rect x="659" y="288" width="48" height="17" rx="5" class="tag1"/><text x="683" y="300" text-anchor="middle" class="tagtext">재계산</text><text x="718" y="301" class="value">HMM</text><text x="862" y="301" text-anchor="end" class="value">−1.0%</text>
+  <rect x="90" y="343" width="740" height="24" rx="7" fill="#f7f8fa" stroke="#d3d7de"/><text x="460" y="360" text-anchor="middle" class="body">비교 기준선: 같은 구간 SPY 매수·보유 13.4% · 오른쪽 값은 모델의 보편적 순위가 아니다.</text>
+</svg>

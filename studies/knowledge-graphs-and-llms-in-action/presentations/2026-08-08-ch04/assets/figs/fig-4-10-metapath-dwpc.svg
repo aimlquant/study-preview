@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">메타경로와 DWPC</title><desc id="desc">경로 수에 차수 감쇠를 적용해 허브 편향을 줄인다</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><rect class="dark" x="60" y="75" width="235" height="120" rx="12"/><text class="t h" x="78" y="109" text-anchor="start" fill="#fff">Metapath</text><text class="t s" x="78" y="137" text-anchor="start" fill="#e2e8f0">(Gene) - a - (Disease)</text><text class="t s" x="78" y="157" text-anchor="start" fill="#e2e8f0">유형 수준 패턴</text><text class="t s" x="78" y="177" text-anchor="start" fill="#e2e8f0">실제 경로 아님</text><rect class="soft" x="60" y="260" width="235" height="120" rx="12"/><text class="t h" x="78" y="294" text-anchor="start" fill="#0f172a">Real paths</text><text class="t s" x="78" y="322" text-anchor="start" fill="#475569">IRF1 → Tissue → MS</text><text class="t s" x="78" y="342" text-anchor="start" fill="#475569">IRF1 → CXCR4 → MS</text><text class="t s" x="78" y="362" text-anchor="start" fill="#475569">PC = 경로 개수</text><path class="line" d="M180 195 L180 260" marker-end="url(#arrow)"/><path class="thin" d="M365 120 L540 120 L690 200"/><path class="thin" d="M365 270 L540 270 L690 200"/><circle class="soft" cx="365" cy="120" r="44"/><text class="t m" x="365" y="125" text-anchor="middle" fill="#0f172a">IRF1</text><circle class="plain" cx="540" cy="120" r="44"/><text class="t s" x="540" y="125" text-anchor="middle" fill="#64748b">Tissue</text><circle class="soft" cx="365" cy="270" r="44"/><text class="t m" x="365" y="275" text-anchor="middle" fill="#0f172a">IRF1</text><circle class="plain" cx="540" cy="270" r="44"/><text class="t s" x="540" y="275" text-anchor="middle" fill="#64748b">CXCR4</text><circle class="warn" cx="690" cy="200" r="58"/><text class="t s" x="690" y="196" text-anchor="middle" fill="#64748b">multiple</text><text class="t s" x="690" y="216" text-anchor="middle" fill="#64748b">sclerosis</text><rect class="green" x="595" y="332" width="305" height="128" rx="12"/><text class="t h" x="613" y="366" text-anchor="start" fill="#0f172a">PDP / DWPC</text><text class="t s" x="613" y="394" text-anchor="start" fill="#475569">PDP(path) = product d^-w</text><text class="t s" x="613" y="414" text-anchor="start" fill="#475569">허브를 지나면 작아짐</text><text class="t s" x="613" y="434" text-anchor="start" fill="#475569">DWPC = sum PDP</text><text class="t m" x="480" y="505" text-anchor="middle" fill="#0f172a">PC는 많이 연결된 허브 경로도 똑같이 세지만, DWPC는 특이 경로가 묻히지 않게 보정한다</text></svg>

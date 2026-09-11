@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 330" role="img" aria-labelledby="t d">
+  <style>
+    .t{font-family:'Noto Sans CJK KR','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',NanumGothic,Inter,system-ui,sans-serif}
+    .an-s{text-anchor:start} .an-m{text-anchor:middle} .an-e{text-anchor:end}
+    .h{font-size:16px;font-weight:900;fill:#0F0F10}
+    .b{font-size:14px;font-weight:800;fill:#0F0F10}
+    .s{font-size:13px;font-weight:700;fill:#0F0F10}
+    .xs{font-size:12px;font-weight:700;fill:#475569}
+    .num{font-size:15px;font-weight:900;fill:#0F2C59}
+    .numw{font-size:15px;font-weight:900;fill:#FFFFFF}
+    .numd{font-size:15px;font-weight:900;fill:#0F0F10}
+    .inv{fill:#FFFFFF}
+    .box{fill:#FFFFFF;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxa{fill:#E8EDF5;stroke:#0F2C59;stroke-width:2;rx:10}
+    .boxd{fill:#0F2C59;stroke:#0F2C59;stroke-width:2;rx:10}
+    .chip{fill:#0F2C59;stroke:none;rx:9}
+    .band{fill:#F1F5F9;stroke:#CBD5E1;stroke-width:1.5;rx:14}
+    .conn{fill:none;stroke:#0F2C59;stroke-width:2.2}
+    .dash{fill:none;stroke:#64748B;stroke-width:2;stroke-dasharray:7 5}
+    .axis{fill:none;stroke:#94A3B8;stroke-width:1.5}
+    .grid{fill:none;stroke:#E2E8F0;stroke-width:1}
+    .bar1{fill:#0F2C59}
+    .bar2{fill:#9AB0CC}
+  </style>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0F2C59"/></marker><marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748B"/></marker></defs>
+  <title id="t">거시 국면과 시장 변동성·낙폭, 2003–2026</title>
+  <desc id="d">왼쪽은 2003년부터 2026년까지의 연도축 위에 글로벌 금융위기 2008년, 코로나 2020년, 인플레이션 2022년을 표시한다. 오른쪽은 확장·긴축·회복·위기 네 거시 국면의 연율화 변동성을 12, 15, 15, 16퍼센트로, 최대 낙폭 크기를 15, 42, 53, 10퍼센트로 비교한다. 변동성은 좁게 움직이지만 낙폭은 크게 벌어진다.</desc>
+  <rect x="0" y="0" width="960" height="330" fill="#FAFAF9"/>
+  <rect class="band" x="26" y="60" width="300" height="250"/>
+  <path class="axis" d="M56 262 H296"/>
+  <path class="axis" d="M56 262 V266"/>
+  <text class="t xs an-m" x="56" y="286">2003</text>
+  <path class="axis" d="M109 262 V266"/>
+  <text class="t xs an-m" x="109" y="286">2008</text>
+  <path class="dash" d="M109 262 V124"/>
+  <rect class="box" x="66.8" y="100" width="84" height="24"/>
+  <text class="t xs an-m" x="108.8" y="117">GFC</text>
+  <path class="axis" d="M234 262 V266"/>
+  <text class="t xs an-m" x="234" y="286">2020</text>
+  <path class="dash" d="M234 262 V124"/>
+  <rect class="box" x="191.6" y="100" width="84" height="24"/>
+  <text class="t xs an-m" x="233.6" y="117">COVID</text>
+  <path class="axis" d="M255 262 V284"/>
+  <text class="t xs an-m" x="255" y="304">2022</text>
+  <path class="dash" d="M255 262 V160"/>
+  <rect class="box" x="213.2" y="136" width="84" height="24"/>
+  <text class="t xs an-m" x="255.2" y="153">Inflation</text>
+  <path class="axis" d="M296 262 V266"/>
+  <text class="t xs an-m" x="296" y="286">2026</text>
+  <rect class="band" x="44" y="68" width="264" height="22"/>
+  <text class="t xs an-m" x="176.0" y="84">주요 사건 · 2003–2026</text>
+  <rect class="band" x="352" y="60" width="584" height="250"/>
+  <path class="grid" d="M404 268 H916"/>
+  <text class="t xs an-e" x="396" y="272">0</text>
+  <path class="grid" d="M404 226 H916"/>
+  <text class="t xs an-e" x="396" y="230">15</text>
+  <path class="grid" d="M404 184 H916"/>
+  <text class="t xs an-e" x="396" y="188">30</text>
+  <path class="grid" d="M404 142 H916"/>
+  <text class="t xs an-e" x="396" y="146">45</text>
+  <path class="grid" d="M404 100 H916"/>
+  <text class="t xs an-e" x="396" y="104">60</text>
+  <path class="axis" d="M404 268 H916"/>
+  <rect class="bar2" x="430" y="234" width="44" height="34" rx="4"/>
+  <text class="t numd an-m" x="452" y="226">12</text>
+  <rect class="bar1" x="482" y="226" width="44" height="42" rx="4"/>
+  <text class="t numw an-m" x="504" y="248">15</text>
+  <text class="t s an-m" x="478" y="290">확장</text>
+  <rect class="bar2" x="553" y="226" width="44" height="42" rx="4"/>
+  <text class="t numd an-m" x="575" y="248">15</text>
+  <rect class="bar1" x="605" y="150" width="44" height="118" rx="4"/>
+  <text class="t numw an-m" x="627" y="172">42</text>
+  <text class="t s an-m" x="601" y="290">긴축</text>
+  <rect class="bar2" x="676" y="226" width="44" height="42" rx="4"/>
+  <text class="t numd an-m" x="698" y="248">15</text>
+  <rect class="bar1" x="728" y="120" width="44" height="148" rx="4"/>
+  <text class="t numw an-m" x="750" y="142">53</text>
+  <text class="t s an-m" x="724" y="290">회복</text>
+  <rect class="bar2" x="799" y="223" width="44" height="45" rx="4"/>
+  <text class="t numd an-m" x="821" y="245">16</text>
+  <rect class="bar1" x="851" y="240" width="44" height="28" rx="4"/>
+  <text class="t numd an-m" x="873" y="232">10</text>
+  <text class="t s an-m" x="847" y="290">위기</text>
+  <rect class="bar2" x="572" y="70" width="20" height="14" rx="3"/>
+  <text class="t xs an-s" x="600" y="82">연율화 변동성 %</text>
+  <rect class="bar1" x="740" y="70" width="20" height="14" rx="3"/>
+  <text class="t xs an-s" x="768" y="82">최대 낙폭 크기 %</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+    <style>
+      .t{font-family:'Noto Sans CJK KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', NanumGothic, Inter, system-ui, sans-serif}
+      .h{font-size:20px;font-weight:900}
+      .m{font-size:15px;font-weight:800}
+      .s{font-size:12px;font-weight:700}
+      .xs{font-size:10px;font-weight:700}
+      .dark{fill:#0f2c59;stroke:#0f2c59}
+      .soft{fill:#e8eef8;stroke:#b7c7e3}
+      .plain{fill:#fff;stroke:#cbd5e1}
+      .green{fill:#e7f7ef;stroke:#99d8b6}
+      .warn{fill:#fff7ed;stroke:#fdba74}
+      .line{stroke:#0f2c59;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#64748b;stroke-width:2.5;fill:none;stroke-dasharray:7 7;stroke-linecap:round}
+      .thin{stroke:#94a3b8;stroke-width:2;fill:none}
+      .axis{stroke:#64748b;stroke-width:2;fill:none}
+      .bar{fill:#0f2c59}
+      .bar2{fill:#89a7d8}
+      .badge{fill:#0f2c59}
+      .badgeText{fill:#fff;font-size:12px;font-weight:900}
+    </style>
+    <title id="title">오믹스 세 층위</title><desc id="desc">유전체에서 전사체를 거쳐 단백질체로 이어지는 데이터 층위</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0f2c59"/></marker></defs><rect width="960" height="540" fill="#fafaf9"/><circle class="soft" cx="130" cy="190" r="74"/><text class="t h" x="130" y="184" text-anchor="middle" fill="#0f172a">Genome</text><text class="t s" x="130" y="210" text-anchor="middle" fill="#64748b">DNA 전체</text><circle class="plain" cx="430" cy="190" r="74"/><text class="t h" x="430" y="184" text-anchor="middle" fill="#0f172a">Transcriptome</text><text class="t s" x="430" y="210" text-anchor="middle" fill="#64748b">RNA 발현</text><circle class="plain" cx="730" cy="190" r="74"/><text class="t h" x="730" y="184" text-anchor="middle" fill="#0f172a">Proteome</text><text class="t s" x="730" y="210" text-anchor="middle" fill="#64748b">기능 단백질</text><path class="line" d="M205 190 L355 190" marker-end="url(#arrow)"/><path class="line" d="M505 190 L655 190" marker-end="url(#arrow)"/><text class="t s" x="280" y="170" text-anchor="middle" fill="#64748b">전사</text><text class="t s" x="580" y="170" text-anchor="middle" fill="#64748b">번역</text><path class="dash" d="M130 268 C230 380, 650 380, 730 268"/><text class="t m" x="430" y="382" text-anchor="middle" fill="#0f172a">데이터 파일은 층위별로 분리된다</text><rect class="dark" x="250" y="414" width="360" height="98" rx="12"/><text class="t m" x="268" y="441" text-anchor="start" fill="#fff">KG 통합</text><text class="t xs" x="268" y="463" text-anchor="start" fill="#e2e8f0">식별자 조정</text><text class="t xs" x="268" y="480" text-anchor="start" fill="#e2e8f0">조건·출처 보존</text><text class="t xs" x="268" y="497" text-anchor="start" fill="#e2e8f0">층위 간 관계</text></svg>
